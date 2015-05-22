@@ -1,9 +1,9 @@
 <?php
-namespace Spark;
+namespace Spark\Action;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class Action
+abstract class Base
 {
     /**
      * @var ServerRequestInterface

@@ -1,11 +1,11 @@
 <?php
 
-namespace Spark;
+namespace Spark\Handler;
 
 use Exception;
 use Zend\Diactoros\Response;
 
-class ExceptionDecorator
+class ExceptionHandler
 {
     public function __invoke(Exception $e)
     {

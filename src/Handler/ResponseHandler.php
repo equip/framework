@@ -1,9 +1,9 @@
 <?php
-namespace Spark;
+namespace Spark\Handler;
 
 use Zend\Diactoros\Response;
 
-class ResponseDecorator
+class ResponseHandler
 {
 
     public function __invoke($content)

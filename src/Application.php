@@ -12,6 +12,8 @@ use Auryn\Injector;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Spark\Handler\ExceptionHandler;
+use Spark\Handler\ResponseHandler;
 use Zend\Diactoros\ServerRequestFactory;
 
 /**
@@ -33,12 +35,12 @@ class Application
     /**
      * @var \callable
      */
-    protected $exceptionDecorator;
+    protected $exceptionHandler;
 
     /**
      * @var \callable
      */
-    protected $responseDecorator;
+    protected $responseHandler;
     /**
      * @var array
      */
@@ -117,47 +119,47 @@ class Application
     /**
      * Set the exception decorator.
      *
-     * @param ExceptionDecorator $func
+     * @param ExceptionHandler $func
      *
      * @return void
      */
-    public function setExceptionDecorator(ExceptionDecorator $func)
+    public function setExceptionHandler(ExceptionHandler $func)
     {
-        $this->exceptionDecorator = $func;
+        $this->exceptionHandler = $func;
     }
 
     /**
      * @return callable
      */
-    public function getExceptionDecorator()
+    public function getExceptionHandler()
     {
-        if (!$this->exceptionDecorator) {
-            $this->exceptionDecorator = new ExceptionDecorator;
+        if (!$this->exceptionHandler) {
+            $this->exceptionHandler = new ExceptionHandler;
         }
-        return $this->exceptionDecorator;
+        return $this->exceptionHandler;
     }
 
     /**
      * Set the request decorator.
      *
-     * @param ResponseDecorator $func
+     * @param ResponseHandler $func
      *
      * @return void
      */
-    public function setResponseDecorator(ResponseDecorator $func)
+    public function setResponseHandler(ResponseHandler $func)
     {
-        $this->responseDecorator = $func;
+        $this->responseHandler = $func;
     }
 
     /**
      * @return callable
      */
-    public function getResponseDecorator()
+    public function getResponseHandler()
     {
-        if (!$this->responseDecorator) {
-            $this->responseDecorator = new ResponseDecorator;
+        if (!$this->responseHandler) {
+            $this->responseHandler = new ResponseHandler;
         }
-        return $this->responseDecorator;
+        return $this->responseHandler;
     }
 
     /**
@@ -231,7 +233,7 @@ class Application
             $response = $this->getInjector()->execute($handler, $args);
 
             if (!$response instanceof ResponseInterface) {
-                $response = call_user_func($this->getResponseDecorator(), $response);
+                $response = call_user_func($this->getResponseHandler(), $response);
             }
 
         } catch (\Exception $e) {
@@ -240,7 +242,7 @@ class Application
                 throw $e;
             }
 
-            $response = call_user_func($this->getExceptionDecorator(), $e);
+            $response = call_user_func($this->getExceptionHandler(), $e);
 
             if (!$response instanceof ResponseInterface) {
                 throw new \LogicException('Exception decorator did not return an instance of Psr\Http\Message\ResponseInterface');

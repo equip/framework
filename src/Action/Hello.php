@@ -1,9 +1,9 @@
 <?php
 namespace Spark\Action;
 
-use Spark\Action;
+use Spark\Action\Base as BaseAction;
 
-class Hello extends Action
+class Hello extends BaseAction
 {
 
     public function __invoke($name = 'World')
