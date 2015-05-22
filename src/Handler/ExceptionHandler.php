@@ -3,13 +3,13 @@
 namespace Spark\Handler;
 
 use Exception;
-use Zend\Diactoros\Response;
+use Psr\Http\Message\ResponseInterface;
 
 class ExceptionHandler
 {
-    public function __invoke(Exception $e)
+    public function __invoke(ResponseInterface $response, Exception $e)
     {
-        $response = (new Response)
+        $response = $response
             ->withStatus(
                 method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500
             )

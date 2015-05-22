@@ -1,16 +1,15 @@
 <?php
 namespace Spark\Handler;
 
-use Zend\Diactoros\Response;
+use Psr\Http\Message\ResponseInterface;
 
 class ResponseHandler
 {
 
-    public function __invoke($content)
+
+    public function __invoke(ResponseInterface $response, $content)
     {
-        $response = (new Response)
-            ->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($content));
-        return $response;
+        return $response->withHeader('Content-Type', 'application/json');
     }
 }

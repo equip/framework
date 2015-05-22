@@ -41,6 +41,12 @@ class Application
      * @var \callable
      */
     protected $responseHandler;
+
+    /**
+     * @var string
+     */
+    protected $responseInterface;
+
     /**
      * @var array
      */
@@ -59,11 +65,18 @@ class Application
      */
     public function __construct(
         Injector $injector = null,
-        Router $router = null
+        Router $router = null,
+        array $options = []
     ) {
+
+        $options += [
+            'ResponseInterface' => '\Zend\Diactoros\Response',
+        ];
 
         $this->injector = ($injector instanceof Injector) ? $injector : new Injector;
         $this->router = ($router instanceof Router) ? $router : new Router;
+
+        $this->responseInterface = $options['ResponseInterface'];
 
     }
 
@@ -178,6 +191,8 @@ class Application
         }
 
         $this->getInjector()->alias('\Psr\Http\Message\ServerRequestInterface', get_class($request));
+        $this->getInjector()->alias('\Psr\Http\Message\ResponseInterface', $this->responseInterface);
+
 
         $response = $this->handle($request);
 
@@ -230,10 +245,13 @@ class Application
 
             $this->getInjector()->share($request);
 
+            $response = new $this->responseInterface;
+            $this->getInjector()->share($response);
+
             $response = $this->getInjector()->execute($handler, $args);
 
             if (!$response instanceof ResponseInterface) {
-                $response = call_user_func($this->getResponseHandler(), $response);
+                $response = $this->getInjector()->execute($this->getResponseHandler(), [':content' => $response]);
             }
 
         } catch (\Exception $e) {
@@ -242,7 +260,7 @@ class Application
                 throw $e;
             }
 
-            $response = call_user_func($this->getExceptionHandler(), $e);
+            $response = $this->getInjector()->execute($this->getExceptionHandler(), [':e' => $e]);
 
             if (!$response instanceof ResponseInterface) {
                 throw new \LogicException('Exception decorator did not return an instance of Psr\Http\Message\ResponseInterface');
