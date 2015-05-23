@@ -1,10 +1,4 @@
 <?php
-/**
- * The Spark Micro-Framework.
- *
- * @author  Daniel Olfelt <dolfelt@gmail.com>
- * @license MIT
- */
 
 namespace Spark;
 
@@ -18,9 +12,6 @@ use Spark\Handler\ExceptionHandler;
 use Spark\Handler\ResponseHandler;
 use Zend\Diactoros\ServerRequestFactory;
 
-/**
- * Proton Application Class.
- */
 class Application
 {
 
