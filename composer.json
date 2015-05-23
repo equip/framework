@@ -1,5 +1,5 @@
 {
-    "name": "dolfelt/spark",
+    "name": "sparkphp/spark",
     "description": "A tiny framework that can start anything.",
     "require": {
         "php": ">=5.5.0",
@@ -23,6 +23,10 @@
     },
     "license": "MIT",
     "authors": [
+        {
+            "name": "Woody Gilk",
+            "email": "hello@shadowhand.me"
+        },
         {
             "name": "Daniel Olfelt",
             "email": "dolfelt@gmail.com"
