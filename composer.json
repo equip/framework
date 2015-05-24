@@ -1,11 +1,16 @@
 {
     "name": "sparkphp/spark",
     "description": "A tiny framework that can start anything.",
+    "type": "library",
+    "license": "MIT",
     "require": {
         "php": ">=5.5.0",
+        "aura/payload": "3.*@dev",
+        "josegonzalez/dotenv": "~0.7",
+        "monolog/monolog": "~1.13",
         "nikic/fast-route": "0.4.*",
         "rdlowrey/auryn": "0.15.*",
-        "monolog/monolog": "~1.13",
+        "sparkphp/adr": "dev-master",
         "zendframework/zend-diactoros": "~1.0"
     },
     "require-dev": {
@@ -21,7 +26,6 @@
             "SparkTests\\": "tests/"
         }
     },
-    "license": "MIT",
     "authors": [
         {
             "name": "Woody Gilk",
@@ -31,5 +35,6 @@
             "name": "Daniel Olfelt",
             "email": "dolfelt@gmail.com"
         }
-    ]
+    ],
+    "minimum-stability": "dev"
 }

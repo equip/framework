@@ -1,5 +1,5 @@
 <?php
-namespace Spark;
+namespace Spark\Router;
 
 use FastRoute\DataGenerator;
 use FastRoute\Dispatcher;
@@ -40,7 +40,11 @@ class Router extends RouteCollector
     {
         parent::addRoute($method, $path, $handler);
 
-        return $this;
+        $route = new Route($method, $path, $handler);
+
+        $this->routes[$method.' '.$handler] = $route;
+
+        return $route;
     }
 
     public function get($path, $handler)
@@ -97,9 +101,11 @@ class Router extends RouteCollector
                 break;
             case Dispatcher::FOUND:
                 list($_, $handler, $arguments) = $routeInfo;
-                break;
+                $route = $this->routes[$method.' '.$handler];
+                return [$route, $handler, $arguments];
         }
-        return [$handler, $arguments];
+
+        throw new \Exception;
     }
 
 }

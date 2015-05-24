@@ -12,8 +12,10 @@ use Auryn\Injector;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Spark\Handler\ActionHandler;
 use Spark\Handler\ExceptionHandler;
 use Spark\Handler\ResponseHandler;
+use Spark\Router\Router;
 use Zend\Diactoros\ServerRequestFactory;
 
 /**
@@ -33,14 +35,19 @@ class Application
     protected $router;
 
     /**
-     * @var \callable
+     * @var string
      */
     protected $exceptionHandler;
 
     /**
-     * @var \callable
+     * @var string
      */
     protected $responseHandler;
+
+    /**
+     * @var string
+     */
+    protected $actionHandler;
 
     /**
      * @var string
@@ -78,6 +85,9 @@ class Application
 
         $this->responseInterface = $options['ResponseInterface'];
 
+
+        // Inject the injector for use in the ActionHandler
+        $this->injector->share($this->injector);
     }
 
     /**
@@ -142,7 +152,8 @@ class Application
     }
 
     /**
-     * @return callable
+     * Get the class for the exception handler
+     * @return string
      */
     public function getExceptionHandler()
     {
@@ -153,26 +164,52 @@ class Application
     }
 
     /**
-     * Set the request decorator.
+     * Set the response handler.
      *
      * @param ResponseHandler $func
      *
-     * @return void
+     * @return $this
      */
-    public function setResponseHandler(ResponseHandler $func)
+    public function setResponseHandler($func)
     {
         $this->responseHandler = $func;
+        return $this;
     }
 
     /**
-     * @return callable
+     * Get the class for the response handler
+     * @return string
      */
     public function getResponseHandler()
     {
         if (!$this->responseHandler) {
-            $this->responseHandler = new ResponseHandler;
+            $this->responseHandler = 'Spark\Handler\ResponseHandler';
         }
         return $this->responseHandler;
+    }
+
+    /**
+     * Set the request decorator.
+     *
+     * @param ActionHandler $func
+     *
+     * @return $this
+     */
+    public function setActionHandler($func)
+    {
+        $this->actionHandler = $func;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionHandler()
+    {
+        if (!$this->actionHandler) {
+            $this->actionHandler = 'Spark\Handler\ActionHandler';
+        }
+        return $this->actionHandler;
     }
 
     /**
@@ -192,7 +229,6 @@ class Application
 
         $this->getInjector()->alias('\Psr\Http\Message\ServerRequestInterface', get_class($request));
         $this->getInjector()->alias('\Psr\Http\Message\ResponseInterface', $this->responseInterface);
-
 
         $response = $this->handle($request);
 
@@ -234,7 +270,10 @@ class Application
 
         try {
 
-            list($handler, $args) = $this->getRouter()->dispatch(
+            /**
+             * @var \Spark\Adr\RouteInterface $route
+             */
+            list($route, $_, $args) = $this->getRouter()->dispatch(
                 $request->getMethod(),
                 $request->getUri()->getPath()
             );
@@ -243,12 +282,23 @@ class Application
                 $request = $request->withAttribute($key, $value);
             }
 
-            $this->getInjector()->share($request);
-
             $response = new $this->responseInterface;
-            $this->getInjector()->share($response);
 
-            $response = $this->getInjector()->execute($handler, $args);
+            $this->getInjector()
+                ->share($route)
+                ->share($request)
+                ->share($response);
+
+            $this->getInjector()->alias('\Psr\Http\Message\RouteInterface', get_class($route));
+
+
+            // TODO: Perhaps load this through the DI. I'm conflicted because you would need to inject the injector
+            // Load the ActionHandler and execute the request.
+            /**
+             * @var $handler callable
+             */
+            $handler = $this->getInjector()->make($this->getActionHandler());
+            $response = $handler($request, $response, $route);
 
             if (!$response instanceof ResponseInterface) {
                 $response = $this->getInjector()->execute($this->getResponseHandler(), [':content' => $response]);
