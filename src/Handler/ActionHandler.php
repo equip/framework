@@ -1,18 +1,25 @@
 <?php
 namespace Spark\Handler;
 
+use Aura\Payload_Interface\PayloadInterface;
 use Auryn\Injector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Spark\Adr\DomainInterface;
+use Spark\Adr\InputInterface;
+use Spark\Adr\ResponderInterface;
 use Spark\Adr\RouteInterface;
+use Spark\Router;
 
 class ActionHandler
 {
     protected $injector;
+    protected $router;
 
-    public function __construct(Injector $injector)
+    public function __construct(Injector $injector, Router $router)
     {
         $this->injector = $injector;
+        $this->router = $router;
     }
 
     public function __invoke(
@@ -21,33 +28,31 @@ class ActionHandler
         RouteInterface $route
     ) {
 
-        // TODO: Make this load a default responder
         /**
          * @var $responder callable
          */
-        $responder = $this->injector->make($route->getResponder() ?: '\Spark\Responder\Responder');
+        $responder = $this->injector->make($route->getResponder() ?: $this->router->getResponder());
+        $payload = null;
         if ($route->getDomain()) {
-            $payload = $this->domain($route, $request);
-            return $responder($request, $response, $payload);
+            $domain = $this->injector->make($route->getDomain());
+            $input = $this->injector->make($route->getInput() ?: $this->router->getInput());
+            $payload = $this->getPayload($domain, $input, $request);
         }
-        return $responder($request, $response);
+        return $this->getResponse($responder, $request, $response, $payload);
     }
 
-    protected function domain(RouteInterface $route, ServerRequestInterface $request)
+    protected function getPayload(DomainInterface $domain, InputInterface $input, ServerRequestInterface $request)
     {
-        /**
-         * @var $domain callable
-         */
-        $domain = $this->injector->make($route->getDomain());
-        if ($route->getInput()) {
-            // TODO: Make a default input parser, and allow you to load a default
-            /**
-             * @var $input callable
-             */
-            $input = $this->injector->make($route->getInput());
-            $input = (array) $input($request);
-            return call_user_func_array($domain, $input);
-        }
-        return $domain();
+        return $domain($input($request));
+    }
+
+    protected function getResponse(
+        ResponderInterface $responder,
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        PayloadInterface $payload = null
+    )
+    {
+        return $responder($request, $response, $payload);
     }
 }

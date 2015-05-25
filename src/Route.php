@@ -1,6 +1,7 @@
 <?php
-namespace Spark\Router;
+namespace Spark;
 
+use Spark\Adr\DomainInterface;
 use Spark\Adr\RouteInterface;
 
 class Route implements RouteInterface
@@ -31,6 +32,12 @@ class Route implements RouteInterface
         return $this->input;
     }
 
+    /**
+     * Set the domain handler for the route
+     *
+     * @param $domain string|DomainInterface
+     * @return $this
+     */
     public function setDomain($domain)
     {
         $this->domain = $domain;

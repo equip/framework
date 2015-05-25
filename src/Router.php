@@ -1,5 +1,5 @@
 <?php
-namespace Spark\Router;
+namespace Spark;
 
 use FastRoute\DataGenerator;
 use FastRoute\Dispatcher;
@@ -8,6 +8,8 @@ use FastRoute\RouteParser;
 use FastRoute\RouteParser\Std as StdRouteParser;
 use FastRoute\DataGenerator\GroupCountBased as GroupCountBasedDataGenerator;
 use FastRoute\Dispatcher\GroupCountBased as GroupCountBasedDispatcher;
+use Psr\Http\Message\ResponseInterface;
+use Spark\Adr\InputInterface;
 use Spark\Exception\HttpMethodNotAllowed;
 
 class Router extends RouteCollector
@@ -19,6 +21,9 @@ class Router extends RouteCollector
     const PATCH   = 'PATCH';
     const HEAD    = 'HEAD';
     const OPTIONS = 'OPTIONS';
+
+    protected $input = 'Spark\Adr\Input';
+    protected $responder = 'Spark\Responder\Responder';
 
     /**
      * @var array
@@ -77,6 +82,27 @@ class Router extends RouteCollector
         return $this->addRoute(self::OPTIONS, $path, $handler);
     }
 
+    public function setInput($input)
+    {
+        $this->input = $input;
+        return $this;
+    }
+
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    public function setResponder($responder)
+    {
+        $this->responder = $responder;
+        return $this;
+    }
+
+    public function getResponder()
+    {
+        return $this->responder;
+    }
 
     /**
      * Get the dispatcher for this Router

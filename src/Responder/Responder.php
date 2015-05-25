@@ -6,12 +6,21 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\ResponderInterface;
 
-class Responder
+class Responder implements ResponderInterface
 {
+    /**
+     * @var $request ServerRequestInterface
+     */
     protected $request;
 
+    /**
+     * @var $response ResponseInterface
+     */
     protected $response;
 
+    /**
+     * @var $payload PayloadInterface
+     */
     protected $payload;
 
     public static function accepts()

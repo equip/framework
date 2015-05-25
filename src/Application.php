@@ -15,7 +15,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Spark\Handler\ActionHandler;
 use Spark\Handler\ExceptionHandler;
 use Spark\Handler\ResponseHandler;
-use Spark\Router\Router;
 use Zend\Diactoros\ServerRequestFactory;
 
 /**

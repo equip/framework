@@ -4,8 +4,5 @@ A tiny and powerful PHP micro-framework. Attempts to be [PSR-1](http://www.php-f
 [PSR-7](http://www.php-fig.org/psr/psr-7/) compliant. Also uses the [ADR](https://github.com/pmjones/adr)
 pattern. You should too!
 
-```bash
-php -S localhost:8000 -t web/
-```
-
-Then visit http://localhost:8000 in your browser.
+A sample project exists at [sparkphp/Project](https://github.com/sparkphp/Project). This shows the best
+way to use this framework, and is a quick way to start a new project.
