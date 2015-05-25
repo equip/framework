@@ -12,6 +12,7 @@ use Auryn\Injector;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Spark\Adr\RouteInterface;
 use Spark\Handler\ActionHandler;
 use Spark\Handler\ExceptionHandler;
 use Spark\Handler\ResponseHandler;
@@ -84,9 +85,6 @@ class Application
 
         $this->responseInterface = $options['ResponseInterface'];
 
-
-        // Inject the injector for use in the ActionHandler
-        $this->injector->share($this->injector);
     }
 
     /**
@@ -206,7 +204,7 @@ class Application
     public function getActionHandler()
     {
         if (!$this->actionHandler) {
-            $this->actionHandler = 'Spark\Handler\ActionHandler';
+            $this->actionHandler = 'Spark\Adr\ActionHandler';
         }
         return $this->actionHandler;
     }
@@ -283,12 +281,17 @@ class Application
 
             $response = new $this->responseInterface;
 
+            // Inject the route
+            $route = $this->injectRoute($route);
+
+            $this->getInjector()->alias('\Psr\Http\Message\RouteInterface', get_class($route));
+
             $this->getInjector()
                 ->share($route)
                 ->share($request)
                 ->share($response);
 
-            $this->getInjector()->alias('\Psr\Http\Message\RouteInterface', get_class($route));
+
 
 
             // TODO: Perhaps load this through the DI. I'm conflicted because you would need to inject the injector
@@ -318,6 +321,25 @@ class Application
         }
 
         return $response;
+    }
+
+    public function injectRoute(RouteInterface $route)
+    {
+        $new = clone $route;
+        $domain = $route->getDomain();
+        $input = $route->getInput() ?: $this->getRouter()->getInput();
+        $responder = $route->getResponder() ?: $this->getRouter()->getResponder();
+
+        if (is_string($domain)) {
+            $new->setDomain($this->injector->make($domain));
+        }
+        if (is_string($input)) {
+            $new->setInput($this->injector->make($input));
+        }
+        if (is_string($responder)) {
+            $new->setResponder($this->injector->make($responder));
+        }
+        return $new;
     }
 
 
