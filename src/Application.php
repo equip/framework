@@ -222,7 +222,7 @@ class Application
         // headers
         foreach ($response->getHeaders() as $name => $values) {
             foreach ($values as $value) {
-                header($name.': '.$value, false, $response->getStatusCode());
+                header("$name: $value", false);
             }
         }
 
