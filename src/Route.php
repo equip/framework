@@ -38,6 +38,18 @@ class Route implements RouteInterface
         $this->domain = $domain;
     }
 
+    /**
+     * Set the domain handler for the route
+     *
+     * @param $domain string|DomainInterface
+     * @return $this
+     */
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
+        return $this;
+    }
+
     public function getDomain()
     {
         return $this->domain;
