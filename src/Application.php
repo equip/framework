@@ -7,8 +7,7 @@ use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Spark\Adr\RouteInterface;
-use Spark\Handler\ActionHandler;
-use Spark\Handler\ExceptionHandler;
+use Spark\Adr\ActionInterface;
 
 class Application
 {
@@ -131,19 +130,20 @@ class Application
     }
 
     /**
-     * Set the exception decorator.
+     * Set the exception handler spec.
      *
-     * @param ExceptionHandler $func
-     *
-     * @return void
+     * @param  string $spec
+     * @return $this
      */
-    public function setExceptionHandler(ExceptionHandler $func)
+    public function setExceptionHandler($spec)
     {
-        $this->exceptionHandler = $func;
+        $this->exceptionHandler = $spec;
+        return $this;
     }
 
     /**
-     * Get the class for the exception handler
+     * Get the callable name used to handle exceptions.
+     *
      * @return string
      */
     public function getExceptionHandler()
@@ -152,19 +152,20 @@ class Application
     }
 
     /**
-     * Set the request decorator.
+     * Set the action handler spec.
      *
-     * @param ActionHandler $func
-     *
+     * @param  string $spec
      * @return $this
      */
-    public function setActionHandler($func)
+    public function setActionHandler($spec)
     {
-        $this->actionHandler = $func;
+        $this->actionHandler = $spec;
         return $this;
     }
 
     /**
+     * Get the callable name used to handle actions.
+     *
      * @return string
      */
     public function getActionHandler()
@@ -244,11 +245,7 @@ class Application
             // Inject the route
             $route = $this->injectRoute($route);
 
-            // Load the ActionHandler and execute the request.
-            /**
-             * @var $handler callable
-             */
-            $handler = $this->getInjector()->make($this->getActionHandler());
+            $handler  = $this->getInjector()->make($this->getActionHandler());
             $response = $handler($request, $response, $route);
 
         } catch (\Exception $e) {
