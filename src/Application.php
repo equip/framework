@@ -14,28 +14,28 @@ class Application
     /**
      * Application bootstrapping.
      *
-     * @param  Injector $di
+     * @param  Injector $injector
      * @return Application
      */
-    public static function boot(Injector $di = null)
+    public static function boot(Injector $injector = null)
     {
-        if (!$di) {
-            $di = new Injector;
+        if (!$injector) {
+            $injector = new Injector;
         }
 
-        $di->share($di);
+        $injector->share($injector);
 
         // By default, we use the Zend implementation of PSR-7
-        $di->alias(
+        $injector->alias(
             'Psr\Http\Message\ResponseInterface',
             'Zend\Diactoros\Response'
         );
-        $di->delegate(
+        $injector->delegate(
             'Psr\Http\Message\ServerRequestInterface',
             'Zend\Diactoros\ServerRequestFactory::fromGlobals'
         );
 
-        return $di->make(static::class);
+        return $injector->make(static::class);
     }
 
     /**
@@ -233,7 +233,7 @@ class Application
             /**
              * @var \Spark\Adr\RouteInterface $route
              */
-            list($route, $_, $args) = $this->getRouter()->dispatch(
+            list($route, $args) = $this->getRouter()->dispatch(
                 $request->getMethod(),
                 $request->getUri()->getPath()
             );
@@ -241,9 +241,6 @@ class Application
             foreach ($args as $key => $value) {
                 $request = $request->withAttribute($key, $value);
             }
-
-            // Inject the route
-            $route = $this->injectRoute($route);
 
             $handler  = $this->getInjector()->make($this->getActionHandler());
             $response = $handler($request, $response, $route);
@@ -264,27 +261,6 @@ class Application
 
         return $response;
     }
-
-    public function injectRoute(RouteInterface $route)
-    {
-        $new = clone $route;
-        $domain = $route->getDomain();
-        $input = $route->getInput() ?: $this->getRouter()->getInput();
-        $responder = $route->getResponder() ?: $this->getRouter()->getResponder();
-
-        if (is_string($domain)) {
-            $new->setDomain($this->injector->make($domain));
-        }
-        if (is_string($input)) {
-            $new->setInput($this->injector->make($input));
-        }
-        if (is_string($responder)) {
-            $new->setResponder($this->injector->make($responder));
-        }
-        return $new;
-    }
-
-
 
     /**
      * Set a config item
