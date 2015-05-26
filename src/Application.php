@@ -9,10 +9,35 @@ use Psr\Http\Message\ServerRequestInterface;
 use Spark\Adr\RouteInterface;
 use Spark\Handler\ActionHandler;
 use Spark\Handler\ExceptionHandler;
-use Zend\Diactoros\ServerRequestFactory;
 
 class Application
 {
+    /**
+     * Application bootstrapping.
+     *
+     * @param  Injector $di
+     * @return Application
+     */
+    public static function boot(Injector $di = null)
+    {
+        if (!$di) {
+            $di = new Injector;
+        }
+
+        $di->share($di);
+
+        // By default, we use the Zend implementation of PSR-7
+        $di->alias(
+            'Psr\Http\Message\ResponseInterface',
+            'Zend\Diactoros\Response'
+        );
+        $di->delegate(
+            'Psr\Http\Message\ServerRequestInterface',
+            'Zend\Diactoros\ServerRequestFactory::fromGlobals'
+        );
+
+        return $di->make(static::class);
+    }
 
     /**
      * @var Injector
@@ -35,11 +60,6 @@ class Application
     protected $actionHandler = 'Spark\Adr\ActionHandler';
 
     /**
-     * @var string
-     */
-    protected $responseInterface;
-
-    /**
      * @var array
      */
     protected $config = [];
@@ -50,26 +70,15 @@ class Application
     protected $loggers = [];
 
     /**
-     * New Application.
-     *
-     * @param Injector $injector Application IoC injector
-     * @param Router $router Application request routing
+     * @param Injector $injector
+     * @param Router   $router
      */
     public function __construct(
-        Injector $injector = null,
-        Router $router = null,
-        array $options = []
+        Injector $injector,
+        Router   $router
     ) {
-
-        $options += [
-            'ResponseInterface' => '\Zend\Diactoros\Response',
-        ];
-
-        $this->injector = ($injector instanceof Injector) ? $injector : new Injector;
-        $this->router = ($router instanceof Router) ? $router : new Router;
-
-        $this->responseInterface = $options['ResponseInterface'];
-
+        $this->injector = $injector;
+        $this->router   = $router;
     }
 
     /**
@@ -166,22 +175,24 @@ class Application
     /**
      * Run the application.
      *
-     * @param ServerRequestInterface|null $request
-     *
+     * @param  ServerRequestInterface $request
+     * @param  ResponseInterface      $response
      * @return void
      */
-    public function run(ServerRequestInterface $request = null)
-    {
+    public function run(
+        ServerRequestInterface $request  = null,
+        ResponseInterface      $response = null
+    ) {
         ob_start();
 
-        if ($request === null) {
-            $request = ServerRequestFactory::fromGlobals();
+        if (!$request) {
+            $request = $this->getInjector()->make('Psr\Http\Message\ServerRequestInterface');
+        }
+        if (!$response) {
+            $response = $this->getInjector()->make('Psr\Http\Message\ResponseInterface');
         }
 
-        $this->getInjector()->alias('\Psr\Http\Message\ServerRequestInterface', get_class($request));
-        $this->getInjector()->alias('\Psr\Http\Message\ResponseInterface', $this->responseInterface);
-
-        $response = $this->handle($request);
+        $response = $this->handle($request, $response);
 
         // status
         header(sprintf(
@@ -207,18 +218,15 @@ class Application
     /**
      * Handle the request.
      *
-     * @param ServerRequestInterface $request
-     * @param int                    $type
-     * @param bool                   $catch
-     *
+     * @param  ServerRequestInterface $request
+     * @param  ResponseInterface      $response
+     * @param  bool                   $catch
+     * @return ResponseInterface
      * @throws \Exception
      * @throws \LogicException
-     *
-     * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request, $type = 1, $catch = true)
+    public function handle(ServerRequestInterface $request, ResponseInterface $response, $catch = true)
     {
-
         try {
 
             /**
@@ -232,8 +240,6 @@ class Application
             foreach ($args as $key => $value) {
                 $request = $request->withAttribute($key, $value);
             }
-
-            $response = new $this->responseInterface;
 
             // Inject the route
             $route = $this->injectRoute($route);
@@ -254,7 +260,7 @@ class Application
             $response = $this->getInjector()->execute($this->getExceptionHandler(), [':e' => $e]);
 
             if (!$response instanceof ResponseInterface) {
-                throw new \LogicException('Exception decorator did not return an instance of Psr\Http\Message\ResponseInterface');
+                throw new \LogicException('Exception handler did not return an instance of Psr\Http\Message\ResponseInterface');
             }
 
         }
