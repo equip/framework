@@ -9,7 +9,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Spark\Adr\RouteInterface;
 use Spark\Handler\ActionHandler;
 use Spark\Handler\ExceptionHandler;
-use Spark\Handler\ResponseHandler;
 use Zend\Diactoros\ServerRequestFactory;
 
 class Application
@@ -29,11 +28,6 @@ class Application
      * @var string
      */
     protected $exceptionHandler = 'Spark\Handler\ExceptionHandler';
-
-    /**
-     * @var string
-     */
-    protected $responseHandler = 'Spark\Handler\ResponseHandler';
 
     /**
      * @var string
@@ -149,28 +143,6 @@ class Application
     }
 
     /**
-     * Set the response handler.
-     *
-     * @param ResponseHandler $func
-     *
-     * @return $this
-     */
-    public function setResponseHandler($func)
-    {
-        $this->responseHandler = $func;
-        return $this;
-    }
-
-    /**
-     * Get the class for the response handler
-     * @return string
-     */
-    public function getResponseHandler()
-    {
-        return $this->responseHandler;
-    }
-
-    /**
      * Set the request decorator.
      *
      * @param ActionHandler $func
@@ -279,10 +251,6 @@ class Application
              */
             $handler = $this->getInjector()->make($this->getActionHandler());
             $response = $handler($request, $response, $route);
-
-            if (!$response instanceof ResponseInterface) {
-                $response = $this->getInjector()->execute($this->getResponseHandler(), [':content' => $response]);
-            }
 
         } catch (\Exception $e) {
 
