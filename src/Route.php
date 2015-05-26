@@ -6,19 +6,41 @@ use Spark\Adr\RouteInterface;
 
 class Route implements RouteInterface
 {
-
+    /**
+     * @var string
+     */
     protected $method;
+
+    /**
+     * @var string
+     */
     protected $path;
 
-    protected $input;
+    /**
+     * @var string
+     */
     protected $domain;
-    protected $responder;
 
-    public function __construct($method, $path, $handler)
+    /**
+     * @var string
+     */
+    protected $input = 'Spark\Adr\Input';
+
+    /**
+     * @var string
+     */
+    protected $responder = 'Spark\Responder\Responder';
+
+    public function __construct($method, $path, $domain)
     {
         $this->method = $method;
-        $this->path = $path;
-        $this->domain = $handler;
+        $this->path   = $path;
+        $this->domain = $domain;
+    }
+
+    public function getDomain()
+    {
+        return $this->domain;
     }
 
     public function setInput($input)
@@ -32,23 +54,6 @@ class Route implements RouteInterface
         return $this->input;
     }
 
-    /**
-     * Set the domain handler for the route
-     *
-     * @param $domain string|DomainInterface
-     * @return $this
-     */
-    public function setDomain($domain)
-    {
-        $this->domain = $domain;
-        return $this;
-    }
-
-    public function getDomain()
-    {
-        return $this->domain;
-    }
-
     public function setResponder($responder)
     {
         $this->responder = $responder;
@@ -59,5 +64,4 @@ class Route implements RouteInterface
     {
         return $this->responder;
     }
-
 }
