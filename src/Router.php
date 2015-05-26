@@ -8,9 +8,8 @@ use FastRoute\RouteParser;
 use FastRoute\RouteParser\Std as StdRouteParser;
 use FastRoute\DataGenerator\GroupCountBased as GroupCountBasedDataGenerator;
 use FastRoute\Dispatcher\GroupCountBased as GroupCountBasedDispatcher;
-use Psr\Http\Message\ResponseInterface;
-use Spark\Adr\InputInterface;
 use Spark\Exception\HttpMethodNotAllowed;
+use Spark\Exception\HttpNotFound;
 
 class Router extends RouteCollector
 {
@@ -118,20 +117,17 @@ class Router extends RouteCollector
     {
         $routeInfo = $this->createDispatcher()->dispatch($method, $path);
         switch ($routeInfo[0]) {
-            case Dispatcher::NOT_FOUND:
-                throw new \Exception;
-                break;
             case Dispatcher::METHOD_NOT_ALLOWED:
-                throw (new HttpMethodNotAllowed)
-                    ->setAllowedMethods($routeInfo[1]);
-                break;
+                throw (new HttpMethodNotAllowed)->setAllowedMethods($routeInfo[1]);
             case Dispatcher::FOUND:
                 list($_, $handler, $arguments) = $routeInfo;
                 $route = $this->routes[$method.' '.$handler];
                 return [$route, $handler, $arguments];
+            case Dispatcher::NOT_FOUND:
+            default:
+                throw new HttpNotFound;
+                break;
         }
-
-        throw new \Exception;
     }
 
 }

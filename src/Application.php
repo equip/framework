@@ -37,17 +37,17 @@ class Application
     /**
      * @var string
      */
-    protected $exceptionHandler;
+    protected $exceptionHandler = 'Spark\Handler\ExceptionHandler';
 
     /**
      * @var string
      */
-    protected $responseHandler;
+    protected $responseHandler = 'Spark\Handler\ResponseHandler';
 
     /**
      * @var string
      */
-    protected $actionHandler;
+    protected $actionHandler = 'Spark\Adr\ActionHandler';
 
     /**
      * @var string
@@ -154,9 +154,6 @@ class Application
      */
     public function getExceptionHandler()
     {
-        if (!$this->exceptionHandler) {
-            $this->exceptionHandler = new ExceptionHandler;
-        }
         return $this->exceptionHandler;
     }
 
@@ -179,9 +176,6 @@ class Application
      */
     public function getResponseHandler()
     {
-        if (!$this->responseHandler) {
-            $this->responseHandler = 'Spark\Handler\ResponseHandler';
-        }
         return $this->responseHandler;
     }
 
@@ -203,9 +197,6 @@ class Application
      */
     public function getActionHandler()
     {
-        if (!$this->actionHandler) {
-            $this->actionHandler = 'Spark\Adr\ActionHandler';
-        }
         return $this->actionHandler;
     }
 
@@ -291,10 +282,6 @@ class Application
                 ->share($request)
                 ->share($response);
 
-
-
-
-            // TODO: Perhaps load this through the DI. I'm conflicted because you would need to inject the injector
             // Load the ActionHandler and execute the request.
             /**
              * @var $handler callable
