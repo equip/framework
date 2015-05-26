@@ -238,13 +238,6 @@ class Application
             // Inject the route
             $route = $this->injectRoute($route);
 
-            $this->getInjector()->alias('\Psr\Http\Message\RouteInterface', get_class($route));
-
-            $this->getInjector()
-                ->share($route)
-                ->share($request)
-                ->share($response);
-
             // Load the ActionHandler and execute the request.
             /**
              * @var $handler callable
