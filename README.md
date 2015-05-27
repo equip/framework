@@ -1,4 +1,7 @@
-# Spark
+## Spark
+[![Build Status](https://api.travis-ci.org/sparkphp/Spark.svg)](https://travis-ci.org/sparkphp/Spark)
+[![Coverage Status](https://coveralls.io/repos/sparkphp/Spark/badge.svg)](https://coveralls.io/r/sparkphp/Spark)
+
 A tiny and powerful PHP micro-framework. Attempts to be [PSR-1](http://www.php-fig.org/psr/psr-1/),
 [PSR-2](http://www.php-fig.org/psr/psr-2/), [PSR-4](http://www.php-fig.org/psr/psr-4/) and
 [PSR-7](http://www.php-fig.org/psr/psr-7/) compliant. Also uses the [ADR](https://github.com/pmjones/adr)
