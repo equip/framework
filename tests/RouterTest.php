@@ -22,7 +22,7 @@ class RouterTest extends TestCase
          */
         list ($route, $args) = $router->dispatch(Router::GET, '/');
         $this->assertInstanceOf('\Spark\Router\ResolvedRoute', $route);
-        $this->assertInstanceOf('\Spark\Responder\Responder', $route->getResponder());
+        $this->assertInstanceOf('\Spark\Responder\JsonResponder', $route->getResponder());
         $this->assertInstanceOf('\Spark\Adr\InputInterface', $route->getInput());
         $this->assertInstanceOf('\Spark\Adr\DomainInterface', $route->getDomain());
 

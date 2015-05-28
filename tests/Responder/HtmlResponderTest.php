@@ -4,9 +4,9 @@ namespace SparkTests;
 use Aura\Payload\Payload;
 use PHPUnit_Framework_TestCase as TestCase;
 use Spark\Application;
-use Spark\Responder\Responder;
+use Spark\Responder\HtmlResponder;
 
-class ResponderTest extends TestCase {
+class HtmlResponderTest extends TestCase {
 
     protected $request, $response;
 
@@ -18,7 +18,7 @@ class ResponderTest extends TestCase {
 
     public function testAccepts()
     {
-        $this->assertEquals(['application/json'], Responder::accepts());
+        $this->assertEquals(['text/html'], HtmlResponder::accepts());
     }
 
     public function statusCodeProvider()
@@ -53,7 +53,7 @@ class ResponderTest extends TestCase {
             $payload->setStatus($status);
         }
 
-        $responder = new Responder;
+        $responder = new HtmlResponder;
         $result = $responder($this->request, $this->response, $payload);
         $this->assertEquals($expected, $result->getStatusCode());
     }
