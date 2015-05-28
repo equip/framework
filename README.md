@@ -1,6 +1,8 @@
 ## Spark
-[![Build Status](https://api.travis-ci.org/sparkphp/Spark.svg)](https://travis-ci.org/sparkphp/Spark)
-[![Coverage Status](https://coveralls.io/repos/sparkphp/Spark/badge.svg)](https://coveralls.io/r/sparkphp/Spark)
+[![Build Status](https://img.shields.io/travis/sparkphp/Spark.svg)](https://travis-ci.org/sparkphp/Spark)
+[![Code Coverage](https://img.shields.io/coveralls/sparkphp/Spark.svg)](https://coveralls.io/r/sparkphp/Spark)
+[![License](https://img.shields.io/packagist/l/sparkphp/Spark.svg)](https://github.com/sparkphp/Spark/blob/master/LICENSE)
+[![Latest Stable Version](https://img.shields.io/packagist/v/sparkphp/Spark.svg)](https://packagist.org/packages/sparkphp/Spark)
 
 A tiny and powerful PHP micro-framework. Attempts to be [PSR-1](http://www.php-fig.org/psr/psr-1/),
 [PSR-2](http://www.php-fig.org/psr/psr-2/), [PSR-4](http://www.php-fig.org/psr/psr-4/) and
