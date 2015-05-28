@@ -6,6 +6,7 @@ use Spark\Adr\Input;
 use Spark\Application;
 use Spark\Router;
 use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\Uri;
 
 class RouterTest extends TestCase
 {
@@ -37,5 +38,46 @@ class RouterTest extends TestCase
 
         $this->assertEquals("true", $output["query"]);
         $this->assertEquals("true", $output["attribute"]);
+    }
+
+    public function routeMethodProvider()
+    {
+        return [
+            ['get', Router::GET],
+            ['post', Router::POST],
+            ['put', Router::PUT],
+            ['patch', Router::PATCH],
+            ['head', Router::HEAD],
+            ['options', Router::OPTIONS],
+        ];
+    }
+
+    /**
+     * @dataProvider routeMethodProvider
+     */
+    public function testRoutes($method)
+    {
+        $router = Application::boot()->getRouter();
+        $route = $router->$method('/test', '\SparkTests\Fake\FakeDomain');
+
+        $this->assertInstanceOf('Spark\Router\Route', $route);
+    }
+
+    public function testDispatching()
+    {
+        $methods = $this->routeMethodProvider();
+        $router = Application::boot()->getRouter();
+
+        foreach ($methods as $data) {
+            $router->{$data[0]}('/test', '\SparkTests\Fake\FakeDomain');
+        }
+
+        foreach ($methods as $data) {
+            $request = (new ServerRequest)
+                ->withUri(new Uri('/test'))
+                ->withMethod($data[1]);
+
+            $this->assertEquals($data[1], $request->getMethod());
+        }
     }
 }
