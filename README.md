@@ -3,6 +3,7 @@
 [![Code Coverage](https://img.shields.io/coveralls/sparkphp/Spark.svg)](https://coveralls.io/r/sparkphp/Spark)
 [![License](https://img.shields.io/packagist/l/sparkphp/Spark.svg)](https://github.com/sparkphp/Spark/blob/master/LICENSE)
 [![Latest Stable Version](https://img.shields.io/packagist/v/sparkphp/Spark.svg)](https://packagist.org/packages/sparkphp/Spark)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/sparkphp/Spark.svg)](https://scrutinizer-ci.com/g/sparkphp/Spark/?branch=master)
 
 A tiny and powerful PHP micro-framework. Attempts to be [PSR-1](http://www.php-fig.org/psr/psr-1/),
 [PSR-2](http://www.php-fig.org/psr/psr-2/), [PSR-4](http://www.php-fig.org/psr/psr-4/) and
