@@ -31,7 +31,7 @@ class Router
     /**
      * Set the default input handler spec.
      *
-     * @param  strign $spec
+     * @param  string $spec
      * @return $this
      */
     public function setDefaultInput($spec)
@@ -43,7 +43,7 @@ class Router
     /**
      * Set the default responder handler spec.
      *
-     * @param  strign $spec
+     * @param  string $spec
      * @return $this
      */
     public function setDefaultResponder($spec)
@@ -136,5 +136,4 @@ class Router
     {
         return $this->routes;
     }
-
 }
