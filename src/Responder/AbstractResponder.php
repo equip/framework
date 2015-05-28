@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\ResponderInterface;
 
-class Responder implements ResponderInterface
+abstract class AbstractResponder implements ResponderInterface
 {
     /**
      * @var $request ServerRequestInterface
@@ -23,10 +23,7 @@ class Responder implements ResponderInterface
      */
     protected $payload;
 
-    public static function accepts()
-    {
-        return ['application/json'];
-    }
+    abstract protected function responseBody($data);
 
     public function __invoke(
         ServerRequestInterface $request,
@@ -51,36 +48,28 @@ class Responder implements ResponderInterface
         return method_exists($this, $method) ? $method : 'unknown';
     }
 
-    protected function jsonBody($data)
-    {
-        if (isset($data)) {
-            $this->response = $this->response->withHeader('Content-Type', 'application/json');
-            $this->response->getBody()->write(json_encode($data));
-        }
-    }
-
     protected function accepted()
     {
         $this->response = $this->response->withStatus(202);
-        $this->jsonBody($this->payload->getOutput());
+        $this->responseBody($this->payload->getOutput());
     }
 
     protected function created()
     {
         $this->response = $this->response->withStatus(201);
-        $this->jsonBody($this->payload->getOutput());
+        $this->responseBody($this->payload->getOutput());
     }
 
     protected function deleted()
     {
         $this->response = $this->response->withStatus(204);
-        $this->jsonBody($this->payload->getOutput());
+        $this->responseBody($this->payload->getOutput());
     }
 
     protected function error()
     {
         $this->response = $this->response->withStatus(500);
-        $this->jsonBody([
+        $this->responseBody([
             'input' => $this->payload->getInput(),
             'error' => $this->payload->getOutput(),
         ]);
@@ -89,13 +78,13 @@ class Responder implements ResponderInterface
     protected function failure()
     {
         $this->response = $this->response->withStatus(400);
-        $this->jsonBody($this->payload->getInput());
+        $this->responseBody($this->payload->getInput());
     }
 
     protected function found()
     {
         $this->response = $this->response->withStatus(200);
-        $this->jsonBody($this->payload->getOutput());
+        $this->responseBody($this->payload->getOutput());
     }
 
     protected function noContent()
@@ -106,25 +95,25 @@ class Responder implements ResponderInterface
     protected function notAuthenticated()
     {
         $this->response = $this->response->withStatus(400);
-        $this->jsonBody($this->payload->getInput());
+        $this->responseBody($this->payload->getInput());
     }
 
     protected function notAuthorized()
     {
         $this->response = $this->response->withStatus(403);
-        $this->jsonBody($this->payload->getInput());
+        $this->responseBody($this->payload->getInput());
     }
 
     protected function notFound()
     {
         $this->response = $this->response->withStatus(404);
-        $this->jsonBody($this->payload->getInput());
+        $this->responseBody($this->payload->getInput());
     }
 
     protected function notValid()
     {
         $this->response = $this->response->withStatus(422);
-        $this->jsonBody([
+        $this->responseBody([
             'input' => $this->payload->getInput(),
             'output' => $this->payload->getOutput(),
             'messages' => $this->payload->getMessages(),
@@ -134,19 +123,19 @@ class Responder implements ResponderInterface
     protected function processing()
     {
         $this->response = $this->response->withStatus(203);
-        $this->jsonBody($this->payload->getOutput());
+        $this->responseBody($this->payload->getOutput());
     }
 
     protected function success()
     {
         $this->response = $this->response->withStatus(200);
-        $this->jsonBody($this->payload->getOutput());
+        $this->responseBody($this->payload->getOutput());
     }
 
     protected function unknown()
     {
         $this->response = $this->response->withStatus(500);
-        $this->jsonBody([
+        $this->responseBody([
             'error' => 'Unknown domain payload status',
             'status' => $this->payload->getStatus(),
         ]);
@@ -155,6 +144,6 @@ class Responder implements ResponderInterface
     protected function updated()
     {
         $this->response = $this->response->withStatus(303);
-        $this->jsonBody($this->payload->getOutput());
+        $this->responseBody($this->payload->getOutput());
     }
 }

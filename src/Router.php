@@ -37,7 +37,7 @@ class Router
     /**
      * @var string
      */
-    private $responder = 'Spark\Responder\Responder';
+    private $responder = 'Spark\Responder\JsonResponder';
 
     /**
      * @param Injector $injector
