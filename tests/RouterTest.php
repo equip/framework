@@ -87,16 +87,23 @@ class RouterTest extends TestCase
         $methods = $this->routeMethodProvider();
         $router = Application::boot()->getRouter();
 
-        foreach ($methods as $data) {
-            $router->{$data[0]}('/test', '\SparkTests\Fake\FakeDomain');
+        $path = '/test';
+        $routes = [];
+
+        foreach ($methods as $method) {
+            list($type) = $method;
+            $class = $this->getMockBuilder('\SparkTests\Fake\FakeDomain')
+                ->setMockClassName("FakeDomain{$type}")
+                ->getMock();
+
+            $routes[$type] = $router->{$type}($path, get_class($class));
         }
 
-        foreach ($methods as $data) {
-            $request = (new ServerRequest)
-                ->withUri(new Uri('/test'))
-                ->withMethod($data[1]);
+        foreach ($methods as $method) {
+            list($type, $http) = $method;
+            list($resolved) = $router->dispatch($http, $path);
 
-            $this->assertEquals($data[1], $request->getMethod());
+            $this->assertInstanceOf($routes[$type]->getDomain(), $resolved->getDomain());
         }
     }
 }
