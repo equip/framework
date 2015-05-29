@@ -7,9 +7,13 @@ use Spark\Application;
 use Spark\Router;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\Uri;
 
 class ApplicationTest extends TestCase
 {
+    /**
+     * @var $app Application
+     */
     protected $app;
 
     public function setUp()
@@ -51,7 +55,11 @@ class ApplicationTest extends TestCase
 
     public function testLogger()
     {
-        $this->assertInstanceOf('\Monolog\Logger', $this->app->getLogger());
+        $testLogger = $this->app->getLogger('test');
+        $this->assertInstanceOf('\Monolog\Logger', $testLogger);
+
+        $this->assertEquals($testLogger, $this->app->getLogger('test'));
+        $this->assertNotEquals($testLogger, $this->app->getLogger('default'));
     }
 
     public function testConfig()
@@ -63,15 +71,33 @@ class ApplicationTest extends TestCase
         $this->assertNotTrue($this->app->getConfig("not_here"));
     }
 
-    public function testHandle()
+    public function testHandleArguments()
     {
 
+        $request = ServerRequestFactory::fromGlobals()
+            ->withUri(new Uri('/testing-is-fun'));
+        $response = new Response();
+
+        $this->app->addRoutes(function(Router $router) {
+            $router->get('/{arg}', '\SparkTests\Fake\FakeDomain');
+        });
+
+        $handledResponse = $this->app->handle($request, $response);
+        $this->assertInstanceOf('\Zend\Diactoros\Response', $handledResponse);
+
+        $body = json_decode($handledResponse->getBody());
+        $this->assertEquals('testing-is-fun', $body->input->arg);
+    }
+
+    /**
+     * @expectedException \Spark\Exception\HttpNotFound
+     */
+    public function testHandleException()
+    {
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
 
-        $handledResponse = $this->app->handle($request, $response);
-
-        $this->assertInstanceOf('\Zend\Diactoros\Response', $handledResponse);
+        $this->app->handle($request, $response, false);
     }
 
     /**
@@ -85,7 +111,7 @@ class ApplicationTest extends TestCase
 
         $this->app->run();
 
-        $this->expectOutputString('{"success":true}');
+        $this->expectOutputString('{"success":true,"input":[]}');
     }
 
 

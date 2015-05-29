@@ -11,7 +11,7 @@ class FakeDomain implements DomainInterface
     {
         return (new Payload())
             ->setStatus(Payload::FOUND)
-            ->setOutput(['success' => true]);
+            ->setOutput(['success' => true, 'input' => $input]);
     }
 
 }
