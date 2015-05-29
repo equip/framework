@@ -10,22 +10,24 @@ use Zend\Diactoros\ServerRequestFactory;
 
 class ApplicationTest extends TestCase
 {
+    protected $app;
+
+    public function setUp()
+    {
+        $this->app = Application::boot();
+    }
 
     public function testBoot()
     {
-        $app = Application::boot();
-
-        $this->assertTrue($app instanceof Application);
-        $this->assertTrue($app->getInjector() instanceof Injector);
-        $this->assertTrue($app->getRouter() instanceof Router);
+        $this->assertTrue($this->app instanceof Application);
+        $this->assertTrue($this->app->getInjector() instanceof Injector);
+        $this->assertTrue($this->app->getRouter() instanceof Router);
 
     }
 
     public function testExceptionHandler()
     {
-        $app = Application::boot();
-
-        $errorHandler = $app->getExceptionHandler();
+        $errorHandler = $this->app->getExceptionHandler();
         $handler = new $errorHandler;
         $this->assertInstanceOf('\Spark\Handler\ExceptionHandler', $handler);
 
@@ -37,46 +39,37 @@ class ApplicationTest extends TestCase
 
     public function testGetSetHandlers()
     {
-        $app = Application::boot();
-
         $exceptionHandler = '\SparkTests\Fake\FakeExceptionHandler';
-        $app->setExceptionHandler($exceptionHandler);
-        $this->assertEquals($exceptionHandler, $app->getExceptionHandler());
+        $this->app->setExceptionHandler($exceptionHandler);
+        $this->assertEquals($exceptionHandler, $this->app->getExceptionHandler());
 
         $actionHandler = '\SparkTests\Fake\FakeActionHandler';
-        $app->setActionHandler($actionHandler);
-        $this->assertEquals($actionHandler, $app->getActionHandler());
+        $this->app->setActionHandler($actionHandler);
+        $this->assertEquals($actionHandler, $this->app->getActionHandler());
 
     }
 
     public function testLogger()
     {
-        $app = Application::boot();
-
-        $this->assertInstanceOf('\Monolog\Logger', $app->getLogger());
-
+        $this->assertInstanceOf('\Monolog\Logger', $this->app->getLogger());
     }
 
     public function testConfig()
     {
-        $app = Application::boot();
+        $this->app->setConfig("test", true);
 
-        $app->setConfig("test", true);
-
-        $this->assertTrue($app->getConfig("test"));
-        $this->assertEquals("default", $app->getConfig("undefined", "default"));
-        $this->assertNotTrue($app->getConfig("not_here"));
+        $this->assertTrue($this->app->getConfig("test"));
+        $this->assertEquals("default", $this->app->getConfig("undefined", "default"));
+        $this->assertNotTrue($this->app->getConfig("not_here"));
     }
 
     public function testHandle()
     {
 
-        $app = Application::boot();
-
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
 
-        $handledResponse = $app->handle($request, $response);
+        $handledResponse = $this->app->handle($request, $response);
 
         $this->assertInstanceOf('\Zend\Diactoros\Response', $handledResponse);
     }
@@ -86,13 +79,11 @@ class ApplicationTest extends TestCase
      */
     public function testRun()
     {
-        $app = Application::boot();
-
-        $app->addRoutes(function(Router $router) {
+        $this->app->addRoutes(function(Router $router) {
             $router->get('/', '\SparkTests\Fake\FakeDomain');
         });
 
-        $app->run();
+        $this->app->run();
 
         $this->expectOutputString('{"success":true}');
     }
