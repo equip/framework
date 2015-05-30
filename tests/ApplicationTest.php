@@ -101,6 +101,19 @@ class ApplicationTest extends TestCase
     }
 
     /**
+     * @expectedException \LogicException
+     */
+    public function testExceptionLogicException()
+    {
+        $request = ServerRequestFactory::fromGlobals();
+        $response = new Response();
+
+        $this->app->setExceptionHandler('\SparkTests\Fake\FakeExceptionHandler');
+
+        $this->app->handle($request, $response);
+    }
+
+    /**
      * @runInSeparateProcess
      */
     public function testRun()
