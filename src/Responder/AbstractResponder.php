@@ -54,6 +54,18 @@ abstract class AbstractResponder implements ResponderInterface
         $this->responseBody($this->payload->getOutput());
     }
 
+    protected function authenticated()
+    {
+        $this->response = $this->response->withStatus(200);
+        $this->responseBody($this->payload->getOutput());
+    }
+
+    protected function authorized()
+    {
+        $this->response = $this->response->withStatus(200);
+        $this->responseBody($this->payload->getOutput());
+    }
+
     protected function created()
     {
         $this->response = $this->response->withStatus(201);
@@ -92,6 +104,12 @@ abstract class AbstractResponder implements ResponderInterface
         $this->response = $this->response->withStatus(204);
     }
 
+    protected function notAccepted()
+    {
+        $this->response = $this->response->withStatus(406);
+        $this->responseBody($this->payload->getInput());
+    }
+
     protected function notAuthenticated()
     {
         $this->response = $this->response->withStatus(400);
@@ -104,9 +122,27 @@ abstract class AbstractResponder implements ResponderInterface
         $this->responseBody($this->payload->getInput());
     }
 
+    protected function notCreated()
+    {
+        $this->response = $this->response->withStatus(400);
+        $this->responseBody($this->payload->getInput());
+    }
+
+    protected function notDeleted()
+    {
+        $this->response = $this->response->withStatus(400);
+        $this->responseBody($this->payload->getInput());
+    }
+
     protected function notFound()
     {
         $this->response = $this->response->withStatus(404);
+        $this->responseBody($this->payload->getInput());
+    }
+
+    protected function notUpdated()
+    {
+        $this->response = $this->response->withStatus(400);
         $this->responseBody($this->payload->getInput());
     }
 
@@ -122,11 +158,23 @@ abstract class AbstractResponder implements ResponderInterface
 
     protected function processing()
     {
-        $this->response = $this->response->withStatus(203);
+        $this->response = $this->response->withStatus(202);
         $this->responseBody($this->payload->getOutput());
     }
 
     protected function success()
+    {
+        $this->response = $this->response->withStatus(200);
+        $this->responseBody($this->payload->getOutput());
+    }
+
+    protected function updated()
+    {
+        $this->response = $this->response->withStatus(303);
+        $this->responseBody($this->payload->getOutput());
+    }
+
+    protected function valid()
     {
         $this->response = $this->response->withStatus(200);
         $this->responseBody($this->payload->getOutput());
@@ -139,11 +187,5 @@ abstract class AbstractResponder implements ResponderInterface
             'error' => 'Unknown domain payload status',
             'status' => $this->payload->getStatus(),
         ]);
-    }
-
-    protected function updated()
-    {
-        $this->response = $this->response->withStatus(303);
-        $this->responseBody($this->payload->getOutput());
     }
 }
