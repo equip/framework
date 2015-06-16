@@ -2,13 +2,8 @@
 
 namespace Spark;
 
-use Auryn\Injector;
 use FastRoute\Dispatcher;
-use FastRoute\RouteCollector;
-use Spark\Exception\HttpMethodNotAllowed;
-use Spark\Exception\HttpNotFound;
 use Spark\Router\Route;
-use Spark\Router\ResolvedRoute;
 
 class Router
 {
@@ -18,11 +13,6 @@ class Router
     const PATCH   = 'PATCH';
     const HEAD    = 'HEAD';
     const OPTIONS = 'OPTIONS';
-
-    /**
-     * @var Injector
-     */
-    private $injector;
 
     /**
      * @var array
@@ -38,15 +28,6 @@ class Router
      * @var string
      */
     private $responder = 'Spark\Responder\JsonResponder';
-
-    /**
-     * @param Injector $injector
-     */
-    public function __construct(
-        Injector $injector
-    ) {
-        $this->injector = $injector;
-    }
 
     /**
      * Set the default input handler spec.
@@ -149,57 +130,12 @@ class Router
     }
 
     /**
-     * @param  string $method
-     * @param  string $path
-     * @return array [$route, $arguments]
-     * @throws HttpNotFound
-     * @throws HttpMethodNotAllowed
+     * Get routes for the RouteHandler
+     * @return array
      */
-    public function dispatch($method, $path)
+    public function getRoutes()
     {
-        $routeInfo = $this->getDispatcher()->dispatch($method, $path);
-
-        switch ($routeInfo[0]) {
-            case Dispatcher::NOT_FOUND:
-                throw new HttpNotFound;
-                break;
-            case Dispatcher::METHOD_NOT_ALLOWED:
-                throw (new HttpMethodNotAllowed)
-                    ->setAllowedMethods($routeInfo[1]);
-                break;
-            case Dispatcher::FOUND:
-                list($_, $route, $arguments) = $routeInfo;
-                break;
-        }
-
-        $route = $this->getResolvedRoute($route);
-
-        return [$route, $arguments];
+        return $this->routes;
     }
 
-    /**
-     * @return Dispatcher
-     */
-    protected function getDispatcher()
-    {
-        return \FastRoute\simpleDispatcher(function (RouteCollector $collector) {
-            foreach ($this->routes as $name => $route) {
-                list($method, $path) = explode(' ', $name, 2);
-                $collector->addRoute($method, $path, $route);
-            }
-        });
-    }
-
-    /**
-     * @param  Route $route
-     * @return Spark\Adr\RouteInterface
-     */
-    protected function getResolvedRoute(Route $route)
-    {
-        return new ResolvedRoute(
-            $this->injector->make($route->getDomain()),
-            $this->injector->make($route->getInput()),
-            $this->injector->make($route->getResponder())
-        );
-    }
 }

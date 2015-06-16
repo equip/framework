@@ -6,8 +6,13 @@ use Auryn\Injector;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Relay\Middleware\ExceptionHandler;
+use Relay\Middleware\ResponseSender;
+use Relay\Relay;
 use Spark\Adr\RouteInterface;
 use Spark\Adr\ActionInterface;
+use Spark\Handler\ActionHandler;
+use Spark\Handler\RouteHandler;
 
 class Application
 {
@@ -73,6 +78,11 @@ class Application
     protected $loggers = [];
 
     /**
+     * @var array
+     */
+    protected $middleware = [];
+
+    /**
      * @param Injector $injector
      * @param Router   $router
      */
@@ -82,6 +92,13 @@ class Application
     ) {
         $this->injector = $injector;
         $this->router   = $router;
+
+        // Add top level middleware
+
+        $this->middleware = [
+            new ResponseSender(),
+            $this->injector->make('Spark\Handler\ExceptionHandler'),
+        ];
     }
 
     /**
@@ -197,25 +214,7 @@ class Application
             $response = $this->getInjector()->make('Psr\Http\Message\ResponseInterface');
         }
 
-        $response = $this->handle($request, $response);
-
-        // status
-        header(sprintf(
-            'HTTP/%s %s %s',
-            $response->getProtocolVersion(),
-            $response->getStatusCode(),
-            $response->getReasonPhrase()
-        ), true, $response->getStatusCode());
-
-        // headers
-        foreach ($response->getHeaders() as $name => $values) {
-            foreach ($values as $value) {
-                header("$name: $value", false);
-            }
-        }
-
-        // content
-        echo (string) $response->getBody();
+        $this->handle($request, $response);
 
         ob_end_flush();
     }
@@ -234,20 +233,15 @@ class Application
     {
         try {
 
-            /**
-             * @var \Spark\Adr\RouteInterface $route
-             */
-            list($route, $args) = $this->getRouter()->dispatch(
-                $request->getMethod(),
-                $request->getUri()->getPath()
-            );
 
-            foreach ($args as $key => $value) {
-                $request = $request->withAttribute($key, $value);
-            }
+            $this->middleware[] = new RouteHandler($this->getRouter()->getRoutes());
+
+            $this->middleware[] = $this->getInjector()->make('Spark\Handler\ActionHandler');
+
+            $dispatcher = new Relay($this->middleware);
 
             $handler  = $this->getInjector()->make($this->getActionHandler());
-            $response = $handler($request, $response, $route);
+            $response = $dispatcher($request, $response); //$handler($request, $response, $route);
 
         } catch (\Exception $e) {
 
@@ -288,5 +282,34 @@ class Application
     public function getConfig($key, $default = null)
     {
         return isset($this->config[$key]) ? $this->config[$key] : $default;
+    }
+    /**
+     * Add application wide middleware
+     *
+     * @param array $middleware
+     */
+    public function addMiddleware($middleware)
+    {
+        $this->middleware[] = $middleware;
+    }
+
+    /**
+     * Set application wide middleware
+     *
+     * @param array $middleware
+     */
+    public function setMiddleware(array $middleware)
+    {
+        $this->middleware = $middleware;
+    }
+
+    /**
+     * Get the applications middleware
+     *
+     * @return array
+     */
+    public function getMiddleware()
+    {
+        return $this->middleware;
     }
 }

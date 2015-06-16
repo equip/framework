@@ -3,34 +3,43 @@
 namespace Spark\Handler;
 
 use Exception;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class ExceptionHandler
 {
-    public function __invoke(ResponseInterface $response, Exception $e)
-    {
-        $response = $response
-            ->withStatus(
-                method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500
-            )
-            ->withHeader('Content-Type', 'application/json');
-
-        if (method_exists($e, 'withResponse')) {
-            $response = $e->withResponse($response);
+    public function __invoke(
+        RequestInterface  $request,
+        ResponseInterface $response,
+        callable          $next
+    ) {
+        try {
+            $next($request, $response);
         }
+        catch (Exception $e) {
+            $response = $response
+                ->withStatus(
+                    method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500
+                )
+                ->withHeader('Content-Type', 'application/json');
 
-        $body = $this->getRelativeFiles([
-            'error' => $e->getMessage() ?: $response->getReasonPhrase(),
-            'code'  => $e->getCode(),
-            'type'  => get_class($e),
-            'file'  => $e->getFile(),
-            'line'  => $e->getLine(),
-            'trace' => $e->getTrace(),
-        ]);
+            if (method_exists($e, 'withResponse')) {
+                $response = $e->withResponse($response);
+            }
 
-        $response->getBody()->write(json_encode($body));
+            $body = $this->getRelativeFiles([
+                'error' => $e->getMessage() ?: $response->getReasonPhrase(),
+                'code' => $e->getCode(),
+                'type' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace(),
+            ]);
 
-        return $response;
+            $response->getBody()->write(json_encode($body));
+
+            return $response;
+        }
     }
 
     private function getRelativeFiles(array $stack)
