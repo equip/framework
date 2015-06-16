@@ -6,12 +6,9 @@ use Auryn\Injector;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Relay\Middleware\ExceptionHandler;
 use Relay\Middleware\ResponseSender;
 use Relay\Relay;
-use Spark\Adr\RouteInterface;
-use Spark\Adr\ActionInterface;
-use Spark\Handler\ActionHandler;
+use Spark\Handler\ExceptionHandler;
 use Spark\Handler\RouteHandler;
 
 class Application
@@ -85,10 +82,14 @@ class Application
     /**
      * @param Injector $injector
      * @param Router   $router
+     * @param ResponseSender $responseSender
+     * @param ExceptionHandler $exceptionHandler
      */
     public function __construct(
         Injector $injector,
-        Router   $router
+        Router   $router,
+        ResponseSender $responseSender,
+        ExceptionHandler $exceptionHandler
     ) {
         $this->injector = $injector;
         $this->router   = $router;
@@ -96,8 +97,8 @@ class Application
         // Add top level middleware
 
         $this->middleware = [
-            new ResponseSender(),
-            $this->injector->make('Spark\Handler\ExceptionHandler'),
+            $responseSender,
+            $exceptionHandler,
         ];
     }
 
@@ -231,33 +232,15 @@ class Application
      */
     public function handle(ServerRequestInterface $request, ResponseInterface $response, $catch = true)
     {
-        try {
 
+        $this->middleware[] = new RouteHandler($this->getRouter());
 
-            $this->middleware[] = new RouteHandler($this->getRouter()->getRoutes());
+        $this->middleware[] = $this->getInjector()->make('Spark\Handler\ActionHandler');
 
-            $this->middleware[] = $this->getInjector()->make('Spark\Handler\ActionHandler');
+        $dispatcher = new Relay($this->middleware);
 
-            $dispatcher = new Relay($this->middleware);
+        return $dispatcher($request, $response);
 
-            $handler  = $this->getInjector()->make($this->getActionHandler());
-            $response = $dispatcher($request, $response); //$handler($request, $response, $route);
-
-        } catch (\Exception $e) {
-
-            if (!$catch) {
-                throw $e;
-            }
-
-            $response = $this->getInjector()->execute($this->getExceptionHandler(), [':e' => $e]);
-
-            if (!$response instanceof ResponseInterface) {
-                throw new \LogicException('Exception handler did not return an instance of Psr\Http\Message\ResponseInterface');
-            }
-
-        }
-
-        return $response;
     }
 
     /**
