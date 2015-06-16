@@ -37,6 +37,12 @@ class Application
             'Zend\Diactoros\ServerRequestFactory::fromGlobals'
         );
 
+        // By default, we use Relay (relayphp.com)
+        $injector->alias(
+            'Relay',
+            'Relay\Relay'
+        );
+
         $loader = $injector->make('josegonzalez\Dotenv\Loader', [':filepaths' => APP_PATH . '.env']);
         $loader->parse();
         $loader->toEnv(true);
@@ -53,16 +59,6 @@ class Application
      * @var Router
      */
     protected $router;
-
-    /**
-     * @var string
-     */
-    protected $exceptionHandler = 'Spark\Handler\ExceptionHandler';
-
-    /**
-     * @var string
-     */
-    protected $actionHandler = 'Spark\Adr\ActionHandler';
 
     /**
      * @var array
@@ -82,24 +78,15 @@ class Application
     /**
      * @param Injector $injector
      * @param Router   $router
-     * @param ResponseSender $responseSender
-     * @param ExceptionHandler $exceptionHandler
      */
     public function __construct(
         Injector $injector,
-        Router   $router,
-        ResponseSender $responseSender,
-        ExceptionHandler $exceptionHandler
+        Router   $router
     ) {
         $this->injector = $injector;
         $this->router   = $router;
 
-        // Add top level middleware
-
-        $this->middleware = [
-            $responseSender,
-            $exceptionHandler,
-        ];
+        $this->injector->share($router);
     }
 
     /**
@@ -110,6 +97,20 @@ class Application
     public function getInjector()
     {
         return $this->injector;
+    }
+
+    /**
+     * Gets the resolver for dependency injection
+     * @return callable
+     */
+    public function getResolver()
+    {
+        return function($name) {
+            if (is_callable($name)) {
+                return $name;
+            }
+            return $this->injector->make($name);
+        };
     }
 
     /**
@@ -152,50 +153,6 @@ class Application
     }
 
     /**
-     * Set the exception handler spec.
-     *
-     * @param  string $spec
-     * @return $this
-     */
-    public function setExceptionHandler($spec)
-    {
-        $this->exceptionHandler = $spec;
-        return $this;
-    }
-
-    /**
-     * Get the callable name used to handle exceptions.
-     *
-     * @return string
-     */
-    public function getExceptionHandler()
-    {
-        return $this->exceptionHandler;
-    }
-
-    /**
-     * Set the action handler spec.
-     *
-     * @param  string $spec
-     * @return $this
-     */
-    public function setActionHandler($spec)
-    {
-        $this->actionHandler = $spec;
-        return $this;
-    }
-
-    /**
-     * Get the callable name used to handle actions.
-     *
-     * @return string
-     */
-    public function getActionHandler()
-    {
-        return $this->actionHandler;
-    }
-
-    /**
      * Run the application.
      *
      * @param  ServerRequestInterface $request
@@ -233,11 +190,7 @@ class Application
     public function handle(ServerRequestInterface $request, ResponseInterface $response, $catch = true)
     {
 
-        $this->middleware[] = new RouteHandler($this->getRouter());
-
-        $this->middleware[] = $this->getInjector()->make('Spark\Handler\ActionHandler');
-
-        $dispatcher = new Relay($this->middleware);
+        $dispatcher = $this->injector->make('Relay', [$this->getMiddleware(), $this->getResolver()]);
 
         return $dispatcher($request, $response);
 
@@ -277,7 +230,7 @@ class Application
     }
 
     /**
-     * Set application wide middleware
+     * Sets middleware stack for the application.
      *
      * @param array $middleware
      */
@@ -286,8 +239,9 @@ class Application
         $this->middleware = $middleware;
     }
 
+
     /**
-     * Get the applications middleware
+     * Get the application middleware
      *
      * @return array
      */

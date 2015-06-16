@@ -7,12 +7,15 @@ use Auryn\Injector;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\DomainInterface;
+use Spark\Adr\InputInterface;
 use Spark\Adr\ResponderInterface;
-use Symfony\Component\Console\Input\InputInterface;
+use Spark\Adr\RouteInterface;
 
 class ActionHandler
 {
     protected $injector;
+
+    protected $routeAttribute = 'spark/adr:route';
 
     public function __construct(Injector $injector)
     {
@@ -27,7 +30,11 @@ class ActionHandler
         /**
          * @var RouteInterface
          */
-        $route     = $request->getAttribute('spark/adr:route');
+        $route     = $request->getAttribute($this->routeAttribute);
+
+        if (!($route instanceof RouteInterface)) {
+            throw new \Exception(sprintf('"%s" request attribute does not implement RouteInterface', $this->routeAttribute));
+        }
 
         // Resolve using the injector
         $domain    = $this->injector->make($route->getDomain());

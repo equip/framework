@@ -14,9 +14,8 @@ class ExceptionHandler
         callable          $next
     ) {
         try {
-            $next($request, $response);
-        }
-        catch (Exception $e) {
+            return $next($request, $response);
+        } catch (Exception $e) {
             $response = $response
                 ->withStatus(
                     method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500
