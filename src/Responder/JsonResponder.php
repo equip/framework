@@ -1,11 +1,6 @@
 <?php
 namespace Spark\Responder;
 
-use Aura\Payload_Interface\PayloadInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Spark\Adr\ResponderInterface;
-
 class JsonResponder extends AbstractResponder
 {
     
