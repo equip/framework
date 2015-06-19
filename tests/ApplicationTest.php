@@ -5,6 +5,7 @@ use Auryn\Injector;
 use PHPUnit_Framework_TestCase as TestCase;
 use Spark\Application;
 use Spark\Router;
+use SparkTests\Fake\FakeDomain;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Uri;
@@ -19,6 +20,12 @@ class ApplicationTest extends TestCase
     public function setUp()
     {
         $this->app = Application::boot();
+
+        $this->app->setMiddleware([
+            'Relay\Middleware\ResponseSender',
+            'Spark\Handler\RouteHandler',
+            'Spark\Handler\ActionHandler',
+        ]);
     }
 
     public function testBoot()
@@ -26,30 +33,6 @@ class ApplicationTest extends TestCase
         $this->assertTrue($this->app instanceof Application);
         $this->assertTrue($this->app->getInjector() instanceof Injector);
         $this->assertTrue($this->app->getRouter() instanceof Router);
-
-    }
-
-    public function testExceptionHandler()
-    {
-        $errorHandler = $this->app->getExceptionHandler();
-        $handler = new $errorHandler;
-        $this->assertInstanceOf('\Spark\Handler\ExceptionHandler', $handler);
-
-        $response = new Response();
-        $response = $handler($response, new \Exception);
-        $this->assertInstanceOf('\Psr\Http\Message\ResponseInterface', $response);
-
-    }
-
-    public function testGetSetHandlers()
-    {
-        $exceptionHandler = '\SparkTests\Fake\FakeExceptionHandler';
-        $this->app->setExceptionHandler($exceptionHandler);
-        $this->assertEquals($exceptionHandler, $this->app->getExceptionHandler());
-
-        $actionHandler = '\SparkTests\Fake\FakeActionHandler';
-        $this->app->setActionHandler($actionHandler);
-        $this->assertEquals($actionHandler, $this->app->getActionHandler());
 
     }
 
@@ -73,6 +56,11 @@ class ApplicationTest extends TestCase
 
     public function testHandleArguments()
     {
+
+        $this->app->setMiddleware([
+            'Spark\Handler\RouteHandler',
+            'Spark\Handler\ActionHandler',
+        ]);
 
         $request = ServerRequestFactory::fromGlobals()
             ->withUri(new Uri('/testing-is-fun'));
@@ -101,19 +89,6 @@ class ApplicationTest extends TestCase
     }
 
     /**
-     * @expectedException \LogicException
-     */
-    public function testExceptionLogicException()
-    {
-        $request = ServerRequestFactory::fromGlobals();
-        $response = new Response();
-
-        $this->app->setExceptionHandler('\SparkTests\Fake\FakeExceptionHandler');
-
-        $this->app->handle($request, $response);
-    }
-
-    /**
      * @runInSeparateProcess
      */
     public function testRun()
@@ -125,6 +100,28 @@ class ApplicationTest extends TestCase
         $this->app->run();
 
         $this->expectOutputString('{"success":true,"input":[]}');
+    }
+
+    public function testAddMiddleware()
+    {
+        $this->assertCount(3, $this->app->getMiddleware());
+
+        $this->app->addMiddleware('Spark\Handler\ExceptionHandler');
+
+        $this->assertCount(4, $this->app->getMiddleware());
+        $this->assertEquals('Spark\Handler\ExceptionHandler', $this->app->getMiddleware()[3]);
+    }
+
+    public function testGetResolver()
+    {
+        $resolver = $this->app->getResolver();
+
+        $name = 'SparkTests\Fake\FakeDomain';
+        $fakeDomain = $resolver($name);
+        $this->assertInstanceOf($name, $fakeDomain);
+
+        $resolvedFakeDomain = $resolver($fakeDomain);
+        $this->assertEquals($fakeDomain, $resolvedFakeDomain);
     }
 
 

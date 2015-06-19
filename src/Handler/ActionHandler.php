@@ -44,7 +44,7 @@ class ActionHandler
         $payload  = $this->getPayload($domain, $input, $request);
         $response = $this->getResponse($responder, $request, $response, $payload);
 
-        return $response;
+        return $next($request, $response);
     }
 
     /**

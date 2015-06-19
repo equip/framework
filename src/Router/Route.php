@@ -2,7 +2,9 @@
 
 namespace Spark\Router;
 
-class Route
+use Spark\Adr\RouteInterface;
+
+class Route implements RouteInterface
 {
     /**
      * @var string

@@ -61,8 +61,6 @@ class RouteHandler
                 break;
         }
 
-        //$route = $this->getResolvedRoute($route);
-
         return [$route, $arguments];
     }
 

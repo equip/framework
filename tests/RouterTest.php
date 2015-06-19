@@ -15,16 +15,16 @@ class RouterTest extends TestCase
     {
         $app = Application::boot();
         $router = $app->getRouter();
-        $router->get('/', '\SparkTests\Fake\FakeDomain');
+        $router->get('/', 'SparkTests\Fake\FakeDomain');
 
         /**
-         * @var $route Router\ResolvedRoute
+         * @var $route Router\Route
          */
-        list ($route, $args) = $router->dispatch(Router::GET, '/');
-        $this->assertInstanceOf('\Spark\Router\ResolvedRoute', $route);
-        $this->assertInstanceOf('\Spark\Responder\JsonResponder', $route->getResponder());
-        $this->assertInstanceOf('\Spark\Adr\InputInterface', $route->getInput());
-        $this->assertInstanceOf('\Spark\Adr\DomainInterface', $route->getDomain());
+        $route = current($router->getRoutes());
+        $this->assertInstanceOf('\Spark\Router\Route', $route);
+        $this->assertEquals('Spark\Responder\JsonResponder', $route->getResponder());
+        $this->assertEquals('Spark\Adr\Input', $route->getInput());
+        $this->assertEquals('SparkTests\Fake\FakeDomain', $route->getDomain());
 
     }
 
@@ -82,28 +82,4 @@ class RouterTest extends TestCase
         $this->assertInstanceOf('Spark\Router\Route', $route);
     }
 
-    public function testDispatching()
-    {
-        $methods = $this->routeMethodProvider();
-        $router = Application::boot()->getRouter();
-
-        $path = '/test';
-        $routes = [];
-
-        foreach ($methods as $method) {
-            list($type) = $method;
-            $class = $this->getMockBuilder('\SparkTests\Fake\FakeDomain')
-                ->setMockClassName("FakeDomain{$type}")
-                ->getMock();
-
-            $routes[$type] = $router->{$type}($path, get_class($class));
-        }
-
-        foreach ($methods as $method) {
-            list($type, $http) = $method;
-            list($resolved) = $router->dispatch($http, $path);
-
-            $this->assertInstanceOf($routes[$type]->getDomain(), $resolved->getDomain());
-        }
-    }
 }
