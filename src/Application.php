@@ -40,7 +40,13 @@ class Application
         // By default, we use Relay (relayphp.com)
         $injector->alias(
             'Relay',
-            'Relay\Relay'
+            'Relay\RelayBuilder'
+        );
+
+        // By default, we use our internal Resolver
+        $injector->alias(
+            'Resolver',
+            'Spark\Resolver'
         );
 
         $loader = $injector->make('josegonzalez\Dotenv\Loader', [':filepaths' => APP_PATH . '.env']);
@@ -105,12 +111,7 @@ class Application
      */
     public function getResolver()
     {
-        return function($name) {
-            if (is_callable($name)) {
-                return $name;
-            }
-            return $this->injector->make($name);
-        };
+        return $this->injector->make('Resolver');
     }
 
     /**
@@ -190,7 +191,9 @@ class Application
     public function handle(ServerRequestInterface $request, ResponseInterface $response, $catch = true)
     {
 
-        $dispatcher = $this->injector->make('Relay', [$this->getMiddleware(), $this->getResolver()]);
+        $builder = $this->injector->make('Relay', [$this->getResolver()]);
+
+        $dispatcher = $builder->newInstance($this->getMiddleware());
 
         return $dispatcher($request, $response);
 

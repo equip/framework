@@ -3,23 +3,26 @@
 namespace Spark\Handler;
 
 use Aura\Payload_Interface\PayloadInterface;
-use Auryn\Injector;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\DomainInterface;
 use Spark\Adr\InputInterface;
 use Spark\Adr\ResponderInterface;
 use Spark\Adr\RouteInterface;
+use Spark\Resolver;
 
 class ActionHandler
 {
-    protected $injector;
+    /**
+     * @var Resolver
+     */
+    protected $resolver;
 
     protected $routeAttribute = 'spark/adr:route';
 
-    public function __construct(Injector $injector)
+    public function __construct(Resolver $resolver)
     {
-        $this->injector = $injector;
+        $this->resolver = $resolver;
     }
 
     public function __invoke(
@@ -37,9 +40,10 @@ class ActionHandler
         }
 
         // Resolve using the injector
-        $domain    = $this->injector->make($route->getDomain());
-        $input     = $this->injector->make($route->getInput());
-        $responder = $this->injector->make($route->getResponder());
+        $resolver = $this->resolver;
+        $domain    = $resolver($route->getDomain());
+        $input     = $resolver($route->getInput());
+        $responder = $resolver($route->getResponder());
 
         $payload  = $this->getPayload($domain, $input, $request);
         $response = $this->getResponse($responder, $request, $response, $payload);
