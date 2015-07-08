@@ -2,23 +2,24 @@
 
 namespace Spark\Handler;
 
+use Arbiter\ActionHandler as Arbiter;
+use Arbiter\Action;
 use Aura\Payload_Interface\PayloadInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\DomainInterface;
 use Spark\Adr\InputInterface;
 use Spark\Adr\ResponderInterface;
-use Spark\Adr\RouteInterface;
 use Spark\Resolver;
 
-class ActionHandler
+class ActionHandler extends Arbiter
 {
     /**
      * @var Resolver
      */
     protected $resolver;
 
-    protected $routeAttribute = 'spark/adr:route';
+    protected $actionAttribute = 'spark/adr:action';
 
     public function __construct(Resolver $resolver)
     {
@@ -31,19 +32,20 @@ class ActionHandler
         callable               $next
     ) {
         /**
-         * @var RouteInterface
+         * @var Action
          */
-        $route     = $request->getAttribute($this->routeAttribute);
+        $action     = $request->getAttribute($this->actionAttribute);
+        $request = $request->withoutAttribute($this->actionAttribute);
 
-        if (!($route instanceof RouteInterface)) {
-            throw new \Exception(sprintf('"%s" request attribute does not implement RouteInterface', $this->routeAttribute));
+        if (!($action instanceof Action)) {
+            throw new \Exception(sprintf('"%s" request attribute does not implement Action', $this->actionAttribute));
         }
 
         // Resolve using the injector
         $resolver = $this->resolver;
-        $domain    = $resolver($route->getDomain());
-        $input     = $resolver($route->getInput());
-        $responder = $resolver($route->getResponder());
+        $domain    = $resolver($action->getDomain());
+        $input     = $resolver($action->getInput());
+        $responder = $resolver($action->getResponder());
 
         $payload  = $this->getPayload($domain, $input, $request);
         $response = $this->getResponse($responder, $request, $response, $payload);

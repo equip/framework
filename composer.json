@@ -12,8 +12,9 @@
         "rdlowrey/auryn": "0.15.*",
         "sparkphp/adr": "dev-master",
         "zendframework/zend-diactoros": "~1.0",
-        "relay/relay": "1.*@dev",
-        "relay/middleware": "1.x-dev"
+        "relay/relay": "~1.0",
+        "relay/middleware": "~1.0",
+        "arbiter/arbiter": "~1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.6",

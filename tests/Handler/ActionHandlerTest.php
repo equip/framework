@@ -1,6 +1,7 @@
 <?php
 namespace SparkTests\Handler;
 
+use Arbiter\Action;
 use Auryn\Injector;
 use PHPUnit_Framework_TestCase as TestCase;
 use Spark\Router\Route;
@@ -39,8 +40,8 @@ class ActionHandlerTest extends TestCase
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
 
-        $route = new Route('SparkTests\Fake\FakeDomain', 'Spark\Adr\Input', 'Spark\Responder\JsonResponder');
-        $request = $request->withAttribute('spark/adr:route', $route)
+        $action = new Action('Spark\Adr\Input', 'SparkTests\Fake\FakeDomain', 'Spark\Responder\JsonResponder');
+        $request = $request->withAttribute('spark/adr:action', $action)
                         ->withAttribute('test', 'success');
 
         $actionHandler = $injector->make('Spark\Handler\ActionHandler');

@@ -1,10 +1,12 @@
 <?php
 namespace Spark\Handler;
 
+use Arbiter\Action;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Spark\Adr\RouteInterface;
 use Spark\Exception\HttpMethodNotAllowed;
 use Spark\Exception\HttpNotFound;
 use Spark\Router;
@@ -16,6 +18,8 @@ class RouteHandler
      */
     protected $router;
 
+    protected $actionAttribute = 'spark/adr:action';
+
     public function __construct(Router $router)
     {
         $this->router = $router;
@@ -23,12 +27,21 @@ class RouteHandler
 
     public function __invoke(Request $request, Response $response, callable $next)
     {
+        /**
+         * @var $route Router\Route
+         */
         list($route, $args) = $this->dispatch(
             $request->getMethod(),
             $request->getUri()->getPath()
         );
 
-        $request = $request->withAttribute('spark/adr:route', $route);
+        $action = new Action(
+            $route->getInput(),
+            $route->getDomain(),
+            $route->getResponder()
+        );
+
+        $request = $request->withAttribute($this->actionAttribute, $action);
 
         foreach ($args as $key => $value) {
             $request = $request->withAttribute($key, $value);
