@@ -1,8 +1,5 @@
 <?php
 error_reporting(E_ALL);
-if (!defined('APP_PATH')) {
-    define('APP_PATH', __DIR__ . DIRECTORY_SEPARATOR);
-}
 $autoloader = __DIR__ . '/vendor/autoload.php';
 if (! file_exists($autoloader)) {
     echo "Composer autoloader not found: $autoloader" . PHP_EOL;
