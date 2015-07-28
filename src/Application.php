@@ -49,10 +49,6 @@ class Application
             'Spark\Resolver'
         );
 
-        $loader = $injector->make('josegonzalez\Dotenv\Loader', [':filepaths' => APP_PATH . '.env']);
-        $loader->parse();
-        $loader->toEnv(true);
-
         return $injector->make(static::class);
     }
 
