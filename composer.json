@@ -6,7 +6,6 @@
     "require": {
         "php": ">=5.5.0",
         "aura/payload": "3.*@dev",
-        "josegonzalez/dotenv": "~0.7",
         "monolog/monolog": "~1.13",
         "nikic/fast-route": "0.4.*",
         "rdlowrey/auryn": "0.15.*",
@@ -19,6 +18,9 @@
     "require-dev": {
         "phpunit/phpunit": "~4.6",
         "satooshi/php-coveralls": "0.6.1"
+    },
+    "suggest": {
+        "josegonzalez/dotenv": "For environment based configuration loading"
     },
     "autoload": {
         "psr-4": {
