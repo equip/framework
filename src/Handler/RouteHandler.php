@@ -6,7 +6,6 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Spark\Adr\RouteInterface;
 use Spark\Exception\HttpMethodNotAllowed;
 use Spark\Exception\HttpNotFound;
 use Spark\Router;

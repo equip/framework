@@ -2,7 +2,6 @@
 
 namespace Spark;
 
-use FastRoute\Dispatcher;
 use Spark\Router\Route;
 
 class Router
