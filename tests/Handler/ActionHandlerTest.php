@@ -4,6 +4,7 @@ namespace SparkTests\Handler;
 use Arbiter\Action;
 use Auryn\Injector;
 use PHPUnit_Framework_TestCase as TestCase;
+use Spark\Resolver\AurynResolver;
 use Spark\Router\Route;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
@@ -44,6 +45,7 @@ class ActionHandlerTest extends TestCase
         $request = $request->withAttribute('spark/adr:action', $action)
                         ->withAttribute('test', 'success');
 
+        $injector->alias('Spark\Resolver\ResolverInterface', 'Spark\Resolver\AurynResolver');
         $actionHandler = $injector->make('Spark\Handler\ActionHandler');
 
         $response = $actionHandler($request, $response, function($req, $resp) {

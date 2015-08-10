@@ -1,9 +1,9 @@
 <?php
-namespace Spark;
+namespace Spark\Resolver;
 
 use Auryn\Injector;
 
-class Resolver
+class AurynResolver implements ResolverInterface
 {
     protected $injector;
 
