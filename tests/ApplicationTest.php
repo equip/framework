@@ -119,9 +119,6 @@ class ApplicationTest extends TestCase
         $name = 'SparkTests\Fake\FakeDomain';
         $fakeDomain = $resolver($name);
         $this->assertInstanceOf($name, $fakeDomain);
-
-        $resolvedFakeDomain = $resolver($fakeDomain);
-        $this->assertEquals($fakeDomain, $resolvedFakeDomain);
     }
 
 
