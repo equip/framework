@@ -6,10 +6,7 @@ use Auryn\Injector;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Relay\Middleware\ResponseSender;
 use Relay\Relay;
-use Spark\Handler\ExceptionHandler;
-use Spark\Handler\RouteHandler;
 
 class Application
 {
