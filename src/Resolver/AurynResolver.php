@@ -12,11 +12,15 @@ class AurynResolver implements ResolverInterface
         $this->injector = $injector;
     }
 
+    /**
+     * Returns an instance of a specified class implementing __invoke() using
+     * the underlying Auryn injector.
+     *
+     * @param string $fqcn Fully-qualified class name
+     * @return callable Instance of the referenced class
+     */
     public function __invoke($spec)
     {
-        if (is_callable($spec)) {
-            return $spec;
-        }
         return $this->injector->make($spec);
     }
 }
