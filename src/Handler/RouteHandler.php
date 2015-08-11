@@ -63,13 +63,11 @@ class RouteHandler
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 throw new HttpNotFound;
-                break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 throw (new HttpMethodNotAllowed)
                     ->setAllowedMethods($routeInfo[1]);
-                break;
             case Dispatcher::FOUND:
-                list($_, $route, $arguments) = $routeInfo;
+                list(, $route, $arguments) = $routeInfo;
                 break;
         }
 
