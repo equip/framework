@@ -16,7 +16,7 @@ class AurynResolver implements ResolverInterface
      * Returns an instance of a specified class implementing __invoke() using
      * the underlying Auryn injector.
      *
-     * @param string $fqcn Fully-qualified class name
+     * @param string $spec Fully-qualified class name
      * @return callable Instance of the referenced class
      */
     public function __invoke($spec)
