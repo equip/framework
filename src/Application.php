@@ -42,8 +42,8 @@ class Application
 
         // By default, we use our internal Resolver
         $injector->alias(
-            'Resolver',
-            'Spark\Resolver'
+            'Spark\Resolver\ResolverInterface',
+            'Spark\Resolver\AurynResolver'
         );
 
         return $injector->make(static::class);
@@ -104,7 +104,7 @@ class Application
      */
     public function getResolver()
     {
-        return $this->injector->make('Resolver');
+        return $this->injector->make('Spark\Resolver\ResolverInterface');
     }
 
     /**
