@@ -1,34 +1,28 @@
 <?php
-namespace SparkTests;
 
-use Aura\Payload\Payload;
-use PHPUnit_Framework_TestCase as TestCase;
+namespace SparkTests\Responder;
+
+use Spark\Payload;
 use Spark\Responder\HtmlResponder;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequestFactory;
 
-class HtmlResponderTest extends TestCase {
-
+class HtmlResponderTest extends AbstractResponderTest
+{
     public function testAccepts()
     {
-        $this->assertEquals(['text/html'], HtmlResponder::accepts());
+        $this->assertEquals(['text/html'], (new HtmlResponder)->accepts());
     }
 
-    public function testResponseBody()
+    public function testResponse()
     {
-        $request = ServerRequestFactory::fromGlobals();
-        $payload = (new Payload)
-            ->setStatus(Payload::FOUND)
-            ->setOutput(["success" => true]);
+        $payload = (new Payload)->withOutput([
+                'header' => 'header',
+                'body'   => 'body',
+                'footer' => 'footer',
+            ]);
 
-        $responder = new HtmlResponder;
-        $response = $responder($request, new Response(), $payload);
+        $response = $this->getResponse(new HtmlResponder, $payload);
 
-        $this->assertEquals('{&quot;success&quot;:true}', (string)$response->getBody());
-
-        $payload->setOutput("Test html!");
-        $response = $responder($request, new Response(), $payload);
-        $this->assertEquals('Test html!', (string)$response->getBody());
-
+        $this->assertContains('text/html', $response->getHeader('Content-Type'));
+        $this->assertEquals("header\nbody\nfooter", (string) $response->getBody());
     }
 }

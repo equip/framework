@@ -1,191 +1,64 @@
 <?php
 namespace Spark\Responder;
 
-use Aura\Payload_Interface\PayloadInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Spark\Adr\PayloadInterface;
 use Spark\Adr\ResponderInterface;
 
 abstract class AbstractResponder implements ResponderInterface
 {
     /**
-     * @var $request ServerRequestInterface
+     * Get the content type of the response body.
+     *
+     * @return string
      */
-    protected $request;
+    abstract protected function type();
 
     /**
-     * @var $response ResponseInterface
+     * Get the response body from the payload.
+     *
+     * @param  PayloadInterface $payload
+     * @return string
      */
-    protected $response;
+    abstract protected function body(PayloadInterface $payload);
 
     /**
-     * @var $payload PayloadInterface
+     * Get the response status from the payload.
+     *
+     * @param  PayloadInterface $payload
+     * @return integer
      */
-    protected $payload;
+    protected function getHttpStatus(PayloadInterface $payload)
+    {
+        $status = $payload->getStatus();
 
-    abstract protected function responseBody($data);
+        if ($status >= PayloadInterface::OK && $status < PayloadInterface::ERROR) {
+            return 200;
+        }
+
+        if ($status >= PayloadInterface::ERROR && $status < PayloadInterface::INVALID) {
+            return 500;
+        }
+
+        if ($status >= PayloadInterface::INVALID && $status < PayloadInterface::UNKNOWN) {
+            return 400;
+        }
+
+        return 520;
+    }
 
     public function __invoke(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        PayloadInterface $payload = null
+        PayloadInterface $payload
     ) {
-        $this->request = $request;
-        $this->response = $response;
-        $this->payload = $payload;
-        $method = $this->getMethodForPayload();
-        $this->$method();
-        return $this->response;
-    }
+        $response = $response->withStatus($this->getHttpStatus($payload));
+        $response = $response->withHeader('Content-Type', $this->type());
 
-    protected function getMethodForPayload()
-    {
-        if (! $this->payload) {
-            return 'noContent';
-        }
+        // Overwrite the body instead of making a copy and dealing with the stream.
+        $response->getBody()->write($this->body($payload));
 
-        $method = str_replace('_', '', strtolower($this->payload->getStatus()));
-        return method_exists($this, $method) ? $method : 'unknown';
-    }
-
-    protected function accepted()
-    {
-        $this->response = $this->response->withStatus(202);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function authenticated()
-    {
-        $this->response = $this->response->withStatus(200);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function authorized()
-    {
-        $this->response = $this->response->withStatus(200);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function created()
-    {
-        $this->response = $this->response->withStatus(201);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function deleted()
-    {
-        $this->response = $this->response->withStatus(204);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function error()
-    {
-        $this->response = $this->response->withStatus(500);
-        $this->responseBody([
-            'input' => $this->payload->getInput(),
-            'error' => $this->payload->getOutput(),
-        ]);
-    }
-
-    protected function failure()
-    {
-        $this->response = $this->response->withStatus(400);
-        $this->responseBody($this->payload->getInput());
-    }
-
-    protected function found()
-    {
-        $this->response = $this->response->withStatus(200);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function noContent()
-    {
-        $this->response = $this->response->withStatus(204);
-    }
-
-    protected function notAccepted()
-    {
-        $this->response = $this->response->withStatus(406);
-        $this->responseBody($this->payload->getInput());
-    }
-
-    protected function notAuthenticated()
-    {
-        $this->response = $this->response->withStatus(400);
-        $this->responseBody($this->payload->getInput());
-    }
-
-    protected function notAuthorized()
-    {
-        $this->response = $this->response->withStatus(403);
-        $this->responseBody($this->payload->getInput());
-    }
-
-    protected function notCreated()
-    {
-        $this->response = $this->response->withStatus(400);
-        $this->responseBody($this->payload->getInput());
-    }
-
-    protected function notDeleted()
-    {
-        $this->response = $this->response->withStatus(400);
-        $this->responseBody($this->payload->getInput());
-    }
-
-    protected function notFound()
-    {
-        $this->response = $this->response->withStatus(404);
-        $this->responseBody($this->payload->getInput());
-    }
-
-    protected function notUpdated()
-    {
-        $this->response = $this->response->withStatus(400);
-        $this->responseBody($this->payload->getInput());
-    }
-
-    protected function notValid()
-    {
-        $this->response = $this->response->withStatus(422);
-        $this->responseBody([
-            'input' => $this->payload->getInput(),
-            'output' => $this->payload->getOutput(),
-            'messages' => $this->payload->getMessages(),
-        ]);
-    }
-
-    protected function processing()
-    {
-        $this->response = $this->response->withStatus(202);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function success()
-    {
-        $this->response = $this->response->withStatus(200);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function updated()
-    {
-        $this->response = $this->response->withStatus(303);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function valid()
-    {
-        $this->response = $this->response->withStatus(200);
-        $this->responseBody($this->payload->getOutput());
-    }
-
-    protected function unknown()
-    {
-        $this->response = $this->response->withStatus(500);
-        $this->responseBody([
-            'error' => 'Unknown domain payload status',
-            'status' => $this->payload->getStatus(),
-        ]);
+        return $response;
     }
 }
