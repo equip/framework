@@ -16,11 +16,10 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.5.0",
-        "aura/payload": "~3.0",
         "monolog/monolog": "~1.16",
         "nikic/fast-route": "~0.6",
         "rdlowrey/auryn": "~1.0",
-        "sparkphp/adr": "~0.1.0",
+        "sparkphp/adr": "~0.2",
         "zendframework/zend-diactoros": "~1.0",
         "relay/relay": "~1.0",
         "relay/middleware": "~1.0",

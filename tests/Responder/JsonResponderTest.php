@@ -1,30 +1,25 @@
 <?php
-namespace SparkTests;
+namespace SparkTests\Responder;
 
-use Aura\Payload\Payload;
-use PHPUnit_Framework_TestCase as TestCase;
+use Spark\Payload;
 use Spark\Responder\JsonResponder;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequestFactory;
 
-class JsonResponderTest extends TestCase {
-
+class JsonResponderTest extends AbstractResponderTest
+{
     public function testAccepts()
     {
-        $this->assertEquals(['application/json'], JsonResponder::accepts());
+        $this->assertEquals(['application/json'], (new JsonResponder)->accepts());
     }
 
     public function testResponseBody()
     {
-        $request = ServerRequestFactory::fromGlobals();
-        $payload = (new Payload)
-            ->setStatus(Payload::FOUND)
-            ->setOutput(["success" => true]);
+        $payload = (new Payload)->withOutput([
+                'success' => true,
+            ]);
 
-        $responder = new JsonResponder;
-        $response = $responder($request, new Response(), $payload);
+        $response = $this->getResponse(new JsonResponder, $payload);
 
-        $this->assertEquals('{"success":true}', (string)$response->getBody());
-
+        $this->assertContains('application/json', $response->getHeader('Content-Type'));
+        $this->assertEquals('{"success":true}', (string) $response->getBody());
     }
 }

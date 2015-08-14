@@ -3,38 +3,47 @@
 namespace Spark\Responder;
 
 use League\Plates\Engine;
-use Spark\Responder\AbstractResponder;
+use League\Plates\Template\Template;
+use Spark\Adr\PayloadInterface;
 
-class PlatesResponder extends AbstractResponder
+class PlatesResponder extends HtmlResponder
 {
     /**
      * @var Engine
      */
     protected $engine;
 
+    /**
+     * @param Engine $engine
+     */
     public function __construct(Engine $engine)
     {
         $this->engine = $engine;
     }
 
-    public static function accepts()
+    /**
+     * @param  PayloadInterface $payload
+     * @return string
+     */
+    protected function template(PayloadInterface $payload)
     {
-        return ['text/html'];
+        return $payload->getOutput()['template'];
     }
 
-    protected function getTemplate($data)
+    /**
+     * @param  Template $template
+     * @param  PayloadInterface $payload
+     * @return string
+     */
+    protected function render(Template $template, PayloadInterface $payload)
     {
-        $extras = $this->payload->getExtras();
-        return $extras['template'];
+        return $template->render($payload->getOutput());
     }
 
-    protected function responseBody($data)
+    protected function body(PayloadInterface $payload)
     {
-        $template = $this->getTemplate($data);
+        $template = $this->getTemplate($payload);
         $template = $this->engine->make($template);
-        $rendered = $template->render($data);
-
-        $this->response = $this->response->withHeader('Content-Type', 'text/html');
-        $this->response->getBody()->write($rendered);
+        return $this->render($template, $payload);
     }
 }

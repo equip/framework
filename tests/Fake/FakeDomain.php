@@ -1,7 +1,7 @@
 <?php
 namespace SparkTests\Fake;
 
-use Aura\Payload\Payload;
+use Spark\Payload;
 use Spark\Adr\DomainInterface;
 
 class FakeDomain implements DomainInterface
@@ -11,8 +11,8 @@ class FakeDomain implements DomainInterface
     {
         unset($input['spark/adr:route']);
         return (new Payload())
-            ->setStatus(Payload::FOUND)
-            ->setOutput(['success' => true, 'input' => $input]);
+            ->withStatus(Payload::OK)
+            ->withOutput(['success' => true, 'input' => $input]);
     }
 
 }

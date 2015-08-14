@@ -1,45 +1,37 @@
 <?php
-namespace SparkTests;
 
-use Aura\Payload\Payload;
-use Spark\Application;
-use PHPUnit_Framework_TestCase as TestCase;
+namespace SparkTests\Responder;
 
-class AbstractResponderTest extends TestCase {
+use Spark\Payload;
+use Spark\Responder\AbstractResponder;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 
-    protected $request, $response;
-
-    public function setUp()
+class AbstractResponderTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * Execute a responder and get the response.
+     *
+     * @param  AbstractResponder $responder
+     * @param  Payload $payload
+     * @return Response
+     */
+    protected function getResponse(AbstractResponder $responder, Payload $payload)
     {
-        $this->request = Application::boot()->getInjector()->make('Psr\Http\Message\ServerRequestInterface');
-        $this->response = Application::boot()->getInjector()->make('Psr\Http\Message\ResponseInterface');
+        $response = $responder(new ServerRequest, new Response, $payload);
+
+        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
+
+        return $response;
     }
 
     public function statusCodeProvider()
     {
         return [
-            ['unknown', 500],
-            [null, 204],
-            [Payload::ACCEPTED, 202],
-            [Payload::AUTHENTICATED, 200],
-            [Payload::AUTHORIZED, 200],
-            [Payload::CREATED, 201],
-            [Payload::DELETED, 204],
+            [Payload::OK, 200],
             [Payload::ERROR, 500],
-            [Payload::FAILURE, 400],
-            [Payload::FOUND, 200],
-            [Payload::NOT_ACCEPTED, 406],
-            [Payload::NOT_AUTHENTICATED, 400],
-            [Payload::NOT_AUTHORIZED, 403],
-            [Payload::NOT_CREATED, 400],
-            [Payload::NOT_DELETED, 400],
-            [Payload::NOT_FOUND, 404],
-            [Payload::NOT_UPDATED, 400],
-            [Payload::NOT_VALID, 422],
-            [Payload::PROCESSING, 202],
-            [Payload::SUCCESS, 200],
-            [Payload::UPDATED, 303],
-            [Payload::VALID, 200]
+            [Payload::INVALID, 400],
+            [Payload::UNKNOWN, 520],
         ];
     }
 
@@ -48,16 +40,16 @@ class AbstractResponderTest extends TestCase {
      */
     public function testStatusCode($status, $expected)
     {
-        $payload = null;
-        if ($status) {
-            $payload = new Payload;
-            $payload->setStatus($status);
-        }
+        $payload = (new Payload)->withStatus($status);
 
-        $responderClass = $this->getMockForAbstractClass('Spark\Responder\AbstractResponder');
+        $responder = $this->getMockForAbstractClass(AbstractResponder::class);
+        $responder->method('type')->willReturn('text/plain');
+        $responder->method('body')->willReturn('test body');
 
-        $responder = new $responderClass;
-        $result = $responder($this->request, $this->response, $payload);
-        $this->assertEquals($expected, $result->getStatusCode());
+        $response = $this->getResponse($responder, $payload);
+
+        $this->assertEquals($expected, $response->getStatusCode());
+        $this->assertContains('text/plain', $response->getHeader('Content-Type'));
+        $this->assertEquals('test body', (string) $response->getBody());
     }
 }
