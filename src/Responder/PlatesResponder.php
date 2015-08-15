@@ -42,7 +42,7 @@ class PlatesResponder extends HtmlResponder
 
     protected function body(PayloadInterface $payload)
     {
-        $template = $this->getTemplate($payload);
+        $template = $this->template($payload);
         $template = $this->engine->make($template);
         return $this->render($template, $payload);
     }
