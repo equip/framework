@@ -36,15 +36,6 @@ class ApplicationTest extends TestCase
 
     }
 
-    public function testLogger()
-    {
-        $testLogger = $this->app->getLogger('test');
-        $this->assertInstanceOf('\Monolog\Logger', $testLogger);
-
-        $this->assertEquals($testLogger, $this->app->getLogger('test'));
-        $this->assertNotEquals($testLogger, $this->app->getLogger('default'));
-    }
-
     public function testConfig()
     {
         $this->app->setConfig("test", true);

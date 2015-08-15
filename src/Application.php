@@ -3,7 +3,6 @@
 namespace Spark;
 
 use Auryn\Injector;
-use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Relay\Relay;
@@ -67,11 +66,6 @@ class Application
     /**
      * @var array
      */
-    protected $loggers = [];
-
-    /**
-     * @var array
-     */
     protected $middleware = [];
 
     /**
@@ -130,23 +124,6 @@ class Application
     }
 
     /**
-     * Return a logger
-     *
-     * @param string $name
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function getLogger($name = 'default')
-    {
-        if (isset($this->loggers[$name])) {
-            return $this->loggers[$name];
-        }
-
-        $logger = new Logger($name);
-        $this->loggers[$name] = $logger;
-        return $logger;
-    }
-
-    /**
      * Run the application.
      *
      * @param  ServerRequestInterface $request
@@ -183,7 +160,6 @@ class Application
      */
     public function handle(ServerRequestInterface $request, ResponseInterface $response, $catch = true)
     {
-
         $builder = $this->injector->make('Relay', [$this->getResolver()]);
 
         $dispatcher = $builder->newInstance($this->getMiddleware());
