@@ -61,11 +61,6 @@ class Application
     /**
      * @var array
      */
-    protected $config = [];
-
-    /**
-     * @var array
-     */
     protected $middleware = [];
 
     /**
@@ -168,29 +163,6 @@ class Application
 
     }
 
-    /**
-     * Set a config item
-     *
-     * @param string $key
-     * @param mixed  $value
-     */
-    public function setConfig($key, $value)
-    {
-        $this->config[$key] = $value;
-    }
-
-    /**
-     * Get a config key's value
-     *
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getConfig($key, $default = null)
-    {
-        return isset($this->config[$key]) ? $this->config[$key] : $default;
-    }
     /**
      * Add application wide middleware
      *

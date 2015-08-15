@@ -36,15 +36,6 @@ class ApplicationTest extends TestCase
 
     }
 
-    public function testConfig()
-    {
-        $this->app->setConfig("test", true);
-
-        $this->assertTrue($this->app->getConfig("test"));
-        $this->assertEquals("default", $this->app->getConfig("undefined", "default"));
-        $this->assertNotTrue($this->app->getConfig("not_here"));
-    }
-
     public function testHandleArguments()
     {
 
