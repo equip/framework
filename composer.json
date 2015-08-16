@@ -13,14 +13,13 @@
             "email": "dolfelt@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.5.0",
         "arbiter/arbiter": "~0.1",
         "nikic/fast-route": "~0.6",
         "rdlowrey/auryn": "~1.0",
         "relay/relay": "~0.2",
-        "relay/middleware": "~1.0",
+        "relay/middleware": "~0.1",
         "sparkphp/adr": "~0.2",
         "zendframework/zend-diactoros": "~1.0"
     },
