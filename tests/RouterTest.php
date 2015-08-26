@@ -22,7 +22,7 @@ class RouterTest extends TestCase
          */
         $route = current($router->getRoutes());
         $this->assertInstanceOf('\Spark\Router\Route', $route);
-        $this->assertEquals('Spark\Responder\JsonResponder', $route->getResponder());
+        $this->assertEquals('Spark\Responder', $route->getResponder());
         $this->assertEquals('Spark\Adr\Input', $route->getInput());
         $this->assertEquals('SparkTests\Fake\FakeDomain', $route->getDomain());
 
