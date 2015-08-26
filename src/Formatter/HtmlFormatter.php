@@ -1,22 +1,22 @@
 <?php
 
-namespace Spark\Responder;
+namespace Spark\Formatter;
 
 use Spark\Adr\PayloadInterface;
 
-class HtmlResponder extends AbstractResponder
+class HtmlFormatter extends AbstractFormatter
 {
-    public function accepts()
+    public static function accepts()
     {
         return ['text/html'];
     }
 
-    protected function type()
+    public function type()
     {
         return 'text/html';
     }
 
-    protected function body(PayloadInterface $payload)
+    public function body(PayloadInterface $payload)
     {
         return implode("\n", $payload->getOutput());
     }

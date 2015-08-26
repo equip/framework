@@ -1,17 +1,17 @@
 <?php
 
-namespace Spark\Responder;
+namespace Spark\Formatter;
 
 use Spark\Adr\PayloadInterface;
 
-class JsonResponder extends AbstractResponder
+class JsonFormatter extends AbstractFormatter
 {
-    public function accepts()
+    public static function accepts()
     {
         return ['application/json'];
     }
 
-    protected function type()
+    public function type()
     {
         return 'application/json';
     }
@@ -21,7 +21,7 @@ class JsonResponder extends AbstractResponder
         return 0;
     }
 
-    protected function body(PayloadInterface $payload)
+    public function body(PayloadInterface $payload)
     {
         return json_encode($payload->getOutput(), $this->options());
     }
