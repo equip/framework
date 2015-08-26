@@ -13,6 +13,11 @@ class Payload implements PayloadInterface
     /**
      * @var array
      */
+    private $input;
+
+    /**
+     * @var array
+     */
     private $output;
 
     /**
@@ -30,6 +35,18 @@ class Payload implements PayloadInterface
     public function getStatus()
     {
         return $this->status;
+    }
+
+    public function withInput(array $input)
+    {
+        $new = clone $this;
+        $new->input = $input;
+        return $new;
+    }
+
+    public function getInput()
+    {
+        return $this->input;
     }
 
     public function withOutput(array $output)
