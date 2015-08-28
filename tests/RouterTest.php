@@ -67,6 +67,7 @@ class RouterTest extends TestCase
             ['put', Router::PUT],
             ['patch', Router::PATCH],
             ['head', Router::HEAD],
+            ['delete', Router::DELETE],
             ['options', Router::OPTIONS],
         ];
     }
