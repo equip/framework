@@ -11,6 +11,7 @@ class Router
     const PUT     = 'PUT';
     const PATCH   = 'PATCH';
     const HEAD    = 'HEAD';
+    const DELETE  = 'DELETE';
     const OPTIONS = 'OPTIONS';
 
     /**
@@ -116,6 +117,16 @@ class Router
     public function head($path, $domain)
     {
         return $this->addRoute(self::HEAD, $path, $domain);
+    }
+
+    /**
+     * @param  string $path
+     * @param  string $domain
+     * @return Route
+     */
+    public function delete($path, $domain)
+    {
+        return $this->addRoute(self::DELETE, $path, $domain);
     }
 
     /**
