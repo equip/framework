@@ -27,7 +27,7 @@ class Router
     /**
      * @var string
      */
-    private $responder = 'Spark\Responder';
+    private $responder = 'Spark\Responder\FormattedResponder';
 
     /**
      * Set the default input handler spec.

@@ -44,7 +44,7 @@ class ActionHandlerTest extends TestCase
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
 
-        $action = new Action('Spark\Adr\Input', 'SparkTests\Fake\FakeDomain', 'Spark\Responder');
+        $action = new Action('Spark\Adr\Input', 'SparkTests\Fake\FakeDomain', 'Spark\Responder\FormattedResponder');
         $request = $request->withAttribute('spark/adr:action', $action)
                         ->withAttribute('test', 'success');
 

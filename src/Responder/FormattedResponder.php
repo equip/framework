@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark;
+namespace Spark\Responder;
 
 use Negotiation\NegotiatorInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -10,7 +10,7 @@ use Spark\Adr\ResponderInterface;
 use Spark\Formatter\AbstractFormatter;
 use Spark\Resolver\ResolverInterface;
 
-class Responder implements ResponderInterface
+class FormattedResponder implements ResponderInterface
 {
     /**
      * @var NegotiatorInterface

@@ -1,15 +1,15 @@
 <?php
 
-namespace SparkTests;
+namespace SparkTests\Responder;
 
 use Spark\Formatter\HtmlFormatter;
 use Spark\Payload;
-use Spark\Responder;
+use Spark\Responder\FormattedResponder;
 
 use Negotiation\Negotiator;
 use Zend\Diactoros\Response;
 
-class ResponderTest extends \PHPUnit_Framework_TestCase
+class FormattedResponderTest extends \PHPUnit_Framework_TestCase
 {
     private $responder;
 
@@ -23,7 +23,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
                      return new $spec;
                  }));
 
-        $this->responder = new Responder($negotiator, $resolver);
+        $this->responder = new FormattedResponder($negotiator, $resolver);
     }
 
     public function testResponse()
