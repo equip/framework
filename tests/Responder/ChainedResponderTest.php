@@ -29,6 +29,21 @@ class ChainedResponderTest extends \PHPUnit_Framework_TestCase
         $this->responder = (new ChainedResponder($resolver))->withResponders(['a', 'b', 'c']);
     }
 
+    public function testResponders()
+    {
+        $responders = $this->responder->getResponders();
+
+        $this->assertThat($responders, $this->isType('array'));
+
+        $modified = $this->responder->withResponders(['foo', 'bar']);
+
+        $this->assertNotSame($responders, $modified->getResponders());
+
+        $responders = $modified->withAddedResponder('baz')->getResponders();
+
+        $this->assertSame($responders, ['foo', 'bar', 'baz']);
+    }
+
     public function testResponse()
     {
         $request  = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();

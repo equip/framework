@@ -60,8 +60,10 @@ class FormattedResponder implements ResponderInterface
      */
     public function withFormatters(array $formatters)
     {
+        arsort($formatters);
+
         $self = clone $this;
-        $self->formatters = arsort($formatters);
+        $self->formatters = $formatters;
         return $self;
     }
 

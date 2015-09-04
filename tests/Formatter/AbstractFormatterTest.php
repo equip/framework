@@ -28,4 +28,12 @@ class AbstractFormatterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $formatter->status($payload));
     }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testAccepts()
+    {
+        AbstractFormatter::accepts('');
+    }
 }
