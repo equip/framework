@@ -31,28 +31,35 @@ class ActionHandler extends Arbiter
         ResponseInterface      $response,
         callable               $next
     ) {
-        /**
-         * @var Action
-         */
-        $action     = $request->getAttribute($this->actionAttribute);
+        $action  = $request->getAttribute($this->actionAttribute);
         $request = $request->withoutAttribute($this->actionAttribute);
 
-        if (!($action instanceof Action)) {
-            // @codeCoverageIgnoreStart
-            throw new \Exception(sprintf('"%s" request attribute does not implement Action', $this->actionAttribute));
-            // @codeCoverageIgnoreEnd
-        }
-
-        // Resolve using the injector
-        $resolver = $this->resolver;
-        $domain    = $resolver($action->getDomain());
-        $input     = $resolver($action->getInput());
-        $responder = $resolver($action->getResponder());
-
-        $payload  = $this->getPayload($domain, $input, $request);
-        $response = $this->getResponse($responder, $request, $response, $payload);
+        $response = $this->getResponse($action, $request, $response);
 
         return $next($request, $response);
+    }
+
+    /**
+     * Use the action collaborators to get a response.
+     *
+     * @param  Action                 $action
+     * @param  ServerRequestInterface $request
+     * @param  ResponseInterface     $response
+     * @return ResponseInterface
+     */
+    private function getResponse(
+        Action                 $action,
+        ServerRequestInterface $request,
+        ResponseInterface      $response
+    ) {
+        $domain    = $this->resolve($action->getDomain());
+        $input     = $this->resolve($action->getInput());
+        $responder = $this->resolve($action->getResponder());
+
+        $payload  = $this->getPayload($domain, $input, $request);
+        $response = $this->getResponseForPayload($responder, $request, $response, $payload);
+
+        return $response;
     }
 
     /**
@@ -80,7 +87,7 @@ class ActionHandler extends Arbiter
      * @param  PayloadInterface       $payload
      * @return ResponseInterface
      */
-    private function getResponse(
+    private function getResponseForPayload(
         ResponderInterface     $responder,
         ServerRequestInterface $request,
         ResponseInterface      $response,
