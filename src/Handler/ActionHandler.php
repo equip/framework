@@ -38,7 +38,9 @@ class ActionHandler extends Arbiter
         $request = $request->withoutAttribute($this->actionAttribute);
 
         if (!($action instanceof Action)) {
+            // @codeCoverageIgnoreStart
             throw new \Exception(sprintf('"%s" request attribute does not implement Action', $this->actionAttribute));
+            // @codeCoverageIgnoreEnd
         }
 
         // Resolve using the injector
