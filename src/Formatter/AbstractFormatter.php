@@ -1,13 +1,24 @@
 <?php
-namespace Spark\Responder;
+namespace Spark\Formatter;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\PayloadInterface;
-use Spark\Adr\ResponderInterface;
 
-abstract class AbstractResponder implements ResponderInterface
+abstract class AbstractFormatter
 {
+    /**
+     * Get the content types this formatter can satisfy.
+     *
+     * @return array
+     */
+    public static function accepts()
+    {
+        throw new \RuntimeException(sprintf(
+            '%s::%s() must be defined to declare accepted content types',
+            static::class,
+            __FUNCTION__
+        ));
+    }
+
     /**
      * Get the content type of the response body.
      *
@@ -29,7 +40,7 @@ abstract class AbstractResponder implements ResponderInterface
      * @param  PayloadInterface $payload
      * @return integer
      */
-    protected function getHttpStatus(PayloadInterface $payload)
+    public function status(PayloadInterface $payload)
     {
         $status = $payload->getStatus();
 
@@ -46,19 +57,5 @@ abstract class AbstractResponder implements ResponderInterface
         }
 
         return 520;
-    }
-
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        PayloadInterface $payload
-    ) {
-        $response = $response->withStatus($this->getHttpStatus($payload));
-        $response = $response->withHeader('Content-Type', $this->type());
-
-        // Overwrite the body instead of making a copy and dealing with the stream.
-        $response->getBody()->write($this->body($payload));
-
-        return $response;
     }
 }

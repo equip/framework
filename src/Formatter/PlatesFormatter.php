@@ -1,12 +1,12 @@
 <?php
 
-namespace Spark\Responder;
+namespace Spark\Formatter;
 
 use League\Plates\Engine;
 use League\Plates\Template\Template;
 use Spark\Adr\PayloadInterface;
 
-class PlatesResponder extends HtmlResponder
+class PlatesFormatter extends HtmlFormatter
 {
     /**
      * @var Engine
@@ -40,7 +40,7 @@ class PlatesResponder extends HtmlResponder
         return $template->render($payload->getOutput());
     }
 
-    protected function body(PayloadInterface $payload)
+    public function body(PayloadInterface $payload)
     {
         $template = $this->template($payload);
         $template = $this->engine->make($template);

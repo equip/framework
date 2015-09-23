@@ -45,6 +45,12 @@ class Application
             'Spark\Resolver\AurynResolver'
         );
 
+        // By default, we use the standard content negotiator
+        $injector->alias(
+            'Negotiation\NegotiatorInterface',
+            'Negotiation\Negotiator'
+        );
+
         return $injector->make(static::class);
     }
 

@@ -27,7 +27,7 @@ class Router
     /**
      * @var string
      */
-    private $responder = 'Spark\Responder\JsonResponder';
+    private $responder = 'Spark\Responder\ChainedResponder';
 
     /**
      * Set the default input handler spec.
