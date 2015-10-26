@@ -3,7 +3,6 @@ namespace SparkTests;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Spark\Adr\Input;
-use Spark\Application;
 use Spark\Router;
 use SparkTests\Fake\FakeInput;
 use Zend\Diactoros\ServerRequest;
@@ -11,16 +10,24 @@ use Zend\Diactoros\Uri;
 
 class RouterTest extends TestCase
 {
+    /**
+     * @var Router
+     */
+    protected $router;
+
+    protected function setUp()
+    {
+        $this->router = new Router;
+    }
+
     public function testRouterDispatchAndInjection()
     {
-        $app = Application::boot();
-        $router = $app->getRouter();
-        $router->get('/', 'SparkTests\Fake\FakeDomain');
+        $this->router->get('/', 'SparkTests\Fake\FakeDomain');
 
         /**
          * @var $route Router\Route
          */
-        $route = current($router->getRoutes());
+        $route = current($this->router->getRoutes());
         $this->assertInstanceOf('\Spark\Router\Route', $route);
         $this->assertEquals('Spark\Responder\ChainedResponder', $route->getResponder());
         $this->assertEquals('Spark\Adr\Input', $route->getInput());
@@ -43,16 +50,12 @@ class RouterTest extends TestCase
 
     public function testRouteDefaults()
     {
-        $app = Application::boot();
-
-        $router = $app->getRouter();
-
         $input = 'SparkTest\Fake\FakeInput';
-        $router->setDefaultInput($input);
+        $this->router->setDefaultInput($input);
         $responder = 'SparkTest\Fake\FakeResponder';
-        $router->setDefaultResponder($responder);
+        $this->router->setDefaultResponder($responder);
 
-        $route = $router->get('/', 'SparkTest\Fake\FakeDomain');
+        $route = $this->router->get('/', 'SparkTest\Fake\FakeDomain');
 
         $this->assertEquals($input, $route->getInput());
         $this->assertEquals($responder, $route->getResponder());
@@ -77,8 +80,7 @@ class RouterTest extends TestCase
      */
     public function testRoutes($method)
     {
-        $router = Application::boot()->getRouter();
-        $route = $router->$method('/test', '\SparkTests\Fake\FakeDomain');
+        $route = $this->router->$method('/test', '\SparkTests\Fake\FakeDomain');
 
         $this->assertInstanceOf('Spark\Router\Route', $route);
     }
