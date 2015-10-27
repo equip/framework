@@ -2,7 +2,6 @@
 namespace SparkTests\Handler;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Application;
 use Spark\Exception\HttpMethodNotAllowed;
 use Spark\Handler\RouteHandler;
 use Spark\Router;
@@ -27,8 +26,7 @@ class RouteHandlerTest extends TestCase
     public function testDispatching()
     {
         $methods = $this->routeMethodProvider();
-        $app = Application::boot();
-        $router = $app->getRouter();
+        $router = new Router;
 
         $routeHandler = new RouteHandler($router);
 

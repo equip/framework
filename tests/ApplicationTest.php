@@ -4,6 +4,7 @@ namespace SparkTests;
 use Auryn\Injector;
 use PHPUnit_Framework_TestCase as TestCase;
 use Spark\Application;
+use Spark\Configuration\DefaultConfigurationSet;
 use Spark\Router;
 use SparkTests\Fake\FakeDomain;
 use Zend\Diactoros\Response;
@@ -13,14 +14,27 @@ use Zend\Diactoros\Uri;
 class ApplicationTest extends TestCase
 {
     /**
-     * @var $app Application
+     * @var Application
      */
     protected $app;
 
+    /**
+     * @var Injector
+     */
+    protected $injector;
+
+    /**
+     * @var Router
+     */
+    protected $router;
+
     public function setUp()
     {
-        $this->app = Application::boot();
-
+        $this->injector = new Injector;
+        $configuration = new DefaultConfigurationSet;
+        $configuration->apply($this->injector);
+        $this->router = new Router;
+        $this->app = new Application($this->injector, $this->router);
         $this->app->setMiddleware([
             'Relay\Middleware\ResponseSender',
             'Spark\Handler\RouteHandler',
@@ -28,17 +42,8 @@ class ApplicationTest extends TestCase
         ]);
     }
 
-    public function testBoot()
-    {
-        $this->assertTrue($this->app instanceof Application);
-        $this->assertTrue($this->app->getInjector() instanceof Injector);
-        $this->assertTrue($this->app->getRouter() instanceof Router);
-
-    }
-
     public function testHandleArguments()
     {
-
         $this->app->setMiddleware([
             'Spark\Handler\RouteHandler',
             'Spark\Handler\ActionHandler',
@@ -93,15 +98,4 @@ class ApplicationTest extends TestCase
         $this->assertCount(4, $this->app->getMiddleware());
         $this->assertEquals('Spark\Handler\ExceptionHandler', $this->app->getMiddleware()[3]);
     }
-
-    public function testGetResolver()
-    {
-        $resolver = $this->app->getResolver();
-
-        $name = 'SparkTests\Fake\FakeDomain';
-        $fakeDomain = $resolver($name);
-        $this->assertInstanceOf($name, $fakeDomain);
-    }
-
-
 }
