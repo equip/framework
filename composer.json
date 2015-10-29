@@ -18,7 +18,7 @@
         "arbiter/arbiter": "~0.1",
         "nikic/fast-route": "~0.6",
         "rdlowrey/auryn": "~1.0",
-        "relay/relay": "~0.2",
+        "relay/relay": "^1",
         "relay/middleware": "~0.1",
         "sparkphp/adr": "~0.2",
         "willdurand/negotiation": "~1.4",
