@@ -8,3 +8,5 @@
 /phpunit.xml.dist   export-ignore
 /phpunit.php        export-ignore
 /tests              export-ignore
+/docs               export-ignore
+/mkdocs.yml         export-ignore
