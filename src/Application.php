@@ -2,126 +2,65 @@
 
 namespace Spark;
 
-use Auryn\Injector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Relay\Relay;
 
 class Application
 {
     /**
-     * @var Injector
+     * @var Relay
      */
-    protected $injector;
+    protected $dispatcher;
 
     /**
-     * @var Router
+     * @var ServerRequestInterface
      */
-    protected $router;
+    protected $request;
 
     /**
-     * @var array
+     * @var ResponseInterface
      */
-    protected $middleware = [];
+    protected $response;
 
     /**
-     * @param Injector $injector
-     * @param Router   $router
+     * @param Relay $dispatcher
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      */
     public function __construct(
-        Injector $injector,
-        Router   $router
+        Relay $dispatcher,
+        ServerRequestInterface $request,
+        ResponseInterface $response
     ) {
-        $this->injector = $injector;
-        $this->router   = $router;
-
-        $this->injector->share($router);
-    }
-
-    /**
-     * Add a large group of routes
-     *
-     * @param callable $func
-     * @return $this
-     */
-    public function addRoutes(callable $func)
-    {
-        $func($this->router);
-        return $this;
+        $this->dispatcher = $dispatcher;
+        $this->request = $request;
+        $this->response = $response;
     }
 
     /**
      * Run the application.
-     *
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface      $response
-     * @return void
      */
-    public function run(
-        ServerRequestInterface $request  = null,
-        ResponseInterface      $response = null
-    ) {
+    public function run()
+    {
         ob_start();
-
-        if (!$request) {
-            $request = $this->injector->make('Psr\Http\Message\ServerRequestInterface');
-        }
-        if (!$response) {
-            $response = $this->injector->make('Psr\Http\Message\ResponseInterface');
-        }
-
-        $this->handle($request, $response);
-
+        $this->handle();
         ob_end_flush();
     }
 
     /**
      * Handle the request.
      *
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface      $response
-     * @param  bool                   $catch
      * @return ResponseInterface
      * @throws \Exception
      * @throws \LogicException
      */
-    public function handle(ServerRequestInterface $request, ResponseInterface $response, $catch = true)
+    public function handle()
     {
-        $resolver = $this->injector->make('Spark\Resolver\ResolverInterface');
-        $builder = $this->injector->make('Relay', [$resolver]);
-
-        $dispatcher = $builder->newInstance($this->getMiddleware());
-
-        return $dispatcher($request, $response);
-
-    }
-
-    /**
-     * Add application wide middleware
-     *
-     * @param array $middleware
-     */
-    public function addMiddleware($middleware)
-    {
-        $this->middleware[] = $middleware;
-    }
-
-    /**
-     * Sets middleware stack for the application.
-     *
-     * @param array $middleware
-     */
-    public function setMiddleware(array $middleware)
-    {
-        $this->middleware = $middleware;
-    }
-
-    /**
-     * Get the application middleware
-     *
-     * @return array
-     */
-    public function getMiddleware()
-    {
-        return $this->middleware;
+        return call_user_func(
+            $this->dispatcher,
+            $this->request,
+            $this->response
+        );
     }
 }
