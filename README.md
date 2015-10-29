@@ -1,6 +1,6 @@
 ## Spark
 [![Build Status](https://img.shields.io/travis/sparkphp/spark.svg)](https://travis-ci.org/sparkphp/spark)
-[![Code Coverage](https://img.shields.io/coveralls/sparkphp/Spark.svg)](https://coveralls.io/r/sparkphp/Spark)
+[![Code Coverage](https://img.shields.io/coveralls/sparkphp/spark.svg)](https://coveralls.io/r/sparkphp/spark)
 [![License](https://img.shields.io/packagist/l/sparkphp/spark.svg)](https://github.com/sparkphp/spark/blob/master/LICENSE)
 [![Latest Stable Version](https://img.shields.io/packagist/v/sparkphp/spark.svg)](https://packagist.org/packages/sparkphp/spark)
 [![Code Quality](https://img.shields.io/codeclimate/github/sparkphp/Spark.svg)](https://codeclimate.com/github/sparkphp/Spark)
