@@ -1,13 +1,13 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Spark\Middleware;
 
 use Relay\Middleware\ResponseSender;
 use Spark\Handler\ContentHandler;
 use Spark\Handler\ExceptionHandler;
 use Spark\Handler\RouteHandler;
 
-class DefaultCollection extends MiddlewareCollection
+class DefaultCollection extends Collection
 {
     public function __construct()
     {
