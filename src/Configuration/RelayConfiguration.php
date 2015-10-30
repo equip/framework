@@ -21,8 +21,6 @@ class RelayConfiguration implements ConfigurationInterface
             ]
         );
 
-        $injector->alias(Middleware::class, DefaultMiddleware::class);
-
         $injector->delegate(
             'Relay\\Relay',
             function (RelayBuilder $builder, Middleware $queue) {
