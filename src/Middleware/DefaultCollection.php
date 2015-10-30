@@ -3,8 +3,10 @@
 namespace Spark\Middleware;
 
 use Relay\Middleware\ResponseSender;
-use Spark\Handler\ContentHandler;
+use Spark\Handler\ActionHandler;
 use Spark\Handler\ExceptionHandler;
+use Spark\Handler\FormContentHandler;
+use Spark\Handler\JsonContentHandler;
 use Spark\Handler\RouteHandler;
 
 class DefaultCollection extends Collection
@@ -15,7 +17,8 @@ class DefaultCollection extends Collection
             ResponseSender::class,
             ExceptionHandler::class,
             RouteHandler::class,
-            ContentHandler::class,
+            JsonContentHandler::class,
+            FormContentHandler::class,
             ActionHandler::class,
         ]);
     }
