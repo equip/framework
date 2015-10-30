@@ -4,7 +4,8 @@ namespace Spark\Configuration;
 
 use Auryn\Injector;
 use Relay\RelayBuilder;
-use Spark\Middleware\Collection as MiddlewareCollection;
+use Spark\Middleware\Collection as Middleware;
+use Spark\Middleware\DefaultCollection as DefaultMiddleware;
 
 class RelayConfiguration implements ConfigurationInterface
 {
@@ -20,9 +21,11 @@ class RelayConfiguration implements ConfigurationInterface
             ]
         );
 
+        $injector->alias(Middleware::class, DefaultMiddleware::class);
+
         $injector->delegate(
             'Relay\\Relay',
-            function (RelayBuilder $builder, MiddlewareCollection $queue) {
+            function (RelayBuilder $builder, Middleware $queue) {
                 return $builder->newInstance($queue);
             }
         );
