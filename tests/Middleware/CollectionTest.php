@@ -9,32 +9,16 @@ class MiddlewareCollectionTest extends TestCase
     /**
      * @param mixed $middlewares
      * @param string $message
-     * @dataProvider dataInvalidEntries
      */
-    public function testWithInvalidEntries($middlewares, $message)
+    public function testWithInvalidEntries()
     {
         $this->setExpectedException(
             '\\DomainException',
-            $message
+            'All elements of $middlewares must be callable or implement Relay\\MiddlewareInterface'
         );
 
+        $middlewares = ['foo'];
         $collection = new MiddlewareCollection($middlewares);
-    }
-
-    /**
-     * @return array
-     */
-    public function dataInvalidEntries()
-    {
-        $data = [];
-        $middlewares = '$middlewares must be an array or implement Traversable';
-        $elements = 'All elements of $middlewares must be callable or implement Relay\\MiddlewareInterface';
-
-        $data[] = ['foo', $middlewares];
-        $data[] = [['foo'], $elements];
-        $data[] = [new \ArrayObject(['foo']), $elements];
-
-        return $data;
     }
 
     public function testWithValidEntries()
