@@ -5,7 +5,6 @@ namespace Spark\Configuration;
 use Auryn\Injector;
 use Relay\RelayBuilder;
 use Spark\Middleware\Collection as Middleware;
-use Spark\Middleware\DefaultCollection as DefaultMiddleware;
 
 class RelayConfiguration implements ConfigurationInterface
 {
