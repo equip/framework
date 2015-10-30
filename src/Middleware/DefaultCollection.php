@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Spark\Middleware;
 
 use Relay\Middleware\ResponseSender;
 use Spark\Handler\ContentHandler;
