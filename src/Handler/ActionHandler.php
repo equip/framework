@@ -43,15 +43,15 @@ class ActionHandler extends Arbiter implements MiddlewareInterface
     /**
      * Use the action collaborators to get a response.
      *
-     * @param  Action                 $action
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface     $response
+     * @param  Action            $action
+     * @param  RequestInterface  $request
+     * @param  ResponseInterface $response
      * @return ResponseInterface
      */
     private function getResponse(
-        Action                 $action,
-        ServerRequestInterface $request,
-        ResponseInterface      $response
+        Action            $action,
+        RequestInterface  $request,
+        ResponseInterface $response
     ) {
         $domain    = $this->resolve($action->getDomain());
         $input     = $this->resolve($action->getInput());
@@ -66,15 +66,15 @@ class ActionHandler extends Arbiter implements MiddlewareInterface
     /**
      * Execute the domain to get a payload.
      *
-     * @param  DomainInterface        $domain
-     * @param  InputInterface         $input
-     * @param  ServerRequestInterface $request
+     * @param  DomainInterface  $domain
+     * @param  InputInterface   $input
+     * @param  RequestInterface $request
      * @return PayloadInterface
      */
     private function getPayload(
-        DomainInterface        $domain,
-        InputInterface         $input,
-        ServerRequestInterface $request
+        DomainInterface  $domain,
+        InputInterface   $input,
+        RequestInterface $request
     ) {
         return $domain($input($request));
     }
@@ -82,17 +82,17 @@ class ActionHandler extends Arbiter implements MiddlewareInterface
     /**
      * Execute the responder to marshall the reponse.
      *
-     * @param  ResponderInterface     $responder
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface      $response
-     * @param  PayloadInterface       $payload
+     * @param  ResponderInterface $responder
+     * @param  RequestInterface   $request
+     * @param  ResponseInterface  $response
+     * @param  PayloadInterface   $payload
      * @return ResponseInterface
      */
     private function getResponseForPayload(
-        ResponderInterface     $responder,
-        ServerRequestInterface $request,
-        ResponseInterface      $response,
-        PayloadInterface       $payload
+        ResponderInterface $responder,
+        RequestInterface   $request,
+        ResponseInterface  $response,
+        PayloadInterface   $payload
     ) {
         return $responder($request, $response, $payload);
     }
