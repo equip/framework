@@ -5,14 +5,15 @@ namespace Spark\Handler;
 use Arbiter\ActionHandler as Arbiter;
 use Arbiter\Action;
 use Spark\Adr\PayloadInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Relay\MiddlewareInterface;
 use Spark\Adr\DomainInterface;
 use Spark\Adr\InputInterface;
 use Spark\Adr\ResponderInterface;
 use Spark\Resolver\ResolverInterface;
 
-class ActionHandler extends Arbiter
+class ActionHandler extends Arbiter implements MiddlewareInterface
 {
     /**
      * @var Spark\Resolver\ResolverInterface
@@ -27,9 +28,9 @@ class ActionHandler extends Arbiter
     }
 
     public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface      $response,
-        callable               $next
+        RequestInterface  $request,
+        ResponseInterface $response,
+        callable          $next = null
     ) {
         $action  = $request->getAttribute($this->actionAttribute);
         $request = $request->withoutAttribute($this->actionAttribute);

@@ -4,13 +4,14 @@ namespace Spark\Handler;
 use Arbiter\Action;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Relay\MiddlewareInterface;
 use Spark\Exception\HttpMethodNotAllowed;
 use Spark\Exception\HttpNotFound;
 use Spark\Router;
 
-class RouteHandler
+class RouteHandler implements MiddlewareInterface
 {
     /**
      * @var Router
@@ -24,8 +25,11 @@ class RouteHandler
         $this->router = $router;
     }
 
-    public function __invoke(Request $request, Response $response, callable $next)
-    {
+    public function __invoke(
+        RequestInterface  $request,
+        ResponseInterface $response,
+        callable          $next = null
+    ) {
         /**
          * @var $route Router\Route
          */

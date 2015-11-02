@@ -5,8 +5,9 @@ namespace Spark\Handler;
 use Exception;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Relay\MiddlewareInterface;
 
-class ExceptionHandler
+class ExceptionHandler implements MiddlewareInterface
 {
     /**
      * @var string
@@ -22,9 +23,9 @@ class ExceptionHandler
     }
 
     public function __invoke(
-        RequestInterface  $request,
-        ResponseInterface $response,
-        callable          $next
+        RequestInterface $request,
+        ResponseInterface      $response,
+        callable               $next = null
     ) {
         try {
             return $next($request, $response);

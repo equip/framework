@@ -1,10 +1,11 @@
 <?php
 namespace Spark\Handler;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Relay\MiddlewareInterface;
 
-abstract class ContentHandler
+abstract class ContentHandler implements MiddlewareInterface
 {
     /**
      * Parses request bodies based on content type
@@ -14,8 +15,11 @@ abstract class ContentHandler
      * @param  callable $next
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, callable $next)
-    {
+    public function __invoke(
+        RequestInterface  $request,
+        ResponseInterface $response,
+        callable          $next = null
+    ) {
         $mime = strtolower($request->getHeaderLine('Content-Type'));
         if ($this->isApplicableMimeType($mime) && null === $request->getParsedBody()) {
             $parsed = $this->getParsedBody((string) $request->getBody());
