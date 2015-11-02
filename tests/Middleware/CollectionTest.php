@@ -2,6 +2,7 @@
 namespace SparkTests\Middleware;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Relay\MiddlewareInterface;
 use Spark\Middleware\Collection as MiddlewareCollection;
 
 class MiddlewareCollectionTest extends TestCase
@@ -23,11 +24,10 @@ class MiddlewareCollectionTest extends TestCase
 
     public function testWithValidEntries()
     {
+        $middleware = $this->getMockBuilder(MiddlewareInterface::class)->getMock();
         $callback = function() { };
-        $middlewares = [$callback];
+        $middlewares = [$callback, $middleware];
         $collection = new MiddlewareCollection($middlewares);
-        foreach ($collection as $actual) {
-            $this->assertSame($callback, $actual);
-        }
+        $this->assertSame($middlewares, $collection->getArrayCopy());
     }
 }
