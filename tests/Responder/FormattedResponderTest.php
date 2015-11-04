@@ -30,7 +30,6 @@ class FormattedResponderTest extends \PHPUnit_Framework_TestCase
         $formatters = $this->responder->getFormatters();
 
         $this->assertArrayHasKey('Spark\Formatter\JsonFormatter', $formatters);
-        $this->assertArrayHasKey('Spark\Formatter\PlatesFormatter', $formatters);
 
         unset($formatters['Spark\Formatter\JsonFormatter']);
 

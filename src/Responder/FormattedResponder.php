@@ -27,7 +27,6 @@ class FormattedResponder implements ResponderInterface
      */
     private $formatters = [
         'Spark\Formatter\JsonFormatter' => 1.0,
-        'Spark\Formatter\PlatesFormatter' => 0.9,
     ];
 
     /**
