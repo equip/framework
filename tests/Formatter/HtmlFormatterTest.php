@@ -14,19 +14,7 @@ class HtmlFormatterTest extends \PHPUnit_Framework_TestCase
 
     public function testType()
     {
-        $this->assertEquals('text/html', (new HtmlFormatter)->type());
-    }
-
-    public function testBody()
-    {
-        $payload = (new Payload)->withOutput([
-            'header' => 'header',
-            'body'   => 'body',
-            'footer' => 'footer',
-        ]);
-
-        $body = (new HtmlFormatter)->body($payload);
-
-        $this->assertEquals("header\nbody\nfooter", $body);
+        $formatter = $this->getMockForAbstractClass(HtmlFormatter::class);
+        $this->assertEquals('text/html', $formatter->type());
     }
 }

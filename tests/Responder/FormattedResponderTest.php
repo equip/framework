@@ -2,7 +2,6 @@
 
 namespace SparkTests\Responder;
 
-use Spark\Formatter\HtmlFormatter;
 use Spark\Payload;
 use Spark\Responder\FormattedResponder;
 
@@ -31,7 +30,7 @@ class FormattedResponderTest extends \PHPUnit_Framework_TestCase
         $formatters = $this->responder->getFormatters();
 
         $this->assertArrayHasKey('Spark\Formatter\JsonFormatter', $formatters);
-        $this->assertArrayHasKey('Spark\Formatter\HtmlFormatter', $formatters);
+        $this->assertArrayHasKey('Spark\Formatter\PlatesFormatter', $formatters);
 
         unset($formatters['Spark\Formatter\JsonFormatter']);
 
@@ -56,7 +55,7 @@ class FormattedResponderTest extends \PHPUnit_Framework_TestCase
         $request = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
         $request->method('getHeader')
                 ->with('Accept')
-                ->willReturn(['text/html']);
+                ->willReturn(['application/json']);
 
         $response = new Response;
         $payload  = (new Payload)
@@ -67,7 +66,7 @@ class FormattedResponderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(['text/html'], $response->getHeader('Content-Type'));
-        $this->assertEquals('test', (string) $response->getBody());
+        $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
+        $this->assertEquals('{"test":"test"}', (string) $response->getBody());
     }
 }
