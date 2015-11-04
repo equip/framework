@@ -26,7 +26,7 @@ Subsequent examples will assume your project has a directory structure similar t
 
 The majority of the code written on top of Spark is located in [domain](https://github.com/pmjones/adr#model-vs-domain) classes and others [composed](https://en.wikipedia.org/wiki/Object_composition) by them. Additional classes can be used to customize other aspects of the application including [responders](#responders), [middleware](#middleware), and so forth. One commonality that all of these classes have is that they generally require external dependencies in order to serve their purpose.
 
-In order to handle instantiating and wiring together classes on which your code is dependent, a [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) container (DIC) is used. In this case of Spark, this DIC is [Auryn](https://github.com/rdlowrey/Auryn), specifically its `Injector` class. Auryn is different from most other PHP DIC implementations in that it uses parameter types and names, rather than separate user-assigned semantic names, to identify individual dependencies.
+In order to handle instantiating and wiring together classes on which your code is dependent, a [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) container (DIC) is used. In this case of Spark, this DIC is [Auryn](https://github.com/rdlowrey/Auryn), specifically its [`Injector`](https://github.com/rdlowrey/auryn/blob/master/lib/Injector.php) class. Auryn is different from most other PHP DIC implementations in that it uses parameter types and names, rather than separate user-assigned semantic names, to identify individual dependencies.
 
 When a dependency is needed, Spark internally calls the `make()` method of the Auryn [`Injector`](https://github.com/rdlowrey/auryn/blob/master/lib/Injector.php) class. This method uses reflection to inspect types and names of constructor parameters, recursively resolve all dependencies corresponding to those parameters, instantiate the class with those dependencies, and return the configured instance.
 
@@ -93,7 +93,7 @@ $injector->prepare('ClassName', function(ClassName $instance) {
 
 ## Configuration
 
-In Spark, configuration of the injector is encapsulated in classes implementing [`ConfigurationInterface`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationInterface.php). This interface has a single method `apply()` that applies some configuration to a given the Auryn `Injector` instance. The purpose of this is to allow for clean [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and [reusability](https://en.wikipedia.org/wiki/Reusability) of configuration logic.
+In Spark, configuration of the injector is encapsulated in classes implementing [`ConfigurationInterface`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationInterface.php). This interface has a single method `apply()` that applies some configuration to a given Auryn `Injector` instance. The purpose of this is to allow for clean [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and [reusability](https://en.wikipedia.org/wiki/Reusability) of configuration logic.
 
 To faciliate ease of reuse for groupings of configuration, Spark provides a [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) class, which takes in a list of configuration classes and applies them to an injector instance.
 
@@ -194,7 +194,7 @@ $configuration->apply($injector);
 
 ### Router
 
-The router maps URIs to the corresponding [domain](https://github.com/pmjones/adr#model-vs-domain) that the action should use. The [`Router`](https://github.com/sparkphp/spark/blob/master/src/Router.php) class in Spark represents this mapping. Here is an example of what configuring an instance of it could look like.
+The router maps URIs to the corresponding [domain](https://github.com/pmjones/adr#model-vs-domain) that the action should use. This is implemented in the Spark [`Router`](https://github.com/sparkphp/spark/blob/master/src/Router.php) class. Here is an example of what configuring an instance of it could look like.
 
 ```php
 use MyApp\Domain;
@@ -215,10 +215,11 @@ $injector->prepare(
 
 Spark uses [FastRoute](https://github.com/nikic/FastRoute) internally for routing. As such, it uses that library's URI pattern syntax; see [its documentation](https://github.com/nikic/FastRoute#defining-routes) for more details.
 
-An alternative way to implement route configuration involves using a [custom configuration class](#dependency-injection-container). This encapsulation allows for niceties such as non-public methods that can make router configuration code more concise.
+An alternative way to implement route configuration involves using an [invokable](http://php.net/manual/en/language.oop5.magic.php#object.invoke) class and custom [configuration class](#class). This encapsulation allows for niceties such as non-public methods that can make router configuration code more concise.
 
 ```php
-namespace MyApp;
+// src/Router/Routes.php
+namespace My\Router;
 
 class Routes
 {
@@ -237,6 +238,27 @@ class Routes
     protected function get($uri, $domain)
     {
         $this->router->get($uri, 'MyApp\\Domain\\' . $domain);
+    }
+}
+
+// src/Router/Configuration.php
+namespace My\Router;
+
+use Auryn\Injector;
+use Spark\Configuration\ConfigurationInterface;
+use Spark\Router;
+
+class Configuration implements ConfigurationInterface
+{
+    public function apply(Injector $injector)
+    {
+        $injector->prepare(Router::class, [$this, 'prepare']);
+    }
+
+    public function prepare(Router $router, Injector $injector)
+    {
+        $routes = $injector->make(Routes::class);
+        $routes($router);
     }
 }
 ```
@@ -283,10 +305,9 @@ namespace My;
 
 class MiddlewareCollection extends \Spark\Middleware\Collection
 {
-    public function __construct()
+    public function __construct(\Spark\Middleware\DefaultCollection $defaults)
     {
-        $default = new \Spark\Middleware\DefaultCollection;
-        $middlewares = array_merge($default->getArrayCopy(), [
+        $middlewares = array_merge($defaults->getArrayCopy(), [
             FooMiddleware::class,
             // ...
         ]);
