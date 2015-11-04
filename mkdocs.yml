@@ -1,2 +1,5 @@
 site_name: Spark
 theme: 'readthedocs'
+pages:
+- Spark: index.md
+- Authentication: auth.md
