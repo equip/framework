@@ -229,9 +229,10 @@ class Routes
     {
         $this->router = $router;
 
+        // Compare this:
         $this->get('/providers', 'GetProviders');
 
-        // Compare:
+        // To this:
         $router->get('/providers', Domain\GetProviders::class);
     }
 
