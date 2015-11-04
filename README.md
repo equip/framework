@@ -10,5 +10,6 @@ A tiny and powerful PHP micro-framework. Attempts to be [PSR-1](http://www.php-f
 [PSR-7](http://www.php-fig.org/psr/psr-7/) compliant. Also uses the [ADR](https://github.com/pmjones/adr)
 pattern. You should too!
 
-A sample project exists at [sparkphp/project](https://github.com/sparkphp/project). This shows the best
-way to use this framework, and is a quick way to start a new project.
+To get started, check out [the documentation](http://spark.readthedocs.org).
+There's also a [sample project](https://github.com/sparkphp/project) that shows
+the best way to use this framework and is a quick way to start a new project.
