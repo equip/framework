@@ -12,7 +12,7 @@ class PayloadConfiguration implements ConfigurationInterface
     public function apply(Injector $injector)
     {
         $injector->alias(
-            'Spark\PayloadInterface',
+            'Spark\Adr\PayloadInterface',
             'Spark\Payload'
         );
     }
