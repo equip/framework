@@ -10,6 +10,7 @@ class DefaultConfigurationSet extends ConfigurationSet
             AurynConfiguration::class,
             DiactorosConfiguration::class,
             NegotiationConfiguration::class,
+            PayloadConfiguration::class,
             RelayConfiguration::class,
         ]);
     }
