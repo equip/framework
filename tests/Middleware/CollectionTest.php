@@ -15,7 +15,7 @@ class MiddlewareCollectionTest extends TestCase
     {
         $this->setExpectedException(
             '\\DomainException',
-            'All elements of $middlewares must be callable or implement Relay\\MiddlewareInterface'
+            'All elements of $middlewares must be callable or implement __invoke()'
         );
 
         $middlewares = ['foo'];
