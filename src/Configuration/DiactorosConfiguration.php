@@ -16,9 +16,13 @@ class DiactorosConfiguration implements ConfigurationInterface
             'Zend\Diactoros\Response'
         );
 
+        $injector->share('Psr\Http\Message\ResponseInterface');
+
         $injector->delegate(
             'Psr\Http\Message\ServerRequestInterface',
             'Zend\Diactoros\ServerRequestFactory::fromGlobals'
         );
+
+        $injector->share('Psr\Http\Message\ServerRequestInterface');
     }
 }
