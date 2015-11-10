@@ -23,9 +23,9 @@ class Collection extends \ArrayObject
     protected function validate(array $middlewares)
     {
         foreach ($middlewares as $middleware) {
-            if (!(is_callable($middleware) || method_exists($middleware, '__invoke'))) {
+            if (!(is_callable($middleware) || is_subclass_of($middleware, MiddlewareInterface::class))) {
                 throw new \DomainException(
-                    'All elements of $middlewares must be callable or implement __invoke()'
+                    'All elements of $middlewares must be callable or implement Relay\\MiddlewareInterface'
                 );
             }
         }
