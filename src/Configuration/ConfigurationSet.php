@@ -9,16 +9,32 @@ class ConfigurationSet implements ConfigurationInterface
     /**
      * @var array
      */
-    protected $classes;
+    protected $classes = [];
 
     /**
      * @param array $classes
      */
-    public function __construct(array $classes)
+    public function __construct(array $classes = [])
     {
-        $this->validateClasses($classes);
+        foreach ($classes as $class) {
+            $this->add($class);
+        }
+    }
 
-        $this->classes = $classes;
+    /**
+     * Add a new configuration class to the set
+     *
+     * @param string $class
+     *
+     * @return self
+     */
+    public function add($class)
+    {
+        $this->validate($class);
+
+        $this->classes[] = $class;
+
+        return $this;
     }
 
     /**
@@ -33,20 +49,21 @@ class ConfigurationSet implements ConfigurationInterface
     }
 
     /**
-     * @param array $classes
-     * @throws \DomainException if any classes cannot be loaded
+     * Checks that the given class is valid for configuration
+     *
+     * @param string $class
+     *
+     * @return void
+     *
+     * @throws \DomainException If the class is not of the expected type
      */
-    protected function validateClasses(array $classes)
+    protected function validate($class)
     {
-        $invalid = array_filter(
-            $classes,
-            function ($class) {
-                return !is_subclass_of($class, ConfigurationInterface::class);
-            }
-        );
-        if ($invalid) {
-            $message = 'Classes cannot be loaded or do not implement ConfigurationInterface: ' . implode(', ', $invalid);
-            throw new \DomainException($message);
+        if (!is_subclass_of($class, ConfigurationInterface::class)) {
+            throw new \DomainException(sprintf(
+                'Configuration class `%s` must implement ConfigurationInterface',
+                $class
+            ));
         }
     }
 }
