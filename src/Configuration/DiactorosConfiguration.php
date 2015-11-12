@@ -24,5 +24,10 @@ class DiactorosConfiguration implements ConfigurationInterface
         );
 
         $injector->share('Psr\Http\Message\ServerRequestInterface');
+
+        $injector->alias(
+            'Psr\Http\Message\RequestInterface',
+            'Psr\Http\Message\ServerRequestInterface'
+        );
     }
 }
