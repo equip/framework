@@ -256,9 +256,8 @@ class Configuration implements ConfigurationInterface
         $injector->prepare(Router::class, [$this, 'prepare']);
     }
 
-    public function prepare(Router $router, Injector $injector)
+    public function prepare(Router $router, Routes $routes)
     {
-        $routes = $injector->make(Routes::class);
         $routes($router);
     }
 }
