@@ -415,12 +415,13 @@ class ResponderConfiguration implements ConfigurationInterface
 {
     public function apply(Injector $injector)
     {
-        $injector->prepare(FormatterResponder::class, [$this, 'prepareResponder']);
+        $injector->delegate(FormatterResponder::class, [$this, 'delegateResponder']);
     }
 
-    public function prepareResponder(FormatterResponder $responder)
+    public function delegateResponder(Injector $injector)
     {
-        $responder->withFormatters([
+        $responder = $injector->make(FormatterResponder::class);
+        return $responder->withFormatters([
             PlatesFormatter::class => 1.0
         ]);
     }
