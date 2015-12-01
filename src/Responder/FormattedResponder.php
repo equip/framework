@@ -75,7 +75,6 @@ class FormattedResponder implements ResponderInterface
         $response  = $this->format($response, $formatter, $payload);
 
         return $response;
-
     }
 
     /**
