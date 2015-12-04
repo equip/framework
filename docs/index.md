@@ -99,10 +99,20 @@ To faciliate ease of reuse for groupings of configuration, Spark provides a [`Co
 
 For a Spark application to function properly, the `Injector` instance it uses must have a minimum level of configuration. This configuration is applied using the [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) class, which extends [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) to provide a grouping of configurations for several libraries.
 
+### Default Configuration
+
+The following configurations are used by `DefaultConfigurationSet`:
+
 * [`AurynConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/AurynConfiguration.php) - Use the `Injector` instance as a singleton and to resolve [actions](https://github.com/pmjones/adr#controller-vs-action)
 * [`DiactorosConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DiactorosConfiguration.php) - Use [Diactoros](https://github.com/zendframework/zend-diactoros/) for the framework [PSR-7](http://www.php-fig.org/psr/psr-7/) implementation
 * [`NegotiationConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/NegotiationConfiguration.php) - Use [Negotiation](https://github.com/willdurand/negotiation) for [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation)
 * [`RelayConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/RelayConfiguration.php) - Use [Relay](http://relayphp.com) for the framework middleware dispatcher
+
+### Optional Configurations
+
+The following configurations are available but not used by default:
+
+* [`PlatesResponderConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/PlatesResponderConfiguration.php) - Use [Plates](http://platesphp.com/) as the default [responder](#responders)
 
 ## Bootstrap
 
@@ -403,31 +413,28 @@ The default configuration looks like this:
 
 ### Using Plates
 
-Using [`PlatesFormatter`](https://github.com/sparkphp/spark/blob/master/src/Formatter/PlatesFormatter.php) requires changing the formatters used by [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php). This can be accomplished using a [custom configuration](#configuration) as in the example below.
+Using [`PlatesFormatter`](https://github.com/sparkphp/spark/blob/master/src/Formatter/PlatesFormatter.php) requires changing the formatters used by [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php). The easiest way to do this is by using the `PlatesResponderConfiguration` as in the example below:
 
 ```php
-use Auryn\Injector;
-use Spark\Configuration\ConfigurationInterface;
-use Spark\Formatter\PlatesFormatter;
-use Spark\Responder\FormatterResponder;
+use Spark\Configuration\PlatesResponderConfiguration;
 
-class ResponderConfiguration implements ConfigurationInterface
-{
-    public function apply(Injector $injector)
-    {
-        $injector->prepare(FormatterResponder::class, [$this, 'prepareResponder']);
-    }
-
-    public function prepareResponder(FormattedResponder $responder)
-    {
-        return $responder->withFormatters([
-            PlatesFormatter::class => 1.0
-        ]);
-    }
-}
+$configuration = new PlatesResponderConfiguration;
+$configuration->apply($injector);
 ```
 
-Note that this example completely replaces the default group of formatters of [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php). If you instead want to add to that group of formatters, you can invoke the responder's `getFormatters()` method to get an array of the same form as the one shown above, modify it, and then invoke its `withFormatters()` method with the modified array.
+If you are using the [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) you can add this configuration to the default set:
+
+```php
+use Spark\Configuration\DefaultConfigurationSet;
+use Spark\Configuration\PlatesResponderConfiguration;
+
+$configuration = new DefaultConfigurationSet([
+    PlatesResponderConfiguration::class
+]);
+$configuration->apply($injector);
+```
+
+Note that this will completely replace the default group of formatters of [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php). If you instead want to add to that group of formatters, you will need to use a custom configuration that modifies the response of `getFormatters()` and then invoke `withFormatters()` method to store the modified array.
 
 ### Changing Responders
 
