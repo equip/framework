@@ -2,31 +2,31 @@
 
 namespace SparkTests\Configuration;
 
-use Auryn\Injector;
-use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Spark\Configuration\DiactorosConfiguration;
 
-class DiactorosConfigurationTestCase extends TestCase
+class DiactorosConfigurationTest extends ConfigurationTestCase
 {
+    protected function getConfigurations()
+    {
+        return [
+            new DiactorosConfiguration,
+        ];
+    }
+
     public function testApply()
     {
-        $injector = new Injector;
-
-        $config = new DiactorosConfiguration;
-        $config->apply($injector);
-
-        $server_request = $injector->make(ServerRequestInterface::class);
+        $server_request = $this->injector->make(ServerRequestInterface::class);
 
         $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $server_request);
 
-        $request = $injector->make(RequestInterface::class);
+        $request = $this->injector->make(RequestInterface::class);
 
         $this->assertSame($request, $server_request);
 
-        $response = $injector->make(ResponseInterface::class);
+        $response = $this->injector->make(ResponseInterface::class);
 
         $this->assertInstanceOf('Zend\Diactoros\Response', $response);
     }

@@ -1,30 +1,28 @@
 <?php
 namespace SparkTests\Configuration;
 
-use Auryn\Injector;
-use PHPUnit_Framework_TestCase as TestCase;
 use Relay\MiddlewareInterface;
 use Relay\Relay;
 use Spark\Configuration\AurynConfiguration;
 use Spark\Configuration\RelayConfiguration;
 use Spark\Middleware\Collection as MiddlewareCollection;
 
-class RelayConfigurationTestCase extends TestCase
+class RelayConfigurationTest extends ConfigurationTestCase
 {
+    protected function getConfigurations()
+    {
+        return [
+            new AurynConfiguration,
+            new RelayConfiguration,
+        ];
+    }
+
     public function testApply()
     {
-        $injector = new Injector;
-
-        $auryn = new AurynConfiguration;
-        $auryn->apply($injector);
-
-        $relay = new RelayConfiguration;
-        $relay->apply($injector);
-
         $middleware = $this->getMockBuilder(MiddlewareInterface::class)->getMock();
-        $injector->define(MiddlewareCollection::class, [':middlewares' => [$middleware]]);
+        $this->injector->define(MiddlewareCollection::class, [':middlewares' => [$middleware]]);
 
-        $dispatcher = $injector->make(Relay::class);
+        $dispatcher = $this->injector->make(Relay::class);
 
         $this->assertInstanceOf(Relay::class, $dispatcher);
     }
