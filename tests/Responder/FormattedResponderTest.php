@@ -68,4 +68,13 @@ class FormattedResponderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
         $this->assertEquals('{"test":"test"}', (string) $response->getBody());
     }
+
+    public function testEmptyPayload()
+    {
+        $payload = new Payload;
+        $request = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
+        $response = $this->getMockBuilder('Psr\Http\Message\ResponseInterface')->getMock();
+        $returned = call_user_func($this->responder, $request, $response, $payload);
+        $this->assertSame($returned, $response);
+    }
 }
