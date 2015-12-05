@@ -107,7 +107,7 @@ class FormattedResponder implements ResponderInterface
      */
     protected function formatter(ServerRequestInterface $request)
     {
-        $accept     = current($request->getHeader('Accept'));
+        $accept     = $request->getHeaderLine('Accept');
         $priorities = $this->priorities();
         $preferred  = $this->negotiator->getBest($accept, array_keys($priorities));
 
