@@ -71,10 +71,24 @@ class FormattedResponder implements ResponderInterface
         ResponseInterface      $response,
         PayloadInterface       $payload
     ) {
-        $formatter = $this->formatter($request);
-        $response  = $this->format($response, $formatter, $payload);
+        if ($this->hasOutput($payload)) {
+            $formatter = $this->formatter($request);
+            $response  = $this->format($response, $formatter, $payload);
+        }
 
         return $response;
+    }
+
+    /**
+     * Determine if the payload has usable output
+     *
+     * @param PayloadInterface $payload
+     *
+     * @return boolean
+     */
+    protected function hasOutput(PayloadInterface $payload)
+    {
+        return (bool) $payload->getOutput();
     }
 
     /**
