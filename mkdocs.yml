@@ -3,3 +3,4 @@ theme: 'readthedocs'
 pages:
 - Spark: index.md
 - Authentication: auth.md
+- Data: data.md
