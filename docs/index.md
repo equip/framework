@@ -163,9 +163,7 @@ Composer creates the `vendor` directory, downloads all project dependencies into
 
 [Configuration](#configuration) was discussed in an earlier section. In addition to the configurations supported by the Spark core, custom configurations specific to your project can also be applied.
 
-1. Create one or more classes implementing [`ConfigurationInterface`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationInterface.php) to apply configuration appropriate for your project dependencies.
-2. Create a subclass of [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) that declares a constructor and passes an array containing the names of these configuration classes to the parent class constructor. Note that this subclass should either include [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) or some equivalent configuration for Spark core dependencies.
-3. Use the [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) subclass in your bootstrap file.
+First, create one or more classes implementing [`ConfigurationInterface`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationInterface.php) to apply configuration appropriate for your project dependencies.
 
 ```php
 // src/FooConfiguration.php
@@ -178,7 +176,13 @@ class FooConfiguration implements \Spark\Configuration\ConfigurationInterface
         // ...
     }
 }
+```
 
+Next, configurations must be added to a configuration set. There are two potential approaches for this.
+
+One approach is to create a subclass of [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) that declares a constructor and passes an array containing the names of these configuration classes to the parent class constructor.
+
+```php
 // src/ConfigurationSet.php
 namespace My;
 
@@ -193,12 +197,41 @@ class ConfigurationSet extends \Spark\Configuration\ConfigurationSet
         ]);
     }
 }
+```
 
+Note that this subclass must either extend [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) or manually include [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) in the list of classes passed to the parent constructor. This is to ensure that configuration for Spark core dependencies is included.
+
+Another approach involves creating an instance of [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) and passing to its constructor an array containing the names of your configuration classes. These classes will be added to the default list of Spark core dependencies.
+
+```php
+$configuration = new \Spark\Configuration\DefaultConfigurationSet([
+    '\\My\\FooConfiguration',
+    // ...
+]);
+```
+
+Finally, you must apply the configuration set you've created to the injector in your bootstrap file.
+
+```php
 // web/index.php
 require __DIR__ . '/../vendor/autoload.php';
+
+// Create the injector
 $injector = new \Auryn\Injector;
+
+// If you've created a configuration set subclass, instantiate it
 $configuration = new \My\ConfigurationSet;
+
+// If you've created an instance of the default configuration set, use it inline
+$configuration = new \Spark\Configuration\DefaultConfigurationSet([
+    '\\My\\FooConfiguration',
+    // ...
+]);
+
+// Regardless of which method you've chosen, apply the chosen configuration set
+// to the injector
 $configuration->apply($injector);
+
 // ...
 ```
 
