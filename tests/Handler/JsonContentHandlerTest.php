@@ -11,7 +11,7 @@ class JsonContentHandlerTest extends ContentHandlerTestCase
     {
         $request = $this->getRequest(
             $mime = 'application/json',
-            json_encode($body = (object) ['test' => 'json'])
+            json_encode($body = ['test' => 'json'])
         );
         $response = new Response;
         $handler = new JsonContentHandler;

@@ -17,7 +17,7 @@ abstract class ContentHandler
     public function __invoke(Request $request, Response $response, callable $next)
     {
         $mime = strtolower($request->getHeaderLine('Content-Type'));
-        if ($this->isApplicableMimeType($mime) && null === $request->getParsedBody()) {
+        if ($this->isApplicableMimeType($mime) && !$request->getParsedBody()) {
             $parsed = $this->getParsedBody((string) $request->getBody());
             $request = $request->withParsedBody($parsed);
         }

@@ -22,7 +22,7 @@ class JsonContentHandler extends ContentHandler
      */
     protected function getParsedBody($body)
     {
-        $body = json_decode($body);
+        $body = json_decode($body, true);
         if (json_last_error() !== \JSON_ERROR_NONE) {
             $message = 'Error parsing JSON: ' . json_last_error_msg();
             throw new HttpBadRequestException($message);
