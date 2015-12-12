@@ -3,6 +3,7 @@
 namespace Spark\Configuration;
 
 use Auryn\Injector;
+use Spark\Exception\ConfigurationException;
 
 class ConfigurationSet implements ConfigurationInterface
 {
@@ -55,15 +56,12 @@ class ConfigurationSet implements ConfigurationInterface
      *
      * @return void
      *
-     * @throws \DomainException If the class is not of the expected type
+     * @throws ConfigurationException If the class is not of the expected type
      */
     protected function validate($class)
     {
         if (!is_subclass_of($class, ConfigurationInterface::class)) {
-            throw new \DomainException(sprintf(
-                'Configuration class `%s` must implement ConfigurationInterface',
-                $class
-            ));
+            throw ConfigurationException::invalidClass($class);
         }
     }
 }
