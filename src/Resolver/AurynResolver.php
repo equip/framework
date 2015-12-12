@@ -2,10 +2,14 @@
 namespace Spark\Resolver;
 
 use Auryn\Injector;
+use Relay\ResolverInterface;
 
 class AurynResolver implements ResolverInterface
 {
-    protected $injector;
+    /**
+     * @var Injector
+     */
+    private $injector;
 
     public function __construct(Injector $injector)
     {
@@ -13,11 +17,11 @@ class AurynResolver implements ResolverInterface
     }
 
     /**
-     * Returns an instance of a specified class implementing __invoke() using
-     * the underlying Auryn injector.
+     * Get an instance of the given class
      *
      * @param string $spec Fully-qualified class name
-     * @return callable Instance of the referenced class
+     *
+     * @return object
      */
     public function __invoke($spec)
     {

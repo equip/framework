@@ -11,34 +11,12 @@ use Zend\Diactoros\ServerRequestFactory;
 
 class ActionHandlerTest extends TestCase
 {
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testMissingRoute()
+    public function testHandle()
     {
         $injector = new Injector();
         $injector->share($injector);
 
-        $request = ServerRequestFactory::fromGlobals();
-        $response = new Response();
-
-        $actionHandler = $injector->make('Spark\Handler\ActionHandler');
-
-        $actionHandler($request, $response, function($req, $resp) {
-
-            $this->assertInstanceOf('Zend\Diactoros\Response', $resp);
-
-        });
-
-    }
-
-    public function testRouteInjection()
-    {
-        $injector = new Injector();
-        $injector->share($injector);
-
-        $injector->alias('Spark\Resolver\ResolverInterface', 'Spark\Resolver\AurynResolver');
+        $injector->alias('Relay\ResolverInterface', 'Spark\Resolver\AurynResolver');
         $injector->alias('Negotiation\NegotiatorInterface', 'Negotiation\Negotiator');
 
         $request = ServerRequestFactory::fromGlobals();
@@ -50,10 +28,8 @@ class ActionHandlerTest extends TestCase
 
         $actionHandler = $injector->make('Spark\Handler\ActionHandler');
 
-        $response = $actionHandler($request, $response, function($req, $resp) {
-
+        $response = $actionHandler($request, $response, function ($req, $resp) {
             $this->assertInstanceOf('Zend\Diactoros\Response', $resp);
-
             return $resp;
         });
 

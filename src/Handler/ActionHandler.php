@@ -10,12 +10,12 @@ use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\DomainInterface;
 use Spark\Adr\InputInterface;
 use Spark\Adr\ResponderInterface;
-use Spark\Resolver\ResolverInterface;
+use Relay\ResolverInterface;
 
 class ActionHandler extends Arbiter
 {
     /**
-     * @var Spark\Resolver\ResolverInterface
+     * @var ResolverInterface
      */
     protected $resolver;
 

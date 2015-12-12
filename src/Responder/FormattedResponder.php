@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\PayloadInterface;
 use Spark\Adr\ResponderInterface;
 use Spark\Formatter\AbstractFormatter;
-use Spark\Resolver\ResolverInterface;
+use Relay\ResolverInterface;
 
 class FormattedResponder implements ResponderInterface
 {
