@@ -2,7 +2,6 @@
 namespace SparkTests\Handler;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Exception\HttpMethodNotAllowed;
 use SparkTests\Fake\FakeDomain;
 use Spark\Handler\RouteHandler;
 use Spark\Router;
@@ -56,7 +55,7 @@ class RouteHandlerTest extends TestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\HttpNotFound
+     * @expectedException \Spark\Exception\HttpException
      * @expectedExceptionRegExp /cannot find any resource at/i
      */
     public function testNotFoundException()
@@ -69,7 +68,7 @@ class RouteHandlerTest extends TestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\HttpMethodNotAllowed
+     * @expectedException \Spark\Exception\HttpException
      * @expectedExceptionRegExp /cannot access resource .* using method/i
      */
     public function testMethodNotAllowedException()
