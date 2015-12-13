@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\PayloadInterface;
 use Spark\Adr\ResponderInterface;
-use Spark\Resolver\ResolverInterface;
+use Relay\ResolverInterface;
 
 class ChainedResponder implements ResponderInterface
 {

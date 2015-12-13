@@ -16,7 +16,7 @@ class RelayConfiguration implements ConfigurationInterface
         $injector->define(
             RelayBuilder::class,
             [
-                'resolver' => 'Spark\Resolver\ResolverInterface',
+                'resolver' => 'Relay\ResolverInterface',
             ]
         );
 

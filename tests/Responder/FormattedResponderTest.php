@@ -16,7 +16,7 @@ class FormattedResponderTest extends \PHPUnit_Framework_TestCase
     {
         $negotiator = new Negotiator;
 
-        $resolver = $this->getMockBuilder('Spark\Resolver\ResolverInterface')->getMock();
+        $resolver = $this->getMockBuilder('Relay\ResolverInterface')->getMock();
         $resolver->method('__invoke')
                  ->will($this->returnCallback(function ($spec) {
                      return new $spec;

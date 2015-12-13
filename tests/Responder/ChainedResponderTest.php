@@ -10,7 +10,7 @@ class ChainedResponderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $resolver = $this->getMockBuilder('Spark\Resolver\ResolverInterface')->getMock();
+        $resolver = $this->getMockBuilder('Relay\ResolverInterface')->getMock();
         $resolver->method('__invoke')
                  ->will($this->returnCallback(function () {
                        $responder = $this->getMockBuilder('Spark\Adr\ResponderInterface')->getMock();

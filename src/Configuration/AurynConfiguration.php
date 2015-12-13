@@ -14,7 +14,7 @@ class AurynConfiguration implements ConfigurationInterface
         $injector->share($injector);
 
         $injector->alias(
-            'Spark\Resolver\ResolverInterface',
+            'Relay\ResolverInterface',
             'Spark\Resolver\AurynResolver'
         );
     }
