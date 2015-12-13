@@ -52,9 +52,11 @@ class FormattedResponderTest extends \PHPUnit_Framework_TestCase
     public function testResponse()
     {
         $request = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
-        $request->method('getHeader')
-                ->with('Accept')
-                ->willReturn(['application/json']);
+        $request
+            ->expects($this->once())
+            ->method('getHeaderLine')
+            ->with('Accept')
+            ->willReturn('application/json');
 
         $response = new Response;
         $payload  = (new Payload)
