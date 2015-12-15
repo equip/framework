@@ -43,19 +43,21 @@ This method of extraction is represented by an implementation of [`Credentials\E
 
 These credentials extractor implementations are bundled with this library:
 
-* [`JsonExtractor`](https://github.com/sparkphp/auth/blob/master/src/Credentials/JsonExtractor.php) extracts the credentials from top-level properties of a JSON request body. Its constructor takes the names of the properties containing the user identifier and password.
+* [`BodyExtractor`](https://github.com/sparkphp/auth/blob/master/src/Credentials/BodyExtractor.php) extracts the credentials from top-level properties of the parsed request body. Its constructor takes the names of the properties containing the user identifier and password.
 
 The injector can be configured to use a specific extractor implementation like so:
 
 ```php
 use Spark\Auth\Credentials\ExtractorInterface;
-use Spark\Auth\Credentials\JsonExtractor;
+use Spark\Auth\Credentials\BodyExtractor;
 
 $injector->alias(
     ExtractorInterface::class,
-    JsonExtractor::class
+    BodyExtractor::class
 );
 ```
+
+**NOTE**: When using `BodyExtractor` it is expected that any [`*ContentHandler` middleware](http://spark.readthedocs.org/en/latest/#middleware) will be placed *before* `AuthHandler` to ensure that the request body has been parsed before authentication is attempted.
 
 ## Adapter
 
