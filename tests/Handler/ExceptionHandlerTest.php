@@ -3,95 +3,84 @@
 namespace SparkTests\Handler;
 
 use Spark\Handler\ExceptionHandler;
-use Spark\Exception\HttpNotFound;
-use Spark\Exception\HttpMethodNotAllowed;
+use Spark\Exception\HttpException;
+use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\Response;
 
 class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var ExceptionHandler
+     */
+    private $handler;
+
     public function setUp()
     {
-        $this->request  = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
-        $this->response = $this->getMockBuilder('Psr\Http\Message\ResponseInterface')->getMock();
-        $this->body     = $this->getMockBuilder('Psr\Http\Message\StreamInterface')->getMock();
+        $this->handler = new ExceptionHandler;
+    }
 
-        $this->response
-            ->method('getBody')
-            ->willReturn($this->body);
-
-        $this->body
-            ->method('write')
-            ->with($this->callback(function ($content) {
-                return $this->isJson($content);
-            }))
-             ->willReturn($this->body);
+    private function execute(callable $next)
+    {
+        return call_user_func($this->handler, new ServerRequest, new Response, $next);
     }
 
     public function testGeneric()
     {
-        $handler = new ExceptionHandler(__DIR__);
-
-        $this->response
-            ->method('withStatus')
-            ->with($this->equalTo(500))
-            ->willReturn($this->response);
-
-        $this->response
-            ->method('withHeader')
-            ->with($this->equalTo('Content-Type'), $this->isType('string'))
-            ->willReturn($this->response);
-
-        $next = function ($request, $response) {
-            $this->assertInstanceOf('Psr\Http\Message\ServerRequestInterface', $request);
-            $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
-
+        $response = $this->execute(function ($request, $response) {
             throw new \Exception;
-        };
+        });
 
-        $handler($this->request, $this->response, $next);
+        $this->assertEquals(500, $response->getStatusCode());
+        $this->assertEquals('application/json', $response->getHeaderLine('Content-Type'));
+        $this->assertJson((string) $response->getBody());
+
+        return $response;
     }
 
     public function testNotFound()
     {
-        $handler = new ExceptionHandler;
+        $response = $this->execute(function ($request, $response) {
+            throw HttpException::notFound($request->getUri()->getPath());
+        });
 
-        $this->response
-            ->method('withStatus')
-            ->with($this->equalTo(404))
-            ->willReturn($this->response);
-
-        $this->response
-            ->method('withHeader')
-            ->with($this->equalTo('Content-Type'), $this->isType('string'))
-            ->willReturn($this->response);
-
-        $next = function ($request, $response) {
-            throw new HttpNotFound;
-        };
-
-        $handler($this->request, $this->response, $next);
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     public function testMethodNotAllowed()
     {
-        $handler = new ExceptionHandler;
+        $response = $this->execute(function ($request, $response) {
+            throw HttpException::methodNotAllowed('POST', '/', ['GET', 'PUT']);
+        });
 
-        $this->response
-            ->method('withStatus')
-            ->with($this->equalTo(405))
-            ->willReturn($this->response);
+        $this->assertEquals(405, $response->getStatusCode());
+        $this->assertEquals('GET,PUT', $response->getHeaderLine('Allow'));
+    }
 
-        $this->response
-            ->method('withHeader')
-            ->withConsecutive(
-                [$this->equalTo('Content-Type'), $this->isType('string')],
-                [$this->equalTo('Allow'), $this->equalTo('GET,PUT')]
-            )
-            ->willReturn($this->response);
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionRegExp /directory .* does not exist/i
+     */
+    public function testCannotUseInvalidRoot()
+    {
+        $this->handler->withRoot('totally-invalid-directory-name');
+    }
 
-        $next = function ($request, $response) {
-            throw (new HttpMethodNotAllowed)->setAllowedMethods(['GET', 'PUT']);
-        };
+    public function testFilesHaveRelativeRoot()
+    {
+        $this->handler = $this->handler->withRoot(__DIR__);
 
-        $handler($this->request, $this->response, $next);
+        $response = $this->execute(function ($request, $response) {
+            throw new \Exception;
+        });
+
+        $body = json_decode((string) $response->getBody(), true);
+
+        // The current directory should not contained in the trace
+        $this->assertNotContains(__DIR__, $body['file']);
+        foreach ($body['trace'] as $trace) {
+            if (!empty($trace['file'])) {
+                $this->assertNotContains(__DIR__, $trace['file']);
+            }
+        }
     }
 }

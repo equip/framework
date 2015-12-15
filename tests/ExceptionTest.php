@@ -2,8 +2,7 @@
 namespace SparkTests;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Exception\HttpMethodNotAllowed;
-use Spark\Exception\HttpNotFound;
+use Spark\Exception\HttpException;
 use Spark\Router;
 use Zend\Diactoros\Response;
 
@@ -11,23 +10,20 @@ class ExceptionTest extends TestCase
 {
     public function testHttpNotFound()
     {
-        $exception = HttpNotFound::invalidPath('/');
+        $exception = HttpException::notFound('/');
 
-        $this->assertInstanceOf(HttpNotFound::class, $exception);
-
-        $this->assertEquals(404, $exception->getStatusCode());
+        $this->assertInstanceOf(HttpException::class, $exception);
+        $this->assertEquals(404, $exception->getCode());
     }
 
     public function testHttpMethodNotAllowed()
     {
         $allowed = ['POST', 'PATCH'];
 
-        $exception = HttpMethodNotAllowed::invalidAccessMethod('GET', '/', $allowed);
+        $exception = HttpException::methodNotAllowed('/', 'GET', $allowed);
 
-        $this->assertInstanceOf(HttpMethodNotAllowed::class, $exception);
-
-        $this->assertEquals($allowed, $exception->getAllowedMethods());
-        $this->assertEquals(405, $exception->getStatusCode());
+        $this->assertInstanceOf(HttpException::class, $exception);
+        $this->assertEquals(405, $exception->getCode());
 
         $response = $exception->withResponse(new Response);
 
