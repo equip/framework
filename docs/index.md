@@ -322,49 +322,44 @@ Here is a list of middlewares recommended for use in most Spark applications, as
 * [`Spark\Handler\ContentHandler`](https://github.com/sparkphp/spark/blob/master/src/Handler/ContentHandler.php) - Parses request bodies encoded in common formats and makes the parsed version available via the `getParsedBody()` method of the [PSR-7 Request object](https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php)
 * [`Spark\Handler\ActionHandler`](https://github.com/sparkphp/spark/blob/master/src/Handler/ActionHandler.php) - Invokes the [domain](https://github.com/pmjones/adr#model-vs-domain) corresponding to the resolved [action](https://github.com/pmjones/adr#controller-vs-action), applies the [responder](https://github.com/pmjones/adr#view-vs-responder) to the resulting payload, and returns the resulting response
 
-Custom middleware can also be implemented to further customize application behavior.
-
-1. Create one or more classes implementing [`MiddlewareInterface`](https://github.com/relayphp/Relay.Relay/blob/master/src/MiddlewareInterface.php).
-2. Create a subclass of [`Collection`](https://github.com/sparkphp/spark/blob/master/src/Middleware/Collection.php) that declares a constructor and passes an array containing the names of these middleware classes to the parent class constructor. Note that this subclass should either include [`DefaultCollection`](https://github.com/sparkphp/spark/blob/master/src/Middleware/DefaultCollection.php) or some equivalent configuration for Spark core dependencies.
-3. Use the [`Collection`](https://github.com/sparkphp/spark/blob/master/src/Middleware/Collection.php) subclass in your bootstrap file.
+Custom middleware can also be used to further customize application behavior by creating a class that implements [`MiddlewareInterface`](https://github.com/relayphp/Relay.Relay/blob/master/src/MiddlewareInterface.php):
 
 ```php
-// src/FooMiddleware.php
-namespace My;
+namespace Acme;
 
-class FooMiddleware implements \Relay\MiddlewareInterface
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Relay/MiddlewareInterface;
+
+class FooMiddleware implements MiddlewareInterface
 {
     public function __invoke(
-        \Psr\Http\Message\RequestInterface,
-        \Psr\Http\Message\ResponseInterface,
+        RequestInterface $request,
+        ResponseInterface $response,
         callable $next
     ) {
         // ...
+        return $response;
     }
 }
+```
 
-// src/MiddlewareCollection.php
-namespace My;
+Once you have created your middleware, append it to the default collection:
 
-class MiddlewareCollection extends \Spark\Middleware\Collection
-{
-    public function __construct(\Spark\Middleware\DefaultCollection $defaults)
-    {
-        $middlewares = array_merge($defaults->getArrayCopy(), [
-            FooMiddleware::class,
-            // ...
-        ]);
-        parent::__construct($middlewares);
+```php
+$injector->prepare(
+    '\Spark\Middleware\Collection',
+    function (Collection $collection) {
+        return $collection->withAddedMiddleware('\Acme\FooMiddleware');
     }
-}
-
-// web/index.php
-// ...
-$injector->alias(
-    '\\Spark\\Middleware\\Collection',
-    '\\My\\MiddlewareCollection'
 );
-// ...
+```
+
+If your middleware needs to be added before a specific middleware you can do that too:
+
+```php
+// FooMiddleware will be run immediately before ActionHandler
+$collection = $collection->withAddedMiddleware(FooMiddleware::class, ActionHandler::class);
 ```
 
 ## Domains
