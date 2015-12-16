@@ -6,8 +6,7 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Spark\Exception\HttpMethodNotAllowed;
-use Spark\Exception\HttpNotFound;
+use Spark\Exception\HttpException;
 use Spark\Router;
 
 class RouteHandler
@@ -62,10 +61,9 @@ class RouteHandler
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                throw new HttpNotFound;
+                throw HttpException::notFound($path);
             case Dispatcher::METHOD_NOT_ALLOWED:
-                throw (new HttpMethodNotAllowed)
-                    ->setAllowedMethods($routeInfo[1]);
+                throw HttpException::methodNotAllowed($path, $method, $routeInfo[1]);
             case Dispatcher::FOUND:
                 list(, $route, $arguments) = $routeInfo;
                 break;

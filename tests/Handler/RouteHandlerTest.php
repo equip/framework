@@ -2,7 +2,7 @@
 namespace SparkTests\Handler;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Exception\HttpMethodNotAllowed;
+use SparkTests\Fake\FakeDomain;
 use Spark\Handler\RouteHandler;
 use Spark\Router;
 use SparkTests\Fake\FakeRouteHandler;
@@ -46,7 +46,7 @@ class RouteHandlerTest extends TestCase
             list($type, $http) = $method;
             $request = new ServerRequest([], [], $path, $http);
             $response = new Response();
-            $resolved = $routeHandler($request, $response, function($req, $resp) {
+            $resolved = $routeHandler($request, $response, function ($req, $resp) {
                 return $resp;
             });
 
@@ -55,30 +55,30 @@ class RouteHandlerTest extends TestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\HttpMethodNotAllowed
+     * @expectedException \Spark\Exception\HttpException
+     * @expectedExceptionRegExp /cannot find any resource at/i
+     */
+    public function testNotFoundException()
+    {
+        $router = new Router();
+
+        $handler = new RouteHandler($router);
+
+        $handler->dispatch('GET', '/');
+    }
+
+    /**
+     * @expectedException \Spark\Exception\HttpException
+     * @expectedExceptionRegExp /cannot access resource .* using method/i
      */
     public function testMethodNotAllowedException()
     {
         $router = new Router();
+
         $router->get('/test', 'SparkTests\Fake\FakeDomain');
-        $router->post('/test', 'SparkTests\Fake\FakeDomain');
 
         $routeHandler = new RouteHandler($router);
-        $error = null;
 
-        $response = new Response();
-
-        try {
-            $routeHandler->dispatch('PATH', '/test');
-        } catch (HttpMethodNotAllowed $e) {
-            $this->assertEquals(['GET', 'POST'], $e->getAllowedMethods());
-
-            $response = $e->withResponse($response);
-            $this->assertEquals('GET,POST', $response->getHeader('Allow')[0]);
-        }
-
-        $routeHandler->dispatch('PUT', '/test');
-
+        $routeHandler->dispatch('POST', '/test');
     }
-
 }
