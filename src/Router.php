@@ -22,7 +22,7 @@ class Router
     /**
      * @var string
      */
-    private $input = 'Spark\Adr\Input';
+    private $input = 'Spark\Input';
 
     /**
      * @var string
