@@ -3,7 +3,7 @@ namespace Spark\Handler;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Spark\Exception\HttpBadRequestException;
+use Spark\Exception\HttpException;
 use Zend\Diactoros\Stream;
 
 class JsonContentHandler extends ContentHandler
@@ -24,8 +24,8 @@ class JsonContentHandler extends ContentHandler
     {
         $body = json_decode($body, true);
         if (json_last_error() !== \JSON_ERROR_NONE) {
-            $message = 'Error parsing JSON: ' . json_last_error_msg();
-            throw new HttpBadRequestException($message);
+            $message = 'JSON ' . json_last_error_msg();
+            throw HttpException::badRequest($message);
         }
         return $body;
     }

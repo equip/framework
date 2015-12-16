@@ -41,6 +41,19 @@ class HttpException extends RuntimeException
     }
 
     /**
+     * @param string $message
+     *
+     * @return static
+     */
+    public static function badRequest($message)
+    {
+        return new static(sprintf(
+            'Cannot parse the request: %s',
+            $message
+        ), 400);
+    }
+
+    /**
      * @var array
      */
     private $allowed = [];
