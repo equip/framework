@@ -39,7 +39,6 @@ class ConfigurationSetTest extends TestCase
     public function testInvalidClass()
     {
         $set = new ConfigurationSet;
-
-        $set->add('\stdClass');
+        $set = $set->withValue('\stdClass');
     }
 }

@@ -3,39 +3,25 @@
 namespace Spark\Configuration;
 
 use Auryn\Injector;
+use Shadowhand\Destrukt\Set;
 use Spark\Exception\ConfigurationException;
 
-class ConfigurationSet implements ConfigurationInterface
+class ConfigurationSet extends Set implements ConfigurationInterface
 {
     /**
-     * @var array
+     * @inheritDoc
+     *
+     * @throws ConfigurationException If any class is not of the expected type
      */
-    protected $classes = [];
-
-    /**
-     * @param array $classes
-     */
-    public function __construct(array $classes = [])
+    public function validate(array $classes)
     {
+        parent::validate($classes);
+
         foreach ($classes as $class) {
-            $this->add($class);
+            if (!is_subclass_of($class, ConfigurationInterface::class)) {
+                throw ConfigurationException::invalidClass($class);
+            }
         }
-    }
-
-    /**
-     * Add a new configuration class to the set
-     *
-     * @param string $class
-     *
-     * @return self
-     */
-    public function add($class)
-    {
-        $this->validate($class);
-
-        $this->classes[] = $class;
-
-        return $this;
     }
 
     /**
@@ -43,25 +29,9 @@ class ConfigurationSet implements ConfigurationInterface
      */
     public function apply(Injector $injector)
     {
-        foreach ($this->classes as $class) {
+        foreach ($this as $class) {
             $configuration = $injector->make($class);
             $configuration->apply($injector);
-        }
-    }
-
-    /**
-     * Checks that the given class is valid for configuration
-     *
-     * @param string $class
-     *
-     * @return void
-     *
-     * @throws ConfigurationException If the class is not of the expected type
-     */
-    protected function validate($class)
-    {
-        if (!is_subclass_of($class, ConfigurationInterface::class)) {
-            throw ConfigurationException::invalidClass($class);
         }
     }
 }
