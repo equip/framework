@@ -6,10 +6,9 @@ use Spark\Router\Route;
 
 class RouteTest extends TestCase
 {
-
     public function testGetSet()
     {
-        $route = new Route('', 'Spark\Adr\Input', 'Spark\Responder\Responder');
+        $route = new Route('', 'Spark\Input', 'Spark\Responder\Responder');
 
         $domain = 'SparkTests\Fake\FakeDomain';
         $route->setDomain($domain);
@@ -22,7 +21,5 @@ class RouteTest extends TestCase
         $responder = 'SparkTests\Fake\FakeResponder';
         $route->setResponder($responder);
         $this->assertEquals($responder, $route->getResponder());
-
     }
-
 }

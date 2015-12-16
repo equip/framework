@@ -2,7 +2,7 @@
 namespace SparkTests;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Adr\Input;
+use Spark\Input;
 use Spark\Router;
 use SparkTests\Fake\FakeInput;
 use Zend\Diactoros\ServerRequest;
@@ -30,9 +30,8 @@ class RouterTest extends TestCase
         $route = current($this->router->getRoutes());
         $this->assertInstanceOf('\Spark\Router\Route', $route);
         $this->assertEquals('Spark\Responder\ChainedResponder', $route->getResponder());
-        $this->assertEquals('Spark\Adr\Input', $route->getInput());
+        $this->assertEquals('Spark\Input', $route->getInput());
         $this->assertEquals('SparkTests\Fake\FakeDomain', $route->getDomain());
-
     }
 
     public function testRouteInput()
@@ -59,7 +58,6 @@ class RouterTest extends TestCase
 
         $this->assertEquals($input, $route->getInput());
         $this->assertEquals($responder, $route->getResponder());
-
     }
 
     public function routeMethodProvider()
@@ -84,5 +82,4 @@ class RouterTest extends TestCase
 
         $this->assertInstanceOf('Spark\Router\Route', $route);
     }
-
 }

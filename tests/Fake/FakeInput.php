@@ -1,7 +1,7 @@
 <?php
 namespace SparkTests\Fake;
 
-use Spark\Adr\Input;
+use Spark\Input;
 
 class FakeInput extends Input
 {
