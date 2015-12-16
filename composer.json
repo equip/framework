@@ -22,7 +22,7 @@
         "relay/middleware": "~0.1",
         "sparkphp/adr": "^0.2.3",
         "willdurand/negotiation": "~1.4",
-        "zendframework/zend-diactoros": "~1.0"
+        "zendframework/zend-diactoros": "^1.0.4"
     },
     "require-dev": {
         "league/plates": "~3.1",
