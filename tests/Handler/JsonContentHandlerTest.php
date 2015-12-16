@@ -22,16 +22,16 @@ class JsonContentHandlerTest extends ContentHandlerTestCase
         });
     }
 
+    /**
+     * @expectedException \Spark\Exception\HttpException
+     * @expectedExceptionCode 400
+     * @expectedExceptionMessageRegExp /json syntax error/i
+     */
     public function testInvokeWithMalformedBody()
     {
-        $this->setExpectedException(
-            HttpBadRequestException::class,
-            'Error parsing JSON: Syntax error'
-        );
-
         $request = $this->getRequest(
             $mime = 'application/json',
-            $body = '{'
+            $body = '{not json}'
         );
         $response = new Response;
         $handler = new JsonContentHandler;
