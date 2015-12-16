@@ -5,7 +5,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Relay\MiddlewareInterface;
 use Spark\Middleware\Collection as MiddlewareCollection;
 
-class MiddlewareCollectionTest extends TestCase
+class CollectionTest extends TestCase
 {
     /**
      * @expectedException \DomainException
