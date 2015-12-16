@@ -20,7 +20,7 @@
         "rdlowrey/auryn": "^1.1",
         "relay/relay": "^1",
         "relay/middleware": "~0.1",
-        "sparkphp/adr": "^0.3",
+        "sparkphp/adr": "^0.4",
         "willdurand/negotiation": "~1.4",
         "zendframework/zend-diactoros": "^1.0.4"
     },
