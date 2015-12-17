@@ -24,7 +24,7 @@ Using the `withOptions()` method, it's possible to obtain a new command instance
 $new_command = $old_command->withOptions([ /* ... */ ]);
 ```
 
-The `addOptions()` method functions in a similar fashion except that the provided options are added to those of the existing command instance rather than replacing them.
+The `addOptions()` method functions in a similar fashion except that it merges the provided options with those of the existing command instance rather than replacing them.
 
 ```php
 $new_options = [ /* ... */ ];
