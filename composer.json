@@ -18,11 +18,12 @@
         "arbiter/arbiter": "~0.1",
         "nikic/fast-route": "~0.6",
         "rdlowrey/auryn": "^1.1",
-        "relay/relay": "^1",
+        "relay/relay": "^1.1",
         "relay/middleware": "~0.1",
         "sparkphp/adr": "^0.4",
         "willdurand/negotiation": "~1.4",
-        "zendframework/zend-diactoros": "^1.0.4"
+        "zendframework/zend-diactoros": "^1.0.4",
+        "shadowhand/destrukt": "^0.5.2"
     },
     "require-dev": {
         "league/plates": "~3.1",

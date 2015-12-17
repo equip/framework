@@ -19,9 +19,6 @@ class RelayConfigurationTest extends ConfigurationTestCase
 
     public function testApply()
     {
-        $middleware = $this->getMockBuilder(MiddlewareInterface::class)->getMock();
-        $this->injector->define(MiddlewareCollection::class, [':middlewares' => [$middleware]]);
-
         $dispatcher = $this->injector->make(Relay::class);
 
         $this->assertInstanceOf(Relay::class, $dispatcher);
