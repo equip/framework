@@ -2,8 +2,8 @@
 
 namespace Spark\Middleware;
 
+use Destrukt\Set;
 use Relay\MiddlewareInterface;
-use Shadowhand\Destrukt\Set;
 
 class Collection extends Set
 {
