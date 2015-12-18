@@ -3,7 +3,7 @@
 namespace Spark\Configuration;
 
 use Auryn\Injector;
-use Shadowhand\Destrukt\Set;
+use Destrukt\Set;
 use Spark\Exception\ConfigurationException;
 
 class ConfigurationSet extends Set implements ConfigurationInterface

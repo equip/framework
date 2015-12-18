@@ -23,7 +23,7 @@
         "sparkphp/adr": "^0.4",
         "willdurand/negotiation": "~1.4",
         "zendframework/zend-diactoros": "^1.0.4",
-        "shadowhand/destrukt": "^0.5.2"
+        "destrukt/destrukt": "^0.6"
     },
     "require-dev": {
         "league/plates": "~3.1",
