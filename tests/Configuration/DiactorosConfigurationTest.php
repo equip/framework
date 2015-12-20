@@ -16,18 +16,21 @@ class DiactorosConfigurationTest extends ConfigurationTestCase
         ];
     }
 
-    public function testApply()
+    public function dataMapping()
     {
-        $server_request = $this->injector->make(ServerRequestInterface::class);
+        return [
+            [RequestInterface::class, 'Zend\Diactoros\Request'],
+            [ResponseInterface::class, 'Zend\Diactoros\Response'],
+            [ServerRequestInterface::class, 'Zend\Diactoros\ServerRequest'],
+        ];
+    }
 
-        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $server_request);
-
-        $request = $this->injector->make(RequestInterface::class);
-
-        $this->assertSame($request, $server_request);
-
-        $response = $this->injector->make(ResponseInterface::class);
-
-        $this->assertInstanceOf('Zend\Diactoros\Response', $response);
+    /**
+     * @dataProvider dataMapping
+     */
+    public function testInstances($interface, $class)
+    {
+        $instance = $this->injector->make($interface);
+        $this->assertInstanceOf($class, $instance);
     }
 }
