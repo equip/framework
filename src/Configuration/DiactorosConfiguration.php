@@ -12,22 +12,23 @@ class DiactorosConfiguration implements ConfigurationInterface
     public function apply(Injector $injector)
     {
         $injector->alias(
+            'Psr\Http\Message\RequestInterface',
+            'Zend\Diactoros\Request'
+        );
+
+        $injector->alias(
             'Psr\Http\Message\ResponseInterface',
             'Zend\Diactoros\Response'
         );
 
-        $injector->share('Psr\Http\Message\ResponseInterface');
-
-        $injector->delegate(
+        $injector->alias(
             'Psr\Http\Message\ServerRequestInterface',
-            'Zend\Diactoros\ServerRequestFactory::fromGlobals'
+            'Zend\Diactoros\ServerRequest'
         );
 
-        $injector->share('Psr\Http\Message\ServerRequestInterface');
-
-        $injector->alias(
-            'Psr\Http\Message\RequestInterface',
-            'Psr\Http\Message\ServerRequestInterface'
+        $injector->delegate(
+            'Zend\Diactoros\ServerRequest',
+            'Zend\Diactoros\ServerRequestFactory::fromGlobals'
         );
     }
 }
