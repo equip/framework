@@ -20,6 +20,7 @@ class ChainedResponder implements ResponderInterface
      */
     private $responders = [
         'Spark\Responder\FormattedResponder',
+        'Spark\Responder\RedirectResponder',
     ];
 
     /**
