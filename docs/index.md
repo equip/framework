@@ -125,29 +125,29 @@ Here's an example of what this `index.php` file might look like.
 require __DIR__ . '/../vendor/autoload.php';
 
 // Configure the dependency injection container
-$injector = new \Auryn\Injector;
-$configuration = new \Spark\Configuration\DefaultConfigurationSet;
+$injector = new Auryn\Injector;
+$configuration = new Spark\Configuration\DefaultConfigurationSet;
 $configuration->apply($injector);
 
 // Configure middleware
 $injector->alias(
-    '\\Spark\\Middleware\\Collection',
-    '\\Spark\\Middleware\\DefaultCollection'
+    'Spark\Middleware\Collection',
+    'Spark\Middleware\DefaultCollection'
 );
 
 // Configure the router
 $injector->prepare(
-    '\\Spark\\Router',
-    function(\Spark\Router $router) {
+    'Spark\Router',
+    function(Spark\Router $router) {
         // ...
     }
 );
 
 // Bootstrap the application
-$dispatcher = $injector->make('\\Relay\\Relay');
+$dispatcher = $injector->make('Relay\Relay');
 $dispatcher(
-    $injector->make('Psr\\Http\\Message\\ServerRequestInterface'),
-    $injector->make('Psr\\Http\\Message\\ResponseInterface')
+    $injector->make('Psr\Http\Message\ServerRequestInterface'),
+    $injector->make('Psr\Http\Message\ResponseInterface')
 );
 ```
 
@@ -166,12 +166,15 @@ Composer creates the `vendor` directory, downloads all project dependencies into
 First, create one or more classes implementing [`ConfigurationInterface`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationInterface.php) to apply configuration appropriate for your project dependencies.
 
 ```php
-// src/FooConfiguration.php
-namespace My;
+// src/Configuration/FooConfiguration.php
+namespace Acme\Configuration;
 
-class FooConfiguration implements \Spark\Configuration\ConfigurationInterface
+use Auryn\Injector;
+use Spark\Configuration\ConfigurationInterface;
+
+class FooConfiguration implements ConfigurationInterface
 {
-    public function apply(\Auryn\Injector $injector)
+    public function apply(Injector $injector)
     {
         // ...
     }
@@ -183,29 +186,30 @@ Next, configurations must be added to a configuration set. There are two potenti
 One approach is to create a subclass of [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) that declares a constructor and passes an array containing the names of these configuration classes to the parent class constructor.
 
 ```php
-// src/ConfigurationSet.php
-namespace My;
+// src/Configuration/ConfigurationSet.php
+namespace Acme\Configuration;
 
-class ConfigurationSet extends \Spark\Configuration\ConfigurationSet
+use Spark\Configuration\DefaultConfigurationSet;
+
+class ConfigurationSet extends DefaultConfigurationSet
 {
     public function __construct()
     {
         parent::__construct([
-            '\\Spark\\Configuration\\DefaultConfigurationSet',
-            '\\My\\FooConfiguration',
+            'Acme\Configuration\FooConfiguration',
             // ...
         ]);
     }
 }
 ```
 
-Note that this subclass must either extend [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) or manually include [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) in the list of classes passed to the parent constructor. This is to ensure that configuration for Spark core dependencies is included.
+Note that this subclass must either extend [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) or manually include required configurations in the list of classes passed to the parent constructor. This is to ensure that configuration for Spark core dependencies is included.
 
 Another approach involves creating an instance of [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) and passing to its constructor an array containing the names of your configuration classes. These classes will be added to the default list of Spark core dependencies.
 
 ```php
-$configuration = new \Spark\Configuration\DefaultConfigurationSet([
-    '\\My\\FooConfiguration',
+$configuration = new Spark\Configuration\DefaultConfigurationSet([
+    'Acme\Configuration\FooConfiguration',
     // ...
 ]);
 ```
@@ -217,19 +221,15 @@ Finally, you must apply the configuration set you've created to the injector in 
 require __DIR__ . '/../vendor/autoload.php';
 
 // Create the injector
-$injector = new \Auryn\Injector;
+$injector = new Auryn\Injector;
 
 // If you've created a configuration set subclass, instantiate it
-$configuration = new \My\ConfigurationSet;
+$configuration = new Acme\Configuration\ConfigurationSet;
 
-// If you've created an instance of the default configuration set, use it inline
-$configuration = new \Spark\Configuration\DefaultConfigurationSet([
-    '\\My\\FooConfiguration',
-    // ...
-]);
+// Or if you simply want to extend the default set:
+$configuration = new Spark\Configuration\DefaultConfigurationSet([ /* ... */ ]);
 
-// Regardless of which method you've chosen, apply the chosen configuration set
-// to the injector
+// Regardless of which method you've chosen, apply the configuration
 $configuration->apply($injector);
 
 // ...
@@ -240,11 +240,11 @@ $configuration->apply($injector);
 The router maps URIs to the corresponding [domain](https://github.com/pmjones/adr#model-vs-domain) that the action should use. This is implemented in the Spark [`Router`](https://github.com/sparkphp/spark/blob/master/src/Router.php) class. Here is an example of what configuring an instance of it could look like.
 
 ```php
-use MyApp\Domain;
+use Acme\Domain;
 
 $injector->prepare(
-    '\\Spark\\Router',
-    function(\Spark\Router $router) {
+    'Spark\Router',
+    function(Spark\Router $router) {
         $router->get('/providers', Domain\GetProviders::class);
         $router->get('/providers/{provider}', Domain\GetProvider::class);
         $router->post('/providers/{provider}', Domain\SynchronizeProvider::class);
@@ -262,7 +262,7 @@ An alternative way to implement route configuration involves using an [invokable
 
 ```php
 // src/Router/Routes.php
-namespace My\Router;
+namespace Acme\Router;
 
 class Routes
 {
@@ -281,12 +281,12 @@ class Routes
 
     protected function get($uri, $domain)
     {
-        $this->router->get($uri, 'MyApp\\Domain\\' . $domain);
+        $this->router->get($uri, 'Acme\Domain\\' . $domain);
     }
 }
 
 // src/Router/Configuration.php
-namespace My\Router;
+namespace Acme\Router;
 
 use Auryn\Injector;
 use Spark\Configuration\ConfigurationInterface;
@@ -322,16 +322,13 @@ Here is a list of middlewares recommended for use in most Spark applications, as
 * [`Spark\Handler\ContentHandler`](https://github.com/sparkphp/spark/blob/master/src/Handler/ContentHandler.php) - Parses request bodies encoded in common formats and makes the parsed version available via the `getParsedBody()` method of the [PSR-7 Request object](https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php)
 * [`Spark\Handler\ActionHandler`](https://github.com/sparkphp/spark/blob/master/src/Handler/ActionHandler.php) - Invokes the [domain](https://github.com/pmjones/adr#model-vs-domain) corresponding to the resolved [action](https://github.com/pmjones/adr#controller-vs-action), applies the [responder](https://github.com/pmjones/adr#view-vs-responder) to the resulting payload, and returns the resulting response
 
-Custom middleware can also be used to further customize application behavior by creating a class that implements [`MiddlewareInterface`](https://github.com/relayphp/Relay.Relay/blob/master/src/MiddlewareInterface.php):
-
 ```php
 namespace Acme;
 
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Relay/MiddlewareInterface;
 
-class FooMiddleware implements MiddlewareInterface
+class FooMiddleware
 {
     public function __invoke(
         RequestInterface $request,
@@ -339,7 +336,7 @@ class FooMiddleware implements MiddlewareInterface
         callable $next
     ) {
         // ...
-        return $response;
+        return $next($request, $response);
     }
 }
 ```
@@ -347,10 +344,12 @@ class FooMiddleware implements MiddlewareInterface
 Once you have created your middleware, append it to the default collection:
 
 ```php
+use Acme\Middleware\FooMiddleware;
+
 $injector->prepare(
-    '\Spark\Middleware\Collection',
+    'Spark\Middleware\Collection',
     function (Collection $collection) {
-        return $collection->withAddedMiddleware('\Acme\FooMiddleware');
+        return $collection->addValue(FooMiddleware::class);
     }
 );
 ```
@@ -359,7 +358,7 @@ If your middleware needs to be added before a specific middleware you can do tha
 
 ```php
 // FooMiddleware will be run immediately before ActionHandler
-$collection = $collection->withAddedMiddleware(FooMiddleware::class, ActionHandler::class);
+return $collection->addValueBefore(FooMiddleware::class, ActionHandler::class);
 ```
 
 ## Domains
@@ -375,16 +374,19 @@ Rather than having the domain class directly instantiate [`Payload`](https://git
 Here's an example of a domain class.
 
 ```php
-namespace My;
+namespace Acme\Domain;
 
-class Foo implements \Spark\Adr\DomainInterface
+use Spark\Adr\DomainInterface;
+use Spark\Adr\PayloadInterface;
+
+class Foo implements DomainInterface
 {
     protected $pdo;
     protected $payload;
 
     public function __construct(
         \PDO $pdo,
-        \Spark\Domain\PayloadInterface $payload
+        PayloadInterface $payload
     ) {
         $this->pdo = $pdo;
         $this->payload = $payload;
@@ -457,7 +459,7 @@ use Spark\Configuration\DefaultConfigurationSet;
 use Spark\Configuration\PlatesResponderConfiguration;
 
 $configuration = new DefaultConfigurationSet([
-    PlatesResponderConfiguration::class
+    PlatesResponderConfiguration::class,
 ]);
 $configuration->apply($injector);
 ```
@@ -495,5 +497,5 @@ While using a default responder for all routes is the recommended practice, it i
 Here's an example of changing an individual route to use a specific responder as part of configuring the router.
 
 ```php
-$router->get('/providers', Domain\GetProviders::class)->setResponder('My\\Responder');
+$router->get('/providers', Domain\GetProviders::class)->setResponder('Acme\Responder');
 ```
