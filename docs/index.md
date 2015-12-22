@@ -95,17 +95,18 @@ $injector->prepare('ClassName', function(ClassName $instance) {
 
 In Spark, configuration of the injector is encapsulated in classes implementing [`ConfigurationInterface`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationInterface.php). This interface has a single method `apply()` that applies some configuration to a given Auryn `Injector` instance. The purpose of this is to allow for clean [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) and [reusability](https://en.wikipedia.org/wiki/Reusability) of configuration logic.
 
-To faciliate ease of reuse for groupings of configuration, Spark provides a [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) class, which takes in a list of configuration classes and applies them to an injector instance.
+To facilitate ease of reuse for groupings of configuration, Spark provides a [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) class, which takes in a list of configuration classes and applies them to an injector instance.
 
-For a Spark application to function properly, the `Injector` instance it uses must have a minimum level of configuration. This configuration is applied using the [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) class, which extends [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) to provide a grouping of configurations for several libraries.
+For a Spark application to function properly, the `Injector` instance it uses will need some configuration. This configuration is defined using the [`Application`](https://github.com/sparkphp/spark/blob/master/src/Application.php) `setConfiguration()` method, which accepts an array of configuration classes to be applied. It is also possible to provide a `ConfigurationSet` when calling `Application::build()` to be used as the default set.
 
 ### Default Configuration
 
-The following configurations are used by `DefaultConfigurationSet`:
+The following configurations are typically used by default:
 
 * [`AurynConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/AurynConfiguration.php) - Use the `Injector` instance as a singleton and to resolve [actions](https://github.com/pmjones/adr#controller-vs-action)
 * [`DiactorosConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DiactorosConfiguration.php) - Use [Diactoros](https://github.com/zendframework/zend-diactoros/) for the framework [PSR-7](http://www.php-fig.org/psr/psr-7/) implementation
 * [`NegotiationConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/NegotiationConfiguration.php) - Use [Negotiation](https://github.com/willdurand/negotiation) for [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation)
+* [`PayloadConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/PayloadConfiguration.php) - Use the default Spark class as the implementation for [`PayloadInterface`](https://github.com/sparkphp/adr/blob/master/src/PayloadInterface.php)
 * [`RelayConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/RelayConfiguration.php) - Use [Relay](http://relayphp.com) for the framework middleware dispatcher
 
 ### Optional Configurations
@@ -121,34 +122,29 @@ Configure your web server to use `web` or the equivalent as the host document ro
 Here's an example of what this `index.php` file might look like.
 
 ```php
-// Include Composer autoloader
 require __DIR__ . '/../vendor/autoload.php';
 
-// Configure the dependency injection container
-$injector = new Auryn\Injector;
-$configuration = new Spark\Configuration\DefaultConfigurationSet;
-$configuration->apply($injector);
-
-// Configure middleware
-$injector->alias(
-    'Spark\Middleware\Collection',
-    'Spark\Middleware\DefaultCollection'
-);
-
-// Configure the router
-$injector->prepare(
-    'Spark\Router',
-    function(Spark\Router $router) {
-        // ...
-    }
-);
-
-// Bootstrap the application
-$dispatcher = $injector->make('Relay\Relay');
-$dispatcher(
-    $injector->make('Psr\Http\Message\ServerRequestInterface'),
-    $injector->make('Psr\Http\Message\ResponseInterface')
-);
+Spark\Application::build()
+->setConfiguration([
+    Spark\Configuration\AurynConfiguration::class,
+    Spark\Configuration\DiactorosConfiguration::class,
+    Spark\Configuration\NegotiationConfiguration::class,
+    Spark\Configuration\PayloadConfiguration::class,
+    Spark\Configuration\RelayConfiguration::class,
+])
+->setMiddleware([
+    Relay\Middleware\ResponseSender::class,
+    Spark\Handler\ExceptionHandler::class,
+    Spark\Handler\RouteHandler::class,
+    Spark\Handler\JsonContentHandler::class,
+    Spark\Handler\FormContentHandler::class,
+    Spark\Handler\ActionHandler::class,
+])
+->setRouting(function (Spark\Router $router) {
+    $router->get(/* ... */);
+    // ...
+})
+->run();
 ```
 
 Let's walk through the role of each block.
@@ -181,58 +177,18 @@ class FooConfiguration implements ConfigurationInterface
 }
 ```
 
-Next, configurations must be added to a configuration set. There are two potential approaches for this.
-
-One approach is to create a subclass of [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) that declares a constructor and passes an array containing the names of these configuration classes to the parent class constructor.
+Now you can apply the configuration you've created in your bootstrap file:
 
 ```php
-// src/Configuration/ConfigurationSet.php
-namespace Acme\Configuration;
-
-use Spark\Configuration\DefaultConfigurationSet;
-
-class ConfigurationSet extends DefaultConfigurationSet
-{
-    public function __construct()
-    {
-        parent::__construct([
-            'Acme\Configuration\FooConfiguration',
-            // ...
-        ]);
-    }
-}
-```
-
-Note that this subclass must either extend [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) or manually include required configurations in the list of classes passed to the parent constructor. This is to ensure that configuration for Spark core dependencies is included.
-
-Another approach involves creating an instance of [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) and passing to its constructor an array containing the names of your configuration classes. These classes will be added to the default list of Spark core dependencies.
-
-```php
-$configuration = new Spark\Configuration\DefaultConfigurationSet([
-    'Acme\Configuration\FooConfiguration',
-    // ...
-]);
-```
-
-Finally, you must apply the configuration set you've created to the injector in your bootstrap file.
-
-```php
-// web/index.php
 require __DIR__ . '/../vendor/autoload.php';
 
-// Create the injector
-$injector = new Auryn\Injector;
-
-// If you've created a configuration set subclass, instantiate it
-$configuration = new Acme\Configuration\ConfigurationSet;
-
-// Or if you simply want to extend the default set:
-$configuration = new Spark\Configuration\DefaultConfigurationSet([ /* ... */ ]);
-
-// Regardless of which method you've chosen, apply the configuration
-$configuration->apply($injector);
-
+Spark\Application::build()
+->setConfiguration([
+    // ...
+    Acme\Configuration\FooConfiguration::class,
+])
 // ...
+->run();
 ```
 
 ### Router
@@ -242,18 +198,18 @@ The router maps URIs to the corresponding [domain](https://github.com/pmjones/ad
 ```php
 use Acme\Domain;
 
-$injector->prepare(
-    'Spark\Router',
-    function(Spark\Router $router) {
-        $router->get('/providers', Domain\GetProviders::class);
-        $router->get('/providers/{provider}', Domain\GetProvider::class);
-        $router->post('/providers/{provider}', Domain\SynchronizeProvider::class);
-        $router->post('/providers/{provider}/connection', Domain\ActivateProvider::class);
-        $router->delete('/providers/{provider}/connection', Domain\DeactivateProvider::class);
-        $router->get('/providers/{provider}/configuration', Domain\GetProviderConfiguration::class);
-        $router->put('/providers/{provider}/configuration', Domain\ChangeProviderConfiguration::class);
-    }
-);
+Spark\Application::build()
+// ...
+->setRouting(function (Spark\Router $router) {
+    $router->get('/providers', Domain\GetProviders::class);
+    $router->get('/providers/{provider}', Domain\GetProvider::class);
+    $router->post('/providers/{provider}', Domain\SynchronizeProvider::class);
+    $router->post('/providers/{provider}/connection', Domain\ActivateProvider::class);
+    $router->delete('/providers/{provider}/connection', Domain\DeactivateProvider::class);
+    $router->get('/providers/{provider}/configuration', Domain\GetProviderConfiguration::class);
+    $router->put('/providers/{provider}/configuration', Domain\ChangeProviderConfiguration::class);
+})
+->run();
 ```
 
 Spark uses [FastRoute](https://github.com/nikic/FastRoute) internally for routing. As such, it uses that library's URI pattern syntax; see [its documentation](https://github.com/nikic/FastRoute#defining-routes) for more details.
@@ -264,11 +220,14 @@ An alternative way to implement route configuration involves using an [invokable
 // src/Router/Routes.php
 namespace Acme\Router;
 
+use Acme\Domain;
+use Spark\Router;
+
 class Routes
 {
     protected $router;
 
-    public function __invoke(\Spark\Router $router)
+    public function __invoke(Router $router)
     {
         $this->router = $router;
 
@@ -308,13 +267,15 @@ class Configuration implements ConfigurationInterface
 
 ### Middleware
 
-Middleware applies transformations to requests and responses that are route-independent. This is useful for low-level functionality like exception handling as well as higher-level functionality like authentication.
-
 [Relay](http://relayphp.com/) is the recommended middleware dispatcher to use with Spark. It [creates instances of middleware classes](http://relayphp.com/#resolvers) and [invokes them](http://relayphp.com/#middleware-logic) in a chain-like fashion. A consequence of this invocation approach is that the order in which middlewares are specified can be important.
 
-For example, in [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php), which is used in the bootstrap file example shown earlier, [`ExceptionHandler`](https://github.com/sparkphp/spark/blob/master/src/Handler/ExceptionHandler.php) -- the Spark handler for dealing with exceptions -- is specified fairly early in the class list contained within its constructor. This is to allow exceptions thrown by any subsequent middlewares in the chain to be handled properly.
+For example, in the `setMiddleware()` call shown earlier, the [`ExceptionHandler`](https://github.com/sparkphp/spark/blob/master/src/Handler/ExceptionHandler.php) -- the Spark handler for dealing with exceptions -- is specified fairly early in the class list contained within its constructor. This is to allow exceptions thrown by any subsequent middlewares in the chain to be handled properly.
 
-Here is a list of middlewares recommended for use in most Spark applications, as contained in [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php).
+For a Spark application to handle requests properly it will require some middleware to be defined using the [`Application`](https://github.com/sparkphp/spark/blob/master/src/Application.php) `setMiddleware` method, which accepts an array of middleware classes to be used. It is also possible to provide a `MiddlewareSet` when calling `Application::build()` to be used as the default set.
+
+#### Default Middleware
+
+The following middlewares are typically used by default, in this order:
 
 * [`Relay\Middleware\ResponseSender`](https://github.com/relayphp/Relay.Middleware/blob/master/src/ResponseSender.php) - Outputs data from the [PSR-7 Response object](https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php) to be sent back to the client
 * [`Spark\Handler\ExceptionHandler`](https://github.com/sparkphp/spark/blob/master/src/Handler/ExceptionHandler.php) - Handles exceptions thrown by subsequent middlewares and domains by returning an appropriate application-level response
@@ -341,25 +302,23 @@ class FooMiddleware
 }
 ```
 
-Once you have created your middleware, append it to the default collection:
+Now you can use the middleware you've created in your bootstrap file:
 
 ```php
-use Acme\Middleware\FooMiddleware;
+require __DIR__ . '/../vendor/autoload.php';
 
-$injector->prepare(
-    'Spark\Middleware\Collection',
-    function (Collection $collection) {
-        return $collection->addValue(FooMiddleware::class);
-    }
-);
+Spark\Application::build()
+// ...
+->setMiddleware([
+    // ...
+    Acme\Middleware\FooMiddleware::class,
+    // ...
+])
+// ...
+->run();
 ```
 
-If your middleware needs to be added before a specific middleware you can do that too:
-
-```php
-// FooMiddleware will be run immediately before ActionHandler
-return $collection->addValueBefore(FooMiddleware::class, ActionHandler::class);
-```
+*Typically you will want to place your custom middleware immediately before the `ActionHandler`.*
 
 ## Domains
 
@@ -402,7 +361,7 @@ class Foo implements DomainInterface
 
 Note that the constructor of this domain class declares two parameters, a `\PDO` instance and a payload instance. If a request is made for the URI corresponding to this domain class in the [router configuration](#router), Spark will use the [Auryn configuration](#dependency-injection-container) to instantiate the domain class with the dependencies declared in its constructor. Typically, the constructor is used to store references to dependencies in instance properties so as to be able to use them later in `__invoke()`.
 
-Also note that `__invoke()` returns the payload. The core Spark implementation [`Payload`](https://github.com/sparkphp/spark/blob/master/src/Payload.php) provides an immutable implementation of [`PayloadInterface`](https://github.com/sparkphp/domain/blob/master/src/PayloadInterface.php), which also allows for code like this:
+Also note that `__invoke()` returns the payload. The core Spark implementation [`Payload`](https://github.com/sparkphp/spark/blob/master/src/Payload.php) provides an immutable implementation of [`PayloadInterface`](https://github.com/sparkphp/adr/blob/master/src/PayloadInterface.php), which also allows for code like this:
 
 ```php
 return $this->payload

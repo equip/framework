@@ -1,11 +1,9 @@
 <?php
 namespace SparkTests\Configuration;
 
-use Relay\MiddlewareInterface;
 use Relay\Relay;
 use Spark\Configuration\AurynConfiguration;
 use Spark\Configuration\RelayConfiguration;
-use Spark\Middleware\Collection as MiddlewareCollection;
 
 class RelayConfigurationTest extends ConfigurationTestCase
 {
