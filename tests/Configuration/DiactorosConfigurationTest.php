@@ -19,7 +19,8 @@ class DiactorosConfigurationTest extends ConfigurationTestCase
     public function dataMapping()
     {
         return [
-            [RequestInterface::class, 'Zend\Diactoros\Request'],
+            // https://github.com/relayphp/Relay.Relay/issues/25
+            [RequestInterface::class, 'Zend\Diactoros\ServerRequest'],
             [ResponseInterface::class, 'Zend\Diactoros\Response'],
             [ServerRequestInterface::class, 'Zend\Diactoros\ServerRequest'],
         ];

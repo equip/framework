@@ -13,7 +13,12 @@ class DiactorosConfiguration implements ConfigurationInterface
     {
         $injector->alias(
             'Psr\Http\Message\RequestInterface',
-            'Zend\Diactoros\Request'
+            // It should not be necessary to force all requests to be server
+            // requests, except that Relay uses the wrong type hint:
+            // https://github.com/relayphp/Relay.Relay/issues/25
+            //
+            // 'Zend\Diactoros\Request'
+            'Zend\Diactoros\ServerRequest'
         );
 
         $injector->alias(
