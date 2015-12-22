@@ -42,7 +42,7 @@ class Application
     private $middleware;
 
     /**
-     * @var callable
+     * @var callable|string
      */
     private $routing;
 
@@ -90,11 +90,11 @@ class Application
     /**
      * Change routing
      *
-     * @param callable $routing
+     * @param callable|string $routing
      *
      * @return self
      */
-    public function setRouting(callable $routing)
+    public function setRouting($routing)
     {
         $this->routing = $routing;
         return $this;
@@ -115,7 +115,7 @@ class Application
 
         return $this->injector
             ->share($this->middleware)
-            ->prepare('Spark\Router', $this->routing)
+            ->prepare('Spark\Directory', $this->routing)
             ->execute($runner);
     }
 }

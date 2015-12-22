@@ -137,7 +137,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $injector
             ->expects($this->once())
             ->method('prepare')
-            ->with('Spark\Router', $routing)
+            ->with('Spark\Directory', $routing)
             ->willReturnSelf();
 
         $injector

@@ -140,9 +140,11 @@ Spark\Application::build()
     Spark\Handler\FormContentHandler::class,
     Spark\Handler\ActionHandler::class,
 ])
-->setRouting(function (Spark\Router $router) {
-    $router->get(/* ... */);
+->setRouting(function (Spark\Directory $directory) {
+    return $directory
+    ->get(/* ... */)
     // ...
+    ;
 })
 ->run();
 ```
@@ -191,78 +193,82 @@ Spark\Application::build()
 ->run();
 ```
 
-### Router
+### Routing
 
-The router maps URIs to the corresponding [domain](https://github.com/pmjones/adr#model-vs-domain) that the action should use. This is implemented in the Spark [`Router`](https://github.com/sparkphp/spark/blob/master/src/Router.php) class. Here is an example of what configuring an instance of it could look like.
+Spark uses [FastRoute](https://github.com/nikic/FastRoute) internally for routing. As such, it uses that library's URI pattern syntax; see [its documentation](https://github.com/nikic/FastRoute#defining-routes) for more details.
+
+The directory maps URIs to the corresponding [domain](https://github.com/pmjones/adr#model-vs-domain) that the should be used. This is implemented in the Spark [`Directory`](https://github.com/sparkphp/spark/blob/master/src/Directory.php) class. Here is an example of what configuring an instance of it could look like:
 
 ```php
 use Acme\Domain;
 
 Spark\Application::build()
 // ...
-->setRouting(function (Spark\Router $router) {
-    $router->get('/providers', Domain\GetProviders::class);
-    $router->get('/providers/{provider}', Domain\GetProvider::class);
-    $router->post('/providers/{provider}', Domain\SynchronizeProvider::class);
-    $router->post('/providers/{provider}/connection', Domain\ActivateProvider::class);
-    $router->delete('/providers/{provider}/connection', Domain\DeactivateProvider::class);
-    $router->get('/providers/{provider}/configuration', Domain\GetProviderConfiguration::class);
-    $router->put('/providers/{provider}/configuration', Domain\ChangeProviderConfiguration::class);
+->setRouting(function (Spark\Directory $directory) {
+    return $directory
+    ->get('/providers', Domain\GetProviders::class)
+    ->get('/providers/{provider}', Domain\GetProvider::class)
+    ->post('/providers/{provider}', Domain\SynchronizeProvider::class)
+    ->post('/providers/{provider}/connection', Domain\ActivateProvider::class)
+    ->delete('/providers/{provider}/connection', Domain\DeactivateProvider::class)
+    ->get('/providers/{provider}/configuration', Domain\GetProviderConfiguration::class)
+    ->put('/providers/{provider}/configuration', Domain\ChangeProviderConfiguration::class)
+    ; // End of routing
 })
 ->run();
 ```
 
-Spark uses [FastRoute](https://github.com/nikic/FastRoute) internally for routing. As such, it uses that library's URI pattern syntax; see [its documentation](https://github.com/nikic/FastRoute#defining-routes) for more details.
+*It is very important to remember that __the `Directory` object is immutable__! You must __always__ return the directory or changes will be lost.*
 
-An alternative way to implement route configuration involves using an [invokable](http://php.net/manual/en/language.oop5.magic.php#object.invoke) class and custom [configuration class](#class). This encapsulation allows for niceties such as non-public methods that can make router configuration code more concise.
+It is also possible to provide an [`Action`](https://github.com/sparkphp/spark/blob/master/src/Action.php) object instead of a domain class if you want to modify the responder or input class that will be used to handle the action:
 
 ```php
-// src/Router/Routes.php
-namespace Acme\Router;
+$directory->get('/login', new Spark\Action(
+    Domain\Login::class,
+    Acme\Responder::class,
+    Acme\Input::class
+));
+```
+
+If an `Action` object is not provided one will be constructed with the provided `Domain` reference instead.
+
+
+#### Object Routing
+
+An alternative way to implement routing configuration involves using an [invokable](http://php.net/manual/en/language.oop5.magic.php#object.invoke) object. This encapsulation allows for niceties such as non-public methods that can make routing code more concise.
+
+```php
+// src/Routing.php
+namespace Acme;
 
 use Acme\Domain;
-use Spark\Router;
+use Spark\Directory;
 
-class Routes
+class Routing
 {
-    protected $router;
-
-    public function __invoke(Router $router)
+    public function __invoke(Directory $directory)
     {
-        $this->router = $router;
-
-        // Compare this:
-        $this->get('/providers', 'GetProviders');
-
-        // To this:
-        $router->get('/providers', Domain\GetProviders::class);
-    }
-
-    protected function get($uri, $domain)
-    {
-        $this->router->get($uri, 'Acme\Domain\\' . $domain);
+        return $directory
+        ->get('/providers', Domain\GetProviders::class)
+        ->get('/providers/{provider}', Domain\GetProvider::class)
+        ->post('/providers/{provider}', Domain\SynchronizeProvider::class)
+        ->post('/providers/{provider}/connection', Domain\ActivateProvider::class)
+        ->delete('/providers/{provider}/connection', Domain\DeactivateProvider::class)
+        ->get('/providers/{provider}/configuration', Domain\GetProviderConfiguration::class)
+        ->put('/providers/{provider}/configuration', Domain\ChangeProviderConfiguration::class)
+        ; // End of routing
     }
 }
+```
 
-// src/Router/Configuration.php
-namespace Acme\Router;
+Now you can use this class to provide routing:
 
-use Auryn\Injector;
-use Spark\Configuration\ConfigurationInterface;
-use Spark\Router;
+```php
+use Acme\Domain;
 
-class Configuration implements ConfigurationInterface
-{
-    public function apply(Injector $injector)
-    {
-        $injector->prepare(Router::class, [$this, 'prepare']);
-    }
-
-    public function prepare(Router $router, Routes $routes)
-    {
-        $routes($router);
-    }
-}
+Spark\Application::build()
+// ...
+->setRouting(Acme\Routing::class);
 ```
 
 ### Middleware
