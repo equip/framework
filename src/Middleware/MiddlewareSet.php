@@ -3,9 +3,8 @@
 namespace Spark\Middleware;
 
 use Destrukt\Set;
-use Relay\MiddlewareInterface;
 
-class Collection extends Set
+class MiddlewareSet extends Set
 {
     /**
      * @param array $middlewares

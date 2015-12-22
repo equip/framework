@@ -3,9 +3,9 @@ namespace SparkTests\Middleware;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Relay\MiddlewareInterface;
-use Spark\Middleware\Collection as MiddlewareCollection;
+use Spark\Middleware\MiddlewareSet;
 
-class CollectionTest extends TestCase
+class MiddlewareSetTest extends TestCase
 {
     /**
      * @expectedException \DomainException
@@ -14,7 +14,7 @@ class CollectionTest extends TestCase
     public function testWithInvalidEntries()
     {
         $middleware = ['foo'];
-        $collection = new MiddlewareCollection($middleware);
+        $collection = new MiddlewareSet($middleware);
     }
 
     public function testWithValidEntries()
@@ -24,13 +24,13 @@ class CollectionTest extends TestCase
             function () {
             }
         ];
-        $collection = new MiddlewareCollection($middleware);
+        $collection = new MiddlewareSet($middleware);
         $this->assertSame($middleware, $collection->toArray());
     }
 
     public function testAdd()
     {
-        $collection = new MiddlewareCollection;
+        $collection = new MiddlewareSet;
         $this->assertEmpty($collection->toArray());
 
         $m1 = $this->getMiddlewareClass();
