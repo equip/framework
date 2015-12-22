@@ -66,7 +66,7 @@ class ExceptionHandler
 
             try {
                 $response = $response->withStatus($e->getCode());
-            } catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $_) {
                 // Exception did not contain a valid code
                 $response = $response->withStatus(500);
             }
