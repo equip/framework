@@ -135,7 +135,7 @@ Spark\Application::build()
 ->setMiddleware([
     Relay\Middleware\ResponseSender::class,
     Spark\Handler\ExceptionHandler::class,
-    Spark\Handler\RouteHandler::class,
+    Spark\Handler\DispatchHandler::class,
     Spark\Handler\JsonContentHandler::class,
     Spark\Handler\FormContentHandler::class,
     Spark\Handler\ActionHandler::class,
