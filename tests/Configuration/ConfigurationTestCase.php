@@ -19,6 +19,14 @@ abstract class ConfigurationTestCase extends TestCase
 
     public function setUp()
     {
+        $this->applyConfigurations();
+    }
+
+    /**
+     * @return void
+     */
+    protected function applyConfigurations()
+    {
         $this->injector = new Injector;
 
         foreach ($this->getConfigurations() as $config) {
