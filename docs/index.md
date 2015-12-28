@@ -113,7 +113,22 @@ The following configurations are typically used by default:
 
 The following configurations are available but not used by default:
 
+* [`EnvConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/EnvConfiguration.php) - Use [Dotenv](https://github.com/josegonzalez/php-dotenv) to populate the content of [`Env`](https://github.com/sparkphp/spark/blob/master/src/Env.php)
 * [`PlatesResponderConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/PlatesResponderConfiguration.php) - Use [Plates](http://platesphp.com/) as the default [responder](#responders)
+
+### Env Configuration
+
+Spark comes with a [`Env`](https://github.com/sparkphp/spark/blob/master/src/Env.php) class that can be used as a configuration store. Populating this value object is typically done with an "env loader" such as [`josegonzalez/dotenv`](https://github.com/josegonzalez/dotenv). Once configured this class can be injected into other configuration to use secrets like database passwords or API access tokens.
+
+The `Env` class is immutable and can used as an array:
+
+```php
+public function __construct(Env $env)
+{
+    $this->user = $env['db']['username'];
+    $this->pass = $env['db']['password'];
+}
+```
 
 ## Bootstrap
 
