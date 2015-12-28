@@ -385,6 +385,12 @@ return $this->payload
 
 Spark provides a few native responder implementations.
 
+### Chained Responder
+
+[`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) is the default responder which allows multiple responders to be applied to the same response instance. This is intended to allow for [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) in configuring different areas of the response.
+
+By default, [`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) includes [all the default responders](https://github.com/sparkphp/spark/blob/master/src/Responder). Responders can be added using its `withAddedResponder()` method or overwritten entirely using its `withResponders()` method.
+
 ### Formatted Responder
 
 [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php) uses the [Negotiation](https://github.com/willdurand/negotiation) library to support [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation). When a desirable format has been founded, it uses an appropriate implementation of [`AbstractFormatter`](https://github.com/sparkphp/spark/blob/master/src/Formatter/AbstractFormatter.php) to encode the payload data and return it as a string.
@@ -394,11 +400,24 @@ Here are the formatter implementations that are natively supported.
 * [`JsonFormatter`](https://github.com/sparkphp/spark/blob/master/src/Formatter/JsonFormatter.php) - Encodes the payload as [JSON](http://www.json.org/)
 * [`PlatesFormatter`](https://github.com/sparkphp/spark/blob/master/src/Formatter/PlatesFormatter.php) - Applies the payload data to a [Plates](http://platesphp.com/) template specified in the payload and returns the result
 
-### Chained Responder
+### Redirect
 
-[`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) allows multiple responders to be applied to the same response instance. This is intended to allow for [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) in configuring different areas of the response.
+[`RedirectResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/RedirectResponder.php) allows a redirection to be embedded in the payload. In order to activate it requires a `redirect` message to be attached to the [`PayloadInterface`](https://github.com/sparkphp/adr/blob/master/src/PayloadInterface.php). Optionally the `status` can be set when a [`302 Found`](https://en.wikipedia.org/wiki/HTTP_302) is not the correct response.
 
-By default, [`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) only includes [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php). Responders can be added using its `withAddedResponder()` method or overwritten entirely using its `withResponders()` method.
+Modifying the payload to trigger a redirect is very easy:
+
+```php
+// For a basic redirect
+return $payload->withMessages([
+    'redirect' => '/login',
+]);
+
+// For a permanent redirect, also set "status"
+return $payload->withMessages([
+    'redirect' => '/permalink',
+    'status' => 301,
+]);
+```
 
 ### Default Setup
 
