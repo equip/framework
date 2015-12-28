@@ -12,6 +12,10 @@ class PlatesFormatterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if (!class_exists('League\Plates\Engine')) {
+            $this->markTestSkipped('Plates is not installed');
+        }
+
         $this->templates = new Engine(__DIR__ . '/../_templates');
     }
 
