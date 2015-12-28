@@ -12,6 +12,10 @@ class PlatesResponderConfigurationTest extends ConfigurationTestCase
 {
     protected function getConfigurations()
     {
+        if (!class_exists('League\Plates\Engine')) {
+            $this->markTestSkipped('Plates is not installed');
+        }
+
         return [
             new AurynConfiguration,
             new NegotiationConfiguration,
