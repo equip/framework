@@ -11,11 +11,13 @@ class AurynConfiguration implements ConfigurationInterface
      */
     public function apply(Injector $injector)
     {
-        $injector->share($injector);
-
         $injector->alias(
             'Relay\ResolverInterface',
             'Spark\Resolver\AurynResolver'
         );
+
+        $injector->define('Spark\Resolver\AurynResolver', [
+            ':injector' => $injector,
+        ]);
     }
 }
