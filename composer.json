@@ -17,6 +17,7 @@
         "php": ">=5.5.0",
         "arbiter/arbiter": "~0.1",
         "destrukt/destrukt": "^0.7",
+        "filp/whoops": "^1.1",
         "nikic/fast-route": "~0.6",
         "rdlowrey/auryn": "^1.1",
         "relay/relay": "^1.1",

@@ -108,6 +108,7 @@ The following configurations are typically used by default:
 * [`NegotiationConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/NegotiationConfiguration.php) - Use [Negotiation](https://github.com/willdurand/negotiation) for [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation)
 * [`PayloadConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/PayloadConfiguration.php) - Use the default Spark class as the implementation for [`PayloadInterface`](https://github.com/sparkphp/adr/blob/master/src/PayloadInterface.php)
 * [`RelayConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/RelayConfiguration.php) - Use [Relay](http://relayphp.com) for the framework middleware dispatcher
+* [`WhoopsConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/WhoopsConfiguration.php) - Use [Whoops](http://filp.github.io/whoops/) for handling exceptions
 
 ### Optional Configurations
 
@@ -146,6 +147,7 @@ Spark\Application::build()
     Spark\Configuration\NegotiationConfiguration::class,
     Spark\Configuration\PayloadConfiguration::class,
     Spark\Configuration\RelayConfiguration::class,
+    Spark\Configuration\WhoopsConfiguration::class,
 ])
 ->setMiddleware([
     Relay\Middleware\ResponseSender::class,
