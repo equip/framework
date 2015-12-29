@@ -37,9 +37,9 @@ class Directory extends Dictionary
      * @param  string|Action $domainOrAction
      * @return static
      */
-    public function get($path, $domain)
+    public function get($path, $domainOrAction)
     {
-        return $this->action(self::GET, $path, $domain);
+        return $this->action(self::GET, $path, $domainOrAction);
     }
 
     /**
@@ -47,9 +47,9 @@ class Directory extends Dictionary
      * @param  string|Action $domainOrAction
      * @return static
      */
-    public function post($path, $domain)
+    public function post($path, $domainOrAction)
     {
-        return $this->action(self::POST, $path, $domain);
+        return $this->action(self::POST, $path, $domainOrAction);
     }
 
     /**
@@ -57,9 +57,9 @@ class Directory extends Dictionary
      * @param  string|Action $domainOrAction
      * @return static
      */
-    public function put($path, $domain)
+    public function put($path, $domainOrAction)
     {
-        return $this->action(self::PUT, $path, $domain);
+        return $this->action(self::PUT, $path, $domainOrAction);
     }
 
     /**
@@ -67,9 +67,9 @@ class Directory extends Dictionary
      * @param  string|Action $domainOrAction
      * @return static
      */
-    public function patch($path, $domain)
+    public function patch($path, $domainOrAction)
     {
-        return $this->action(self::PATCH, $path, $domain);
+        return $this->action(self::PATCH, $path, $domainOrAction);
     }
 
     /**
@@ -77,9 +77,9 @@ class Directory extends Dictionary
      * @param  string|Action $domainOrAction
      * @return static
      */
-    public function head($path, $domain)
+    public function head($path, $domainOrAction)
     {
-        return $this->action(self::HEAD, $path, $domain);
+        return $this->action(self::HEAD, $path, $domainOrAction);
     }
 
     /**
@@ -87,9 +87,9 @@ class Directory extends Dictionary
      * @param  string|Action $domainOrAction
      * @return static
      */
-    public function delete($path, $domain)
+    public function delete($path, $domainOrAction)
     {
-        return $this->action(self::DELETE, $path, $domain);
+        return $this->action(self::DELETE, $path, $domainOrAction);
     }
 
     /**
@@ -97,9 +97,9 @@ class Directory extends Dictionary
      * @param  string|Action $domainOrAction
      * @return static
      */
-    public function options($path, $domain)
+    public function options($path, $domainOrAction)
     {
-        return $this->action(self::OPTIONS, $path, $domain);
+        return $this->action(self::OPTIONS, $path, $domainOrAction);
     }
 
     /**
