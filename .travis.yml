@@ -20,3 +20,5 @@ script:
 
 after_script:
   - vendor/bin/coveralls -v
+  - bash -c '[[ -f "build/logs/clover.xml" ]] && wget https://scrutinizer-ci.com/ocular.phar'
+  - bash -c '[[ -f "build/logs/clover.xml" ]] && php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml'
