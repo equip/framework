@@ -2,39 +2,67 @@
 
 namespace SparkTests\Handler;
 
+use Auryn\Injector;
 use Spark\Handler\ExceptionHandler;
+use Spark\Configuration\AurynConfiguration;
+use Spark\Configuration\NegotiationConfiguration;
+use Spark\Configuration\WhoopsConfiguration;
 use Spark\Exception\HttpException;
+use SparkTests\Configuration\ConfigurationTestCase;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
 
-class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
+class ExceptionHandlerTest extends ConfigurationTestCase
 {
+    protected function getConfigurations()
+    {
+        return [
+            new AurynConfiguration,
+            new NegotiationConfiguration,
+            new WhoopsConfiguration,
+        ];
+    }
+
+    private function execute(callable $next, $request = null, $response = null)
+    {
+        return call_user_func(
+            $this->injector->make(ExceptionHandler::class),
+            $request ?: new ServerRequest,
+            $response ?: new Response,
+            $next
+        );
+    }
+
+    public function dataTypes()
+    {
+        return [
+            ['text/html'],
+            ['application/javascript'],
+            ['application/json'],
+            ['applicaiton/ld+json'],
+            ['application/vnd.api+json'],
+            ['application/vnd.geo+json'],
+            ['application/xml'],
+            ['application/atom+xml'],
+            ['application/rss+xml'],
+            ['text/plain'],
+        ];
+    }
+
     /**
-     * @var ExceptionHandler
+     * @dataProvider dataTypes
      */
-    private $handler;
-
-    public function setUp()
+    public function testHandle($mime)
     {
-        $this->handler = new ExceptionHandler;
-    }
+        $request = new ServerRequest;
+        $request = $request->withHeader('Accept', $mime);
 
-    private function execute(callable $next)
-    {
-        return call_user_func($this->handler, new ServerRequest, new Response, $next);
-    }
-
-    public function testGeneric()
-    {
         $response = $this->execute(function ($request, $response) {
             throw new \Exception;
-        });
+        }, $request);
 
         $this->assertEquals(500, $response->getStatusCode());
-        $this->assertEquals('application/json', $response->getHeaderLine('Content-Type'));
-        $this->assertJson((string) $response->getBody());
-
-        return $response;
+        $this->assertEquals($mime, $response->getHeaderLine('Content-Type'));
     }
 
     public function testNotFound()
@@ -54,33 +82,5 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(405, $response->getStatusCode());
         $this->assertEquals('GET,PUT', $response->getHeaderLine('Allow'));
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionRegExp /directory .* does not exist/i
-     */
-    public function testCannotUseInvalidRoot()
-    {
-        $this->handler->withRoot('totally-invalid-directory-name');
-    }
-
-    public function testFilesHaveRelativeRoot()
-    {
-        $this->handler = $this->handler->withRoot(__DIR__);
-
-        $response = $this->execute(function ($request, $response) {
-            throw new \Exception;
-        });
-
-        $body = json_decode((string) $response->getBody(), true);
-
-        // The current directory should not contained in the trace
-        $this->assertNotContains(__DIR__, $body['file']);
-        foreach ($body['trace'] as $trace) {
-            if (!empty($trace['file'])) {
-                $this->assertNotContains(__DIR__, $trace['file']);
-            }
-        }
     }
 }

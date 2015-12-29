@@ -4,65 +4,71 @@ namespace Spark\Handler;
 
 use Exception;
 use InvalidArgumentException;
-use Psr\Http\Message\RequestInterface;
+use Negotiation\NegotiatorInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Relay\ResolverInterface;
 use Spark\Exception\HttpException;
+use Whoops\Run as Whoops;
 
 class ExceptionHandler
 {
     /**
-     * @var string
+     * @var NegotiatorInterface
      */
-    private $root;
+    private $negotiator;
 
-    public function __construct()
-    {
-        // Assuming that __DIR__ is vendor/sparkphp/spark/src/Handler ...
-        // we should be able to remove these last 5 segments from the current
-        // directory to get the root path of the application.
-        $this->root = dirname(dirname(dirname(dirname(dirname(__DIR__))))) . DIRECTORY_SEPARATOR;
+    /**
+     * @var ExceptionHandlerPreferences
+     */
+    private $preferences;
+
+    /**
+     * @var ResolverInterface
+     */
+    private $resolver;
+
+    /**
+     * @var Whoops
+     */
+    private $whoops;
+
+    /**
+     * @param ExceptionHandlerPreferences $preferences
+     * @param NegotiatorInterface $negotiator
+     * @param ResolverInterface $resolver
+     * @param Whoops $whoops
+     */
+    public function __construct(
+        ExceptionHandlerPreferences $preferences,
+        NegotiatorInterface $negotiator,
+        ResolverInterface $resolver,
+        Whoops $whoops
+    ) {
+        $this->preferences = $preferences;
+        $this->negotiator = $negotiator;
+        $this->resolver = $resolver;
+        $this->whoops = $whoops;
     }
 
     /**
-     * Get a copy with a new root directory
-     *
-     * @param string $root
-     *
-     * @return static
-     *
-     * @throws InvalidArgumentException If the directory does not exist
-     */
-    public function withRoot($root)
-    {
-        if (!is_dir($root)) {
-            throw new InvalidArgumentException(sprintf(
-                'Directory `%s` does not exist',
-                $root
-            ));
-        }
-
-        $copy = clone $this;
-        $copy->root = realpath($root) . DIRECTORY_SEPARATOR;
-
-        return $copy;
-    }
-
-    /**
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @param callable $next
      *
      * @return ResponseInterface
      */
     public function __invoke(
-        RequestInterface  $request,
+        ServerRequestInterface $request,
         ResponseInterface $response,
-        callable          $next
+        callable $next
     ) {
         try {
             return $next($request, $response);
         } catch (Exception $e) {
-            $response = $response->withHeader('Content-Type', 'application/json');
+            $type = $this->type($request);
+
+            $response = $response->withHeader('Content-Type', $type);
 
             try {
                 $response = $response->withStatus($e->getCode());
@@ -75,37 +81,47 @@ class ExceptionHandler
                 $response = $e->withResponse($response);
             }
 
-            $body = $this->getRelativeFiles([
-                'error' => $e->getMessage() ?: $response->getReasonPhrase(),
-                'code' => $e->getCode(),
-                'type' => get_class($e),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTrace(),
-            ]);
+            $handler = $this->handler($type);
+            $this->whoops->pushHandler($handler);
 
-            $response->getBody()->write(json_encode($body));
+            $body = $this->whoops->handleException($e);
+            $response->getBody()->write($body);
+
+            $this->whoops->popHandler();
 
             return $response;
         }
     }
 
     /**
-     * Recursively convert all filenames in the stack to be relative
+     * Determine the preferred content type for the current request
      *
-     * @param array $stack
+     * @param ServerRequestInterface $request
      *
-     * @return array
+     * @return string
      */
-    private function getRelativeFiles(array $stack)
+    private function type(ServerRequestInterface $request)
     {
-        foreach ($stack as $key => $value) {
-            if ($key === 'file' && is_string($value)) {
-                $stack[$key] = str_replace($this->root, '', $value);
-            } elseif (is_array($value)) {
-                $stack[$key] = $this->getRelativeFiles($value);
-            }
+        $accept = $request->getHeaderLine('Accept');
+        $priorities = $this->preferences->toArray();
+        $preferred = $this->negotiator->getBest($accept, array_keys($priorities));
+
+        if ($preferred) {
+            return $preferred->getValue();
         }
-        return $stack;
+
+        return key($priorities);
+    }
+
+    /**
+     * Retrieve the handler to use for the given type
+     *
+     * @param string $type
+     *
+     * @return \Whoops\Handler\HandlerInterface
+     */
+    private function handler($type)
+    {
+        return call_user_func($this->resolver, $this->preferences[$type]);
     }
 }
