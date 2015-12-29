@@ -4,7 +4,7 @@ namespace Spark\Handler;
 
 use Exception;
 use InvalidArgumentException;
-use Negotiation\NegotiatorInterface;
+use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Relay\ResolverInterface;
@@ -14,7 +14,7 @@ use Whoops\Run as Whoops;
 class ExceptionHandler
 {
     /**
-     * @var NegotiatorInterface
+     * @var Negotiator
      */
     private $negotiator;
 
@@ -35,13 +35,13 @@ class ExceptionHandler
 
     /**
      * @param ExceptionHandlerPreferences $preferences
-     * @param NegotiatorInterface $negotiator
+     * @param Negotiator $negotiator
      * @param ResolverInterface $resolver
      * @param Whoops $whoops
      */
     public function __construct(
         ExceptionHandlerPreferences $preferences,
-        NegotiatorInterface $negotiator,
+        Negotiator $negotiator,
         ResolverInterface $resolver,
         Whoops $whoops
     ) {
@@ -104,9 +104,12 @@ class ExceptionHandler
     {
         $accept = $request->getHeaderLine('Accept');
         $priorities = $this->preferences->toArray();
-        $preferred = $this->negotiator->getBest($accept, array_keys($priorities));
 
-        if ($preferred) {
+        if (!empty($accept)) {
+            $preferred = $this->negotiator->getBest($accept, array_keys($priorities));
+        }
+
+        if (!empty($preferred)) {
             return $preferred->getValue();
         }
 
