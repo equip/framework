@@ -5,7 +5,6 @@ namespace SparkTests\Handler;
 use Auryn\Injector;
 use Spark\Handler\ExceptionHandler;
 use Spark\Configuration\AurynConfiguration;
-use Spark\Configuration\NegotiationConfiguration;
 use Spark\Configuration\WhoopsConfiguration;
 use Spark\Exception\HttpException;
 use SparkTests\Configuration\ConfigurationTestCase;
@@ -18,7 +17,6 @@ class ExceptionHandlerTest extends ConfigurationTestCase
     {
         return [
             new AurynConfiguration,
-            new NegotiationConfiguration,
             new WhoopsConfiguration,
         ];
     }

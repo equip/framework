@@ -3,7 +3,6 @@
 namespace SparkTests\Configuration;
 
 use Spark\Configuration\AurynConfiguration;
-use Spark\Configuration\NegotiationConfiguration;
 use Spark\Configuration\PlatesResponderConfiguration;
 use Spark\Formatter\PlatesFormatter;
 use Spark\Responder\FormattedResponder;
@@ -18,7 +17,6 @@ class PlatesResponderConfigurationTest extends ConfigurationTestCase
 
         return [
             new AurynConfiguration,
-            new NegotiationConfiguration,
             new PlatesResponderConfiguration,
         ];
     }

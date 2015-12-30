@@ -2,7 +2,7 @@
 
 namespace Spark\Responder;
 
-use Negotiation\NegotiatorInterface;
+use Negotiation\Negotiator;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\PayloadInterface;
@@ -13,7 +13,7 @@ use Relay\ResolverInterface;
 class FormattedResponder implements ResponderInterface
 {
     /**
-     * @var NegotiatorInterface
+     * @var Negotiator
      */
     private $negotiator;
 
@@ -30,12 +30,12 @@ class FormattedResponder implements ResponderInterface
     ];
 
     /**
-     * @param NegotiatorInterface $negotiator
-     * @param ResolverInterface   $resolver
+     * @param Negotiator $negotiator
+     * @param ResolverInterface $resolver
      */
     public function __construct(
-        NegotiatorInterface $negotiator,
-        ResolverInterface   $resolver
+        Negotiator $negotiator,
+        ResolverInterface $resolver
     ) {
         $this->negotiator = $negotiator;
         $this->resolver   = $resolver;
@@ -121,11 +121,14 @@ class FormattedResponder implements ResponderInterface
      */
     protected function formatter(ServerRequestInterface $request)
     {
-        $accept     = $request->getHeaderLine('Accept');
+        $accept = $request->getHeaderLine('Accept');
         $priorities = $this->priorities();
-        $preferred  = $this->negotiator->getBest($accept, array_keys($priorities));
 
-        if ($preferred) {
+        if (!empty($accept)) {
+            $preferred = $this->negotiator->getBest($accept, array_keys($priorities));
+        }
+
+        if (!empty($preferred)) {
             $formatter = $priorities[$preferred->getValue()];
         } else {
             $formatter = array_shift($priorities);

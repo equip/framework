@@ -17,7 +17,6 @@ class ActionHandlerTest extends TestCase
         $injector->share($injector);
 
         $injector->alias('Relay\ResolverInterface', 'Spark\Resolver\AurynResolver');
-        $injector->alias('Negotiation\NegotiatorInterface', 'Negotiation\Negotiator');
 
         $request = ServerRequestFactory::fromGlobals();
         $response = new Response();
