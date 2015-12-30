@@ -37,7 +37,7 @@ class ExceptionHandlerTest extends ConfigurationTestCase
             ['text/html'],
             ['application/javascript'],
             ['application/json'],
-            ['applicaiton/ld+json'],
+            ['application/ld+json'],
             ['application/vnd.api+json'],
             ['application/vnd.geo+json'],
             ['application/xml'],
