@@ -29,8 +29,10 @@ class ConfigurationSet extends Set implements ConfigurationInterface
      */
     public function apply(Injector $injector)
     {
-        foreach ($this as $class) {
-            $configuration = $injector->make($class);
+        foreach ($this as $configuration) {
+            if (!is_object($configuration)) {
+                $configuration = $injector->make($configuration);
+            }
             $configuration->apply($injector);
         }
     }
