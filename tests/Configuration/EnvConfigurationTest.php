@@ -18,7 +18,7 @@ class EnvConfigurationTest extends ConfigurationTestCase
             $this->markTestSkipped('Dotenv is not installed');
         }
 
-        $this->envfile = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . '.env';
+        $this->envfile = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . '.env';
     }
 
     protected function getConfigurations()

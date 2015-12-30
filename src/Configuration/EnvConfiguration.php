@@ -66,7 +66,8 @@ class EnvConfiguration implements ConfigurationInterface
             if (is_file($dir . $env)) {
                 return $dir . $env;
             }
-        } while ($dir = dirname($dir) && is_readable($dir));
+            $dir = dirname($dir);
+        } while (is_readable($dir) && dirname($dir) !== $dir);
 
         throw EnvException::detectionFailed();
     }
