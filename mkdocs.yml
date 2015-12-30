@@ -5,3 +5,4 @@ pages:
 - Authentication: auth.md
 - Data: data.md
 - Commands: commands.md
+- Session: session.md
