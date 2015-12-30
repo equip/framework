@@ -19,7 +19,7 @@ class ExceptionHandlerPreferences extends Dictionary
             'text/html' => PrettyPageHandler::class,
             'application/javascript' => JsonResponseHandler::class,
             'application/json' => JsonResponseHandler::class,
-            'applicaiton/ld+json' => JsonResponseHandler::class,
+            'application/ld+json' => JsonResponseHandler::class,
             'application/vnd.api+json' => JsonResponseHandler::class,
             'application/vnd.geo+json' => JsonResponseHandler::class,
             'application/xml' => XmlResponseHandler::class,
