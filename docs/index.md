@@ -105,6 +105,7 @@ The following configurations are typically used by default:
 
 * [`AurynConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/AurynConfiguration.php) - Use the `Injector` instance as a singleton and to resolve [actions](https://github.com/pmjones/adr#controller-vs-action)
 * [`DiactorosConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DiactorosConfiguration.php) - Use [Diactoros](https://github.com/zendframework/zend-diactoros/) for the framework [PSR-7](http://www.php-fig.org/psr/psr-7/) implementation
+* [`NegotiationConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/NegotiationConfiguration.php) - Use [Negotiation](https://github.com/willdurand/negotiation) for [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation)
 * [`PayloadConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/PayloadConfiguration.php) - Use the default Spark class as the implementation for [`PayloadInterface`](https://github.com/sparkphp/adr/blob/master/src/PayloadInterface.php)
 * [`RelayConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/RelayConfiguration.php) - Use [Relay](http://relayphp.com) for the framework middleware dispatcher
 * [`WhoopsConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/WhoopsConfiguration.php) - Use [Whoops](http://filp.github.io/whoops/) for handling exceptions
@@ -158,6 +159,7 @@ Spark\Application::build()
 ->setConfiguration([
     Spark\Configuration\AurynConfiguration::class,
     Spark\Configuration\DiactorosConfiguration::class,
+    Spark\Configuration\NegotiationConfiguration::class,
     Spark\Configuration\PayloadConfiguration::class,
     Spark\Configuration\RelayConfiguration::class,
     Spark\Configuration\WhoopsConfiguration::class,
