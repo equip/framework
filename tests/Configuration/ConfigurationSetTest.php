@@ -32,6 +32,23 @@ class ConfigurationSetTest extends TestCase
         $set->apply($injector);
     }
 
+    public function testSetObject()
+    {
+        $config = $this->getMock(ConfigurationInterface::class);
+        $injector = $this->getMock(Injector::class);
+
+        $config
+            ->expects($this->once())
+            ->method('apply')
+            ->with($injector);
+
+        $set = new ConfigurationSet([
+            $config,
+        ]);
+
+        $set->apply($injector);
+    }
+
     /**
      * @expectedException Spark\Exception\ConfigurationException
      * @expectedExceptionRegExp /class .* must implement ConfigurationInterface/i

@@ -97,7 +97,7 @@ In Spark, configuration of the injector is encapsulated in classes implementing 
 
 To facilitate ease of reuse for groupings of configuration, Spark provides a [`ConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/ConfigurationSet.php) class, which takes in a list of configuration classes and applies them to an injector instance.
 
-For a Spark application to function properly, the `Injector` instance it uses will need some configuration. This configuration is defined using the [`Application`](https://github.com/sparkphp/spark/blob/master/src/Application.php) `setConfiguration()` method, which accepts an array of configuration classes to be applied. It is also possible to provide a `ConfigurationSet` when calling `Application::build()` to be used as the default set.
+For a Spark application to function properly, the `Injector` instance it uses will need some configuration. This configuration is defined using the [`Application`](https://github.com/sparkphp/spark/blob/master/src/Application.php) `setConfiguration()` method, which accepts an array of configuration classes or objects to be applied. It is also possible to provide a `ConfigurationSet` when calling `Application::build()` to be used as the default set.
 
 ### Default Configuration
 
@@ -115,6 +115,21 @@ The following configurations are available but not used by default:
 
 * [`EnvConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/EnvConfiguration.php) - Use [Dotenv](https://github.com/josegonzalez/php-dotenv) to populate the content of [`Env`](https://github.com/sparkphp/spark/blob/master/src/Env.php)
 * [`PlatesResponderConfiguration`](https://github.com/sparkphp/spark/blob/master/src/Configuration/PlatesResponderConfiguration.php) - Use [Plates](http://platesphp.com/) as the default [responder](#responders)
+
+#### Setting The Env File
+
+When using `EnvConfiguration` it may be desirable to define the path to the `.env` file if it is outside of your project root or simply to avoid automatic detection. This can be done by providing a constructed instance of the `EnvConfiguration` during bootstrapping:
+
+```php
+Spark\Application::build()
+->setConfiguration([
+    new Spark\Configuration\EnvConfiguration('path/to/.env'),
+    // ...
+])
+// ...
+```
+
+*See the [bootstrap](#bootstrap) section for more details.*
 
 ### Env Configuration
 
