@@ -27,17 +27,41 @@ class InputTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($query, $found);
     }
 
-    public function testParsedBody()
+    public function dataParsedBody()
     {
+        $data = [];
+
+        // Null body should be an empty array
+        $body = null;
+        $expected = [];
+        $data[] = [$expected, $body];
+
+        // Array body should remain the same
         $body = [
             'body' => 'parsed',
+            'has' => [
+                'other' => 'values',
+            ],
         ];
+        $expected = $body;
+        $data[] = [$expected, $body];
 
+        // Object body should be converted to an array
+        $body = json_decode(json_encode($body));
+        $data[] = [$expected, $body];
+
+        return $data;
+    }
+    /**
+     * @dataProvider dataParsedBody
+     */
+    public function testParsedBody($expected, $body)
+    {
         $request = new ServerRequest;
         $request = $request->withParsedBody($body);
 
-        $found = $this->execute($request);
-        $this->assertSame($body, $found);
+        $input = $this->execute($request);
+        $this->assertSame($expected, $input);
     }
 
     public function testUploadedFiles()

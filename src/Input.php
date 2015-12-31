@@ -17,24 +17,28 @@ class Input implements InputInterface
     public function __invoke(
         ServerRequestInterface $request
     ) {
-        $input = [];
+        $attrs = $request->getAttributes();
+        $body = $request->getParsedBody();
+        $cookies = $request->getCookieParams();
+        $query = $request->getQueryParams();
+        $uploads = $request->getUploadedFiles();
 
-        if ($params = $request->getQueryParams()) {
-            $input = array_replace($input, $params);
-        }
-        if ($params = $request->getParsedBody()) {
-            $input = array_replace($input, $params);
-        }
-        if ($params = $request->getUploadedFiles()) {
-            $input = array_replace($input, $params);
-        }
-        if ($params = $request->getCookieParams()) {
-            $input = array_replace($input, $params);
-        }
-        if ($params = $request->getAttributes()) {
-            $input = array_replace($input, $params);
+        if (empty($body)) {
+            $body = [];
+        } elseif (is_object($body)) {
+            // Because the parsed body may also be represented as an object,
+            // additional parsing is required. This is a bit dirty but works
+            // very well for anonymous objects.
+            $body = json_decode(json_encode($body), true);
         }
 
-        return $input;
+        // Order matters here! Important values go last!
+        return array_replace(
+            $query,
+            $body,
+            $uploads,
+            $cookies,
+            $attrs
+        );
     }
 }
