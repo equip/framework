@@ -14,7 +14,7 @@ use Spark\Handler\ActionHandler;
 class DispatchHandler
 {
     /**
-     * @var Director
+     * @var Directory
      */
     private $directory;
 
