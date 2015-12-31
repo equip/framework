@@ -1,33 +1,41 @@
 <?php
 namespace Spark\Handler;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 abstract class ContentHandler
 {
     /**
-     * Parses request bodies based on content type
+     * Parses request bodies based on content type.
      *
-     * @param  Request  $request
-     * @param  Response $response
-     * @param  callable $next
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable $next
+     *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, callable $next)
-    {
+    public function __invoke(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        callable $next
+    ) {
         $mime = strtolower($request->getHeaderLine('Content-Type'));
+
         if ($this->isApplicableMimeType($mime) && !$request->getParsedBody()) {
-            $parsed = $this->getParsedBody((string) $request->getBody());
+            $body = (string) $request->getBody();
+            $parsed = $this->getParsedBody($body);
             $request = $request->withParsedBody($parsed);
         }
+
         return $next($request, $response);
     }
 
     /**
      * Check if the content type is appropriate for handling.
      *
-     * @param  string $mime
+     * @param string $mime
+     *
      * @return boolean
      */
     abstract protected function isApplicableMimeType($mime);
@@ -36,6 +44,7 @@ abstract class ContentHandler
      * Parse the request body.
      *
      * @param string $body
+     *
      * @return mixed
      */
     abstract protected function getParsedBody($body);

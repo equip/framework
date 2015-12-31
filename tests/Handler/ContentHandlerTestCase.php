@@ -7,7 +7,7 @@ use Zend\Diactoros\Stream;
 
 abstract class ContentHandlerTestCase extends TestCase
 {
-    /** 
+    /**
      * @param string $mime
      * @param string $body
      * @return ServerRequest

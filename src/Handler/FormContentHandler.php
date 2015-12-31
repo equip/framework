@@ -8,7 +8,7 @@ class FormContentHandler extends ContentHandler
      */
     protected function isApplicableMimeType($mime)
     {
-        return 'application/x-www-form-urlencoded' === $mime;
+        return $mime === 'application/x-www-form-urlencoded';
     }
 
     /**
