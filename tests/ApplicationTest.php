@@ -113,11 +113,17 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
         $injector = $this->getMock(Injector::class);
         $middleware = $this->getMock(MiddlewareSet::class);
-        $config = $this->getMock(ConfigurationInterface::class);
+        $config1 = $this->getMock(ConfigurationInterface::class);
+        $config2 = $this->getMock(ConfigurationInterface::class);
         $routing = function () {
         };
 
-        $config
+        $config1
+            ->expects($this->once())
+            ->method('apply')
+            ->with($injector);
+
+        $config2
             ->expects($this->once())
             ->method('apply')
             ->with($injector);
@@ -125,8 +131,8 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $injector
             ->expects($this->once())
             ->method('make')
-            ->with(get_class($config))
-            ->willReturn($config);
+            ->with(get_class($config1))
+            ->willReturn($config1);
 
         $injector
             ->expects($this->once())
@@ -146,7 +152,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
             ->with('Relay\Relay');
 
         $app = Application::build($injector, null, $middleware);
-        $app->setConfiguration([get_class($config)]);
+        $app->setConfiguration([get_class($config1), $config2]);
         $app->setRouting($routing);
         $app->run();
     }

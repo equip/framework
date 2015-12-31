@@ -109,9 +109,7 @@ class Application
      */
     public function run($runner = 'Relay\Relay')
     {
-        foreach ($this->configuration as $entry) {
-            $this->injector->make($entry)->apply($this->injector);
-        }
+        $this->configuration->apply($this->injector);
 
         return $this->injector
             ->share($this->middleware)
