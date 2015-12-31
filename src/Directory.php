@@ -33,8 +33,9 @@ class Directory extends Dictionary
     }
 
     /**
-     * @param  string $path
-     * @param  string|Action $domainOrAction
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
      * @return static
      */
     public function get($path, $domainOrAction)
@@ -43,8 +44,9 @@ class Directory extends Dictionary
     }
 
     /**
-     * @param  string $path
-     * @param  string|Action $domainOrAction
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
      * @return static
      */
     public function post($path, $domainOrAction)
@@ -53,8 +55,9 @@ class Directory extends Dictionary
     }
 
     /**
-     * @param  string $path
-     * @param  string|Action $domainOrAction
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
      * @return static
      */
     public function put($path, $domainOrAction)
@@ -63,8 +66,9 @@ class Directory extends Dictionary
     }
 
     /**
-     * @param  string $path
-     * @param  string|Action $domainOrAction
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
      * @return static
      */
     public function patch($path, $domainOrAction)
@@ -73,8 +77,9 @@ class Directory extends Dictionary
     }
 
     /**
-     * @param  string $path
-     * @param  string|Action $domainOrAction
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
      * @return static
      */
     public function head($path, $domainOrAction)
@@ -83,8 +88,9 @@ class Directory extends Dictionary
     }
 
     /**
-     * @param  string $path
-     * @param  string|Action $domainOrAction
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
      * @return static
      */
     public function delete($path, $domainOrAction)
@@ -93,8 +99,9 @@ class Directory extends Dictionary
     }
 
     /**
-     * @param  string $path
-     * @param  string|Action $domainOrAction
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
      * @return static
      */
     public function options($path, $domainOrAction)
@@ -103,9 +110,10 @@ class Directory extends Dictionary
     }
 
     /**
-     * @param  string $method
-     * @param  string $path
-     * @param  string|Action $domainOrAction
+     * @param string $method
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
      * @return static
      */
     public function action($method, $path, $domainOrAction)
