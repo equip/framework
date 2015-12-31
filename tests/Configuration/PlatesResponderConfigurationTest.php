@@ -24,9 +24,8 @@ class PlatesResponderConfigurationTest extends ConfigurationTestCase
     public function testApply()
     {
         $responder = $this->injector->make(FormattedResponder::class);
-        $formatters = $responder->getFormatters();
 
-        $this->assertArrayHasKey(PlatesFormatter::class, $formatters);
-        $this->assertSame(1.0, $formatters[PlatesFormatter::class]);
+        $this->assertArrayHasKey(PlatesFormatter::class, $responder);
+        $this->assertSame(1.0, $responder[PlatesFormatter::class]);
     }
 }

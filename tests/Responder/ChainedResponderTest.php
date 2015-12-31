@@ -2,56 +2,93 @@
 
 namespace SparkTests\Responder;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Spark\Adr\ResponderInterface;
+use Spark\Adr\PayloadInterface;
+use Spark\Configuration\AurynConfiguration;
 use Spark\Responder\ChainedResponder;
+use Spark\Responder\FormattedResponder;
+use Spark\Responder\RedirectResponder;
+use SparkTests\Configuration\ConfigurationTestCase;
 
-class ChainedResponderTest extends \PHPUnit_Framework_TestCase
+class ChainedResponderTest extends ConfigurationTestCase
 {
+    /**
+     * @var ChainedResponder
+     */
     private $responder;
+
+    protected function getConfigurations()
+    {
+        return [
+            new AurynConfiguration,
+        ];
+    }
 
     public function setUp()
     {
-        $resolver = $this->getMockBuilder('Relay\ResolverInterface')->getMock();
-        $resolver->method('__invoke')
-                 ->will($this->returnCallback(function () {
-                       $responder = $this->getMockBuilder('Spark\Adr\ResponderInterface')->getMock();
-                       $responder->expects($this->once())
-                                 ->method('__invoke')
-                                 ->with(
-                                     $this->isInstanceOf('Psr\Http\Message\ServerRequestInterface'),
-                                     $this->isInstanceOf('Psr\Http\Message\ResponseInterface'),
-                                     $this->isInstanceOf('Spark\Adr\PayloadInterface')
-                                 )->will($this->returnArgument(1));
-                       return $responder;
-                 }));
+        parent::setUp();
 
-        // Doesn't matter what the responders actually are, since the mock
-        // resolver will just return a new mock instance for any value.
-        $this->responder = (new ChainedResponder($resolver))->withResponders(['a', 'b', 'c']);
+        $this->responder = $this->injector->make(ChainedResponder::class);
     }
 
-    public function testResponders()
+    public function testDefaultResponders()
     {
-        $responders = $this->responder->getResponders();
+        $responders = $this->responder->toArray();
 
-        $this->assertThat($responders, $this->isType('array'));
+        $this->assertContains(FormattedResponder::class, $responders);
+        $this->assertContains(RedirectResponder::class, $responders);
+    }
 
-        $modified = $this->responder->withResponders(['foo', 'bar']);
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessageRegExp /responders .* must implement .*ResponderInterface/i
+     */
+    public function testInvalidResponder()
+    {
+        $responder = $this->responder->withValue(get_class($this));
+    }
 
-        $this->assertNotSame($responders, $modified->getResponders());
+    public function testAddResponder()
+    {
+        $responder = $this->getMockResponder();
+        $chained = $this->responder->withValue($responder);
 
-        $responders = $modified->withAddedResponder('baz')->getResponders();
+        $this->assertContains($responder, $chained);
 
-        $this->assertSame($responders, ['foo', 'bar', 'baz']);
+        $response = $this->execute($chained);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
     public function testResponse()
     {
-        $request  = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
-        $response = $this->getMockBuilder('Psr\Http\Message\ResponseInterface')->getMock();
-        $payload  = $this->getMockBuilder('Spark\Adr\PayloadInterface')->getMock();
+        $response = $this->execute($this->responder);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+    }
 
-        $response = call_user_func($this->responder, $request, $response, $payload);
+    private function getMockResponder()
+    {
+        $responder = $this->getMockBuilder(ResponderInterface::class)->getMock();
+        $responder
+            ->expects($this->once())
+            ->method('__invoke')
+            ->with(
+                $this->isInstanceOf(ServerRequestInterface::class),
+                $this->isInstanceOf(ResponseInterface::class),
+                $this->isInstanceOf(PayloadInterface::class)
+            )
+            ->will($this->returnArgument(1));
 
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
+        return $responder;
+    }
+
+    private function execute($responder)
+    {
+        $request  = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
+        $response = $this->getMockBuilder(ResponseInterface::class)->getMock();
+        $payload  = $this->getMockBuilder(PayloadInterface::class)->getMock();
+
+        return call_user_func($responder, $request, $response, $payload);
     }
 }

@@ -11,9 +11,7 @@ class PlatesResponderConfiguration implements ConfigurationInterface
     public function apply(Injector $injector)
     {
         $injector->prepare(FormattedResponder::class, function (FormattedResponder $responder) {
-            return $responder->withFormatters([
-                PlatesFormatter::class => 1.0,
-            ]);
+            return $responder->withValue(PlatesFormatter::class, 1.0);
         });
     }
 }
