@@ -9,14 +9,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Spark\Directory;
 use Spark\Exception\HttpException;
+use Spark\Handler\ActionHandler;
 
 class DispatchHandler
 {
-    /**
-     * @var string
-     */
-    protected $actionAttribute = 'spark/adr:action';
-
     /**
      * @var Director
      */
@@ -47,7 +43,7 @@ class DispatchHandler
             $request->getUri()->getPath()
         );
 
-        $request = $request->withAttribute($this->actionAttribute, $action);
+        $request = $request->withAttribute(ActionHandler::ACTION_ATTRIBUTE, $action);
 
         foreach ($args as $key => $value) {
             $request = $request->withAttribute($key, $value);
