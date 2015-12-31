@@ -25,49 +25,77 @@ class Payload implements PayloadInterface
      */
     private $messages;
 
+    /**
+     * @inheritDoc
+     */
     public function withStatus($code)
     {
-        $new = clone $this;
-        $new->status = $code;
-        return $new;
+        $copy = clone $this;
+        $copy->status = $code;
+
+        return $copy;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function withInput(array $input)
     {
-        $new = clone $this;
-        $new->input = $input;
-        return $new;
+        $copy = clone $this;
+        $copy->input = $input;
+
+        return $copy;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getInput()
     {
         return $this->input;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function withOutput(array $output)
     {
-        $new = clone $this;
-        $new->output = $output;
-        return $new;
+        $copy = clone $this;
+        $copy->output = $output;
+
+        return $copy;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getOutput()
     {
         return $this->output;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function withMessages(array $messages)
     {
-        $new = clone $this;
-        $new->messages = $messages;
-        return $new;
+        $copy = clone $this;
+        $copy->messages = $messages;
+
+        return $copy;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getMessages()
     {
         return $this->messages;
