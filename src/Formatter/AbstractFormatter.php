@@ -29,7 +29,8 @@ abstract class AbstractFormatter
     /**
      * Get the response body from the payload.
      *
-     * @param  PayloadInterface $payload
+     * @param PayloadInterface $payload
+     *
      * @return string
      */
     abstract protected function body(PayloadInterface $payload);
@@ -37,7 +38,8 @@ abstract class AbstractFormatter
     /**
      * Get the response status from the payload.
      *
-     * @param  PayloadInterface $payload
+     * @param PayloadInterface $payload
+     *
      * @return integer
      */
     public function status(PayloadInterface $payload)

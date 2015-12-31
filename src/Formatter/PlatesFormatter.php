@@ -22,7 +22,17 @@ class PlatesFormatter extends HtmlFormatter
     }
 
     /**
-     * @param  PayloadInterface $payload
+     * @inheritDoc
+     */
+    public function body(PayloadInterface $payload)
+    {
+        $template = $this->template($payload);
+        $template = $this->engine->make($template);
+        return $this->render($template, $payload);
+    }
+
+    /**
+     * @param PayloadInterface $payload
      * @return string
      */
     protected function template(PayloadInterface $payload)
@@ -31,19 +41,12 @@ class PlatesFormatter extends HtmlFormatter
     }
 
     /**
-     * @param  Template $template
-     * @param  PayloadInterface $payload
+     * @param Template $template
+     * @param PayloadInterface $payload
      * @return string
      */
     protected function render(Template $template, PayloadInterface $payload)
     {
         return $template->render($payload->getOutput());
-    }
-
-    public function body(PayloadInterface $payload)
-    {
-        $template = $this->template($payload);
-        $template = $this->engine->make($template);
-        return $this->render($template, $payload);
     }
 }
