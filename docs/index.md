@@ -453,69 +453,17 @@ return $payload->withMessages([
 
 ### Default Setup
 
-Responders are route-specific. However, the router can be configured with a responder for routes to use by default; this is the recommended practice.
-
-The default configuration looks like this:
-
-* The [`Router`](#router) instance uses [`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) as its default responder.
-* [`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) composes a single responder by default: [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php).
-* [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php) configuration includes a single formatter by default: [`JsonFormatter`](https://github.com/sparkphp/spark/blob/master/src/Formatter/JsonFormatter.php).
+Actions, responders, and formatters work together to generate a response. By default `Action` instances created by [routing](#routing) use [`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) as the responder. By using a custom action you can change the responder for that action. By default the [`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) includes the [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php) which delegates formatting to [`JsonFormatter`](https://github.com/sparkphp/spark/blob/master/src/Formatter/JsonFormatter.php).
 
 ### Using Plates
 
 Using [`PlatesFormatter`](https://github.com/sparkphp/spark/blob/master/src/Formatter/PlatesFormatter.php) requires changing the formatters used by [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php). The easiest way to do this is by using the `PlatesResponderConfiguration` as in the example below:
 
 ```php
-use Spark\Configuration\PlatesResponderConfiguration;
-
-$configuration = new PlatesResponderConfiguration;
-$configuration->apply($injector);
-```
-
-If you are using the [`DefaultConfigurationSet`](https://github.com/sparkphp/spark/blob/master/src/Configuration/DefaultConfigurationSet.php) you can add this configuration to the default set:
-
-```php
-use Spark\Configuration\DefaultConfigurationSet;
-use Spark\Configuration\PlatesResponderConfiguration;
-
-$configuration = new DefaultConfigurationSet([
-    PlatesResponderConfiguration::class,
-]);
-$configuration->apply($injector);
-```
-
-Note that this will completely replace the default group of formatters of [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php). If you instead want to add to that group of formatters, you will need to use a custom configuration that modifies the response of `getFormatters()` and then invoke `withFormatters()` method to store the modified array.
-
-### Changing Responders
-
-To use a completely different default responder requires altering the router [configuration](#configuration). Here's an example of a custom router configuration that makes it use [`FormattedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/FormattedResponder.php) directly rather than doing so through [`ChainedResponder`](https://github.com/sparkphp/spark/blob/master/src/Responder/ChainedResponder.php) as in the default configuration.
-
-```php
-use Auryn\Injector;
-use Spark\Configuration\ConfigurationInterface;
-use Spark\Responder\FormatterResponder;
-use Spark\Router;
-
-class ResponderConfiguration implements ConfigurationInterface
-{
-    public function apply(Injector $injector)
-    {
-        $injector->prepare(Router::class, [$this, 'prepareRouter']);
-    }
-
-    public function prepareRouter(Router $router)
-    {
-        $router->setDefaultResponder(FormatterResponder::class);
-    }
-}
-```
-
-### Route-Specific Responders
-
-While using a default responder for all routes is the recommended practice, it is possible to override this and assign a different responder to individual routes. This is done when adding individual routes to the [router](#router): [`Router`](#router) methods for doing so return an instance of [`Route`](https://github.com/sparkphp/spark/blob/master/src/Router/Route.php), which has a `setResponder()` method that accepts the name of a responder class.
-
-Here's an example of changing an individual route to use a specific responder as part of configuring the router.
-
-```php
-$router->get('/providers', Domain\GetProviders::class)->setResponder('Acme\Responder');
+Spark\Application::build()
+->setConfiguration([
+    // ...
+    Spark\Configuration\PlatesResponderConfiguration
+])
+// ...
 ```
