@@ -2,39 +2,46 @@
 
 namespace Spark\Handler;
 
-use Arbiter\ActionHandler as Arbiter;
 use Arbiter\Action;
-use Spark\Adr\PayloadInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Relay\ResolverInterface;
+use Spark\Adr\PayloadInterface;
 use Spark\Adr\DomainInterface;
 use Spark\Adr\InputInterface;
 use Spark\Adr\ResponderInterface;
-use Relay\ResolverInterface;
 
-class ActionHandler extends Arbiter
+class ActionHandler
 {
+    const ACTION_ATTRIBUTE = 'spark/adr:action';
+
     /**
      * @var ResolverInterface
      */
-    protected $resolver;
+    private $resolver;
 
-    protected $actionAttribute = 'spark/adr:action';
-
+    /**
+     * @param ResolverInterface $resolver
+     */
     public function __construct(ResolverInterface $resolver)
     {
         $this->resolver = $resolver;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param callable $next
+     */
     public function __invoke(
         ServerRequestInterface $request,
-        ResponseInterface      $response,
-        callable               $next
+        ResponseInterface $response,
+        callable $next
     ) {
-        $action  = $request->getAttribute($this->actionAttribute);
-        $request = $request->withoutAttribute($this->actionAttribute);
+        $action = $request->getAttribute(self::ACTION_ATTRIBUTE);
+        $request = $request->withoutAttribute(self::ACTION_ATTRIBUTE);
 
-        $response = $this->getResponse($action, $request, $response);
+        $response = $this->handle($action, $request, $response);
 
         return $next($request, $response);
     }
@@ -42,56 +49,71 @@ class ActionHandler extends Arbiter
     /**
      * Use the action collaborators to get a response.
      *
-     * @param  Action                 $action
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface     $response
+     * @param Action $action
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     *
      * @return ResponseInterface
      */
-    private function getResponse(
-        Action                 $action,
+    private function handle(
+        Action $action,
         ServerRequestInterface $request,
-        ResponseInterface      $response
+        ResponseInterface $response
     ) {
-        $domain    = $this->resolve($action->getDomain());
-        $input     = $this->resolve($action->getInput());
+        $domain = $this->resolve($action->getDomain());
+        $input = $this->resolve($action->getInput());
         $responder = $this->resolve($action->getResponder());
 
-        $payload  = $this->getPayload($domain, $input, $request);
-        $response = $this->getResponseForPayload($responder, $request, $response, $payload);
+        $payload = $this->payload($domain, $input, $request);
+        $response = $this->response($responder, $request, $response, $payload);
 
         return $response;
     }
 
     /**
-     * Execute the domain to get a payload.
+     * Resolve the class spec into an object.
      *
-     * @param  DomainInterface        $domain
-     * @param  InputInterface         $input
-     * @param  ServerRequestInterface $request
+     * @param string $spec
+     *
+     * @return object
+     */
+    private function resolve($spec)
+    {
+        return call_user_func($this->resolver, $spec);
+    }
+
+    /**
+     * Execute the domain to get a payload using input from the request.
+     *
+     * @param DomainInterface $domain
+     * @param InputInterface $input
+     * @param ServerRequestInterface $request
+     *
      * @return PayloadInterface
      */
-    private function getPayload(
-        DomainInterface        $domain,
-        InputInterface         $input,
+    private function payload(
+        DomainInterface $domain,
+        InputInterface $input,
         ServerRequestInterface $request
     ) {
         return $domain($input($request));
     }
 
     /**
-     * Execute the responder to marshall the reponse.
+     * Execute the responder to marshall the payload into the response.
      *
-     * @param  ResponderInterface     $responder
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface      $response
-     * @param  PayloadInterface       $payload
+     * @param ResponderInterface $responder
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param PayloadInterface $payload
+     *
      * @return ResponseInterface
      */
-    private function getResponseForPayload(
-        ResponderInterface     $responder,
+    private function response(
+        ResponderInterface $responder,
         ServerRequestInterface $request,
-        ResponseInterface      $response,
-        PayloadInterface       $payload
+        ResponseInterface $response,
+        PayloadInterface $payload
     ) {
         return $responder($request, $response, $payload);
     }

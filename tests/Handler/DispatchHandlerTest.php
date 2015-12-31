@@ -3,8 +3,8 @@
 namespace SparkTests\Handler;
 
 use SparkTests\DirectoryTestCase;
-use Spark\Adr\DomainInterface;
 use Spark\Directory;
+use Spark\Handler\ActionHandler;
 use Spark\Handler\DispatchHandler;
 use Zend\Diactoros\Uri;
 use Zend\Diactoros\Response;
@@ -30,7 +30,7 @@ class DispatchHandlerTest extends DirectoryTestCase
         $response = new Response;
 
         $next = function (ServerRequest $request, Response $response) use ($action) {
-            $this->assertSame($action, $request->getAttribute('spark/adr:action'));
+            $this->assertSame($action, $request->getAttribute(ActionHandler::ACTION_ATTRIBUTE));
             $this->assertSame('tester', $request->getAttribute('name'));
             return $response;
         };

@@ -1,39 +1,43 @@
 <?php
 namespace SparkTests\Handler;
 
-use Arbiter\Action;
-use Auryn\Injector;
-use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Resolver\AurynResolver;
-use Spark\Router\Route;
+use Spark\Action;
+use Spark\Configuration\ArbiterConfiguration;
+use Spark\Configuration\AurynConfiguration;
+use Spark\Handler\ActionHandler;
+use SparkTests\Configuration\ConfigurationTestCase;
+use SparkTests\Fake\FakeDomain;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\ServerRequest;
 
-class ActionHandlerTest extends TestCase
+class ActionHandlerTest extends ConfigurationTestCase
 {
+    protected function getConfigurations()
+    {
+        return [
+            new AurynConfiguration,
+        ];
+    }
+
     public function testHandle()
     {
-        $injector = new Injector();
-        $injector->share($injector);
+        $request = $this->injector->make(ServerRequest::class);
+        $response = $this->injector->make(Response::class);
+        $handler = $this->injector->make(ActionHandler::class);
 
-        $injector->alias('Relay\ResolverInterface', 'Spark\Resolver\AurynResolver');
+        $action = new Action(FakeDomain::class);
 
-        $request = ServerRequestFactory::fromGlobals();
-        $response = new Response();
+        $request = $request->withAttribute(ActionHandler::ACTION_ATTRIBUTE, $action);
+        $request = $request->withAttribute('test', true);
 
-        $action = new Action('Spark\Input', 'SparkTests\Fake\FakeDomain', 'Spark\Responder\ChainedResponder');
-        $request = $request->withAttribute('spark/adr:action', $action)
-                        ->withAttribute('test', 'success');
-
-        $actionHandler = $injector->make('Spark\Handler\ActionHandler');
-
-        $response = $actionHandler($request, $response, function ($req, $resp) {
-            $this->assertInstanceOf('Zend\Diactoros\Response', $resp);
-            return $resp;
+        $response = $handler($request, $response, function ($request, $response) {
+            $this->assertInstanceOf(Response::class, $response);
+            return $response;
         });
 
-        $body = json_decode($response->getBody());
-        $this->assertEquals('success', $body->input->test);
+        $body = json_decode($response->getBody(), true);
 
+        $this->assertTrue($body['success']);
+        $this->assertTrue($body['input']['test']);
     }
 }
