@@ -2,32 +2,26 @@
 
 namespace Spark\Responder;
 
+use Destrukt\Dictionary;
 use Negotiation\Negotiator;
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\PayloadInterface;
 use Spark\Adr\ResponderInterface;
 use Spark\Formatter\AbstractFormatter;
+use Spark\Formatter\JsonFormatter;
+use Spark\Resolver\ResolverTrait;
 use Relay\ResolverInterface;
 
-class FormattedResponder implements ResponderInterface
+class FormattedResponder extends Dictionary implements ResponderInterface
 {
+    use ResolverTrait;
+
     /**
      * @var Negotiator
      */
     private $negotiator;
-
-    /**
-     * @var ResolverInterface
-     */
-    private $resolver;
-
-    /**
-     * @var array
-     */
-    private $formatters = [
-        'Spark\Formatter\JsonFormatter' => 1.0,
-    ];
 
     /**
      * @param Negotiator $negotiator
@@ -35,45 +29,53 @@ class FormattedResponder implements ResponderInterface
      */
     public function __construct(
         Negotiator $negotiator,
-        ResolverInterface $resolver
+        ResolverInterface $resolver,
+        array $formatters = [
+            JsonFormatter::class => 1.0,
+        ]
     ) {
         $this->negotiator = $negotiator;
         $this->resolver   = $resolver;
+
+        parent::__construct($formatters);
     }
 
     /**
-     * Retrieve available formatters.
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getFormatters()
+    public function validate(array $data)
     {
-        return $this->formatters;
+        parent::validate($data);
+
+        foreach ($data as $formatter => $quality) {
+            if (!is_subclass_of($formatter, AbstractFormatter::class)) {
+                throw new InvalidArgumentException(sprintf(
+                    'All formatters in `%s` must implement `%s`',
+                    static::class,
+                    AbstractFormatter::class
+                ));
+            }
+
+            if (!is_float($quality)) {
+                throw new InvalidArgumentException(sprintf(
+                    'All formatters in `%s` must have a quality value',
+                    static::class
+                ));
+            }
+        }
     }
 
     /**
-     * Return an instance with the specified formatters.
-     *
-     * @param  array $formatters
-     * @return self
+     * @inheritDoc
      */
-    public function withFormatters(array $formatters)
-    {
-        arsort($formatters);
-
-        $self = clone $this;
-        $self->formatters = $formatters;
-        return $self;
-    }
-
     public function __invoke(
         ServerRequestInterface $request,
-        ResponseInterface      $response,
-        PayloadInterface       $payload
+        ResponseInterface $response,
+        PayloadInterface $payload
     ) {
         if ($this->hasOutput($payload)) {
             $formatter = $this->formatter($request);
-            $response  = $this->format($response, $formatter, $payload);
+            $response = $this->format($response, $formatter, $payload);
         }
 
         return $response;
@@ -99,11 +101,10 @@ class FormattedResponder implements ResponderInterface
     protected function priorities()
     {
         $priorities = [];
-        $formatters = array_keys($this->formatters);
 
-        foreach ($formatters as $spec) {
-            foreach ($spec::accepts() as $type) {
-                $priorities[$type] = $spec;
+        foreach ($this as $formatter => $quality) {
+            foreach ($formatter::accepts() as $type) {
+                $priorities[$type] = $formatter;
             }
         }
 
@@ -116,7 +117,8 @@ class FormattedResponder implements ResponderInterface
      * Uses content negotiation to find the best available output format for
      * the requested content type.
      *
-     * @param  ServerRequestInterface $request
+     * @param ServerRequestInterface $request
+     *
      * @return AbstractFormatter
      */
     protected function formatter(ServerRequestInterface $request)
@@ -134,15 +136,16 @@ class FormattedResponder implements ResponderInterface
             $formatter = array_shift($priorities);
         }
 
-        return call_user_func($this->resolver, $formatter);
+        return $this->resolve($formatter);
     }
 
     /**
      * Update the response by formatting the payload.
      *
-     * @param  ResponseInterface $response
-     * @param  AbstractFormatter $formatter
-     * @param  PayloadInterface  $payload
+     * @param ResponseInterface $response
+     * @param AbstractFormatter $formatter
+     * @param PayloadInterface $payload
+     *
      * @return ResponseInterface
      */
     protected function format(

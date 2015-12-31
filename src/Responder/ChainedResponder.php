@@ -2,85 +2,63 @@
 
 namespace Spark\Responder;
 
+use Destrukt\Set;
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Spark\Adr\PayloadInterface;
 use Spark\Adr\ResponderInterface;
+use Spark\Resolver\ResolverTrait;
 use Relay\ResolverInterface;
 
-class ChainedResponder implements ResponderInterface
+class ChainedResponder extends Set implements ResponderInterface
 {
-    /**
-     * @var ResolverInterface
-     */
-    private $resolver;
-
-    /**
-     * @var array
-     */
-    private $responders = [
-        'Spark\Responder\FormattedResponder',
-        'Spark\Responder\RedirectResponder',
-    ];
+    use ResolverTrait;
 
     /**
      * @param ResolverInterface $resolver
+     * @param array $responders
      */
     public function __construct(
-        ResolverInterface $resolver
+        ResolverInterface $resolver,
+        array $responders = [
+            FormattedResponder::class,
+            RedirectResponder::class,
+        ]
     ) {
         $this->resolver = $resolver;
+
+        return parent::__construct($responders);
     }
 
     /**
-     * Get a list of registered responders.
-     *
-     * @return array
+     * @inheritDoc
      */
-    public function getResponders()
+    public function validate(array $data)
     {
-        return $this->responders;
+        parent::validate($data);
+
+        foreach ($data as $responder) {
+            if (!is_subclass_of($responder, ResponderInterface::class)) {
+                throw new InvalidArgumentException(sprintf(
+                    'All responders in `%s` must implement `%s`',
+                    static::class,
+                    ResponderInterface::class
+                ));
+            }
+        }
     }
 
     /**
-     * Get a copy with a new list of responders.
-     *
-     * @param  array $responders
-     * @return self
+     * @inheritDoc
      */
-    public function withResponders(array $responders)
-    {
-        $new = clone $this;
-        $new->responders = array_values($responders);
-        return $new;
-    }
-
-    /**
-     * Get a copy with an appended responder.
-     *
-     * @param  string $spec
-     * @return self
-     */
-    public function withAddedResponder($spec)
-    {
-        $new = clone $this;
-        $new->responders[] = $spec;
-        return $new;
-    }
-
     public function __invoke(
         ServerRequestInterface $request,
         ResponseInterface      $response,
         PayloadInterface       $payload
     ) {
-        // Convert the responders from a list to a set
-        $responders = array_unique($this->responders);
-
-        // Create instances of all the responders via the resolver
-        $responders = array_map($this->resolver, $responders);
-
-        // Call each of the responders in FIFO order
-        foreach ($responders as $responder) {
+        foreach ($this as $responder) {
+            $responder = $this->resolve($responder);
             $response = $responder($request, $response, $payload);
         }
 
