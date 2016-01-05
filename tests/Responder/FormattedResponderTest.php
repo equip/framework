@@ -1,15 +1,15 @@
 <?php
 
-namespace SparkTests\Responder;
+namespace EquipTests\Responder;
 
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Spark\Configuration\AurynConfiguration;
-use Spark\Payload;
-use Spark\Responder\FormattedResponder;
-use Spark\Formatter\JsonFormatter;
-use SparkTests\Configuration\ConfigurationTestCase;
+use Equip\Configuration\AurynConfiguration;
+use Equip\Payload;
+use Equip\Responder\FormattedResponder;
+use Equip\Formatter\JsonFormatter;
+use EquipTests\Configuration\ConfigurationTestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 

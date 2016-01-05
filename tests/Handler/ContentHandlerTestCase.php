@@ -1,5 +1,5 @@
 <?php
-namespace SparkTests\Handler;
+namespace EquipTests\Handler;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\ServerRequest;

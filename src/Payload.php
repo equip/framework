@@ -1,7 +1,7 @@
 <?php
-namespace Spark;
+namespace Equip;
 
-use Spark\Adr\PayloadInterface;
+use Equip\Adr\PayloadInterface;
 
 class Payload implements PayloadInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark;
+namespace Equip;
 
 use Destrukt\Dictionary;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Equip\Configuration;
 
 use Auryn\Injector;
 
@@ -13,10 +13,10 @@ class AurynConfiguration implements ConfigurationInterface
     {
         $injector->alias(
             'Relay\ResolverInterface',
-            'Spark\Resolver\AurynResolver'
+            'Equip\Resolver\AurynResolver'
         );
 
-        $injector->define('Spark\Resolver\AurynResolver', [
+        $injector->define('Equip\Resolver\AurynResolver', [
             ':injector' => $injector,
         ]);
     }

@@ -1,14 +1,14 @@
 # Data
 
-[sparkphp/data](https://github.com/sparkphp/data) is an optional library for creating a data layer in Spark applications.
+[equip/data](https://github.com/equip/data) is an optional library for creating a data layer in Equip applications.
 
 ## Basic Example
 
 ```php
 namespace Acme;
 
-use Spark\Data\EntityInterface;
-use Spark\Data\Traits\EntityTrait;
+use Equip\Data\EntityInterface;
+use Equip\Data\Traits\EntityTrait;
 
 class User implements EntityInterface
 {

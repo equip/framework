@@ -1,8 +1,8 @@
 <?php
-namespace SparkTests\Fake;
+namespace EquipTests\Fake;
 
-use Spark\Payload;
-use Spark\Adr\DomainInterface;
+use Equip\Payload;
+use Equip\Adr\DomainInterface;
 
 class FakeDomain implements DomainInterface
 {

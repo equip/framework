@@ -1,7 +1,7 @@
 <?php
-namespace SparkTests\Fake;
+namespace EquipTests\Fake;
 
-use Spark\Responder\Responder;
+use Equip\Responder\Responder;
 
 class FakeResponder extends Responder
 {

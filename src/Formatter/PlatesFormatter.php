@@ -1,10 +1,10 @@
 <?php
 
-namespace Spark\Formatter;
+namespace Equip\Formatter;
 
 use League\Plates\Engine;
 use League\Plates\Template\Template;
-use Spark\Adr\PayloadInterface;
+use Equip\Adr\PayloadInterface;
 
 class PlatesFormatter extends HtmlFormatter
 {

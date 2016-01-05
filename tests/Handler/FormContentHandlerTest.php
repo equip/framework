@@ -1,7 +1,7 @@
 <?php
-namespace SparkTests\Handler;
+namespace EquipTests\Handler;
 
-use Spark\Handler\FormContentHandler;
+use Equip\Handler\FormContentHandler;
 use Zend\Diactoros\Response;
 
 class FormContentHandlerTest extends ContentHandlerTestCase

@@ -1,14 +1,14 @@
 <?php
 
-namespace SparkTests;
+namespace EquipTests;
 
 use Auryn\Injector;
 use ReflectionObject;
 use Relay\MiddlewareInterface;
-use Spark\Configuration\ConfigurationInterface;
-use Spark\Configuration\ConfigurationSet;
-use Spark\Middleware\MiddlewareSet;
-use Spark\Application;
+use Equip\Configuration\ConfigurationInterface;
+use Equip\Configuration\ConfigurationSet;
+use Equip\Middleware\MiddlewareSet;
+use Equip\Application;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
@@ -143,7 +143,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $injector
             ->expects($this->once())
             ->method('prepare')
-            ->with('Spark\Directory', $routing)
+            ->with('Equip\Directory', $routing)
             ->willReturnSelf();
 
         $injector

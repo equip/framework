@@ -1,10 +1,10 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Equip\Configuration;
 
 use Auryn\Injector;
 use Relay\RelayBuilder;
-use Spark\Middleware\MiddlewareSet;
+use Equip\Middleware\MiddlewareSet;
 
 class RelayConfiguration implements ConfigurationInterface
 {

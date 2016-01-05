@@ -1,9 +1,9 @@
 <?php
-namespace SparkTests\Middleware;
+namespace EquipTests\Middleware;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Relay\MiddlewareInterface;
-use Spark\Middleware\MiddlewareSet;
+use Equip\Middleware\MiddlewareSet;
 
 class MiddlewareSetTest extends TestCase
 {

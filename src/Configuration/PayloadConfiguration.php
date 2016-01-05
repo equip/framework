@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Equip\Configuration;
 
 use Auryn\Injector;
 
@@ -12,8 +12,8 @@ class PayloadConfiguration implements ConfigurationInterface
     public function apply(Injector $injector)
     {
         $injector->alias(
-            'Spark\Adr\PayloadInterface',
-            'Spark\Payload'
+            'Equip\Adr\PayloadInterface',
+            'Equip\Payload'
         );
     }
 }

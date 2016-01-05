@@ -1,6 +1,6 @@
 <?php
 
-namespace SparkTests\Configuration;
+namespace EquipTests\Configuration;
 
 use Auryn\Injector;
 use PHPUnit_Framework_TestCase as TestCase;

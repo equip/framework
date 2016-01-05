@@ -1,9 +1,9 @@
 <?php
-namespace SparkTests;
+namespace EquipTests;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Exception\HttpException;
-use Spark\Router;
+use Equip\Exception\HttpException;
+use Equip\Router;
 use Zend\Diactoros\Response;
 
 class ExceptionTest extends TestCase

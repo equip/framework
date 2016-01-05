@@ -1,20 +1,16 @@
 {
-    "name": "sparkphp/spark",
+    "name": "equip/framework",
     "description": "A tiny framework that can start anything.",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Woody Gilk",
-            "email": "hello@shadowhand.me"
-        },
-        {
-            "name": "Daniel Olfelt",
-            "email": "dolfelt@gmail.com"
+            "name": "Equip Contributors",
+            "homepage": "https://github.com/equip"
         }
     ],
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=5.5",
         "arbiter/arbiter": "^0.1",
         "destrukt/destrukt": "^0.7.1",
         "filp/whoops": "^1.1",
@@ -22,15 +18,14 @@
         "rdlowrey/auryn": "^1.1",
         "relay/relay": "^1.1",
         "relay/middleware": "^0.1",
-        "sparkphp/adr": "^0.4",
+        "equip/adr": "^1.0",
         "willdurand/negotiation": "^2.0",
         "zendframework/zend-diactoros": "^1.0.4"
     },
     "require-dev": {
         "josegonzalez/dotenv": "^1.2",
         "league/plates": "^3.1",
-        "phpunit/phpunit": "^4.8|^5.0",
-        "satooshi/php-coveralls": "^1.0"
+        "phpunit/phpunit": "^4.8|^5.0"
     },
     "suggest": {
         "josegonzalez/dotenv": "For environment based configuration loading",
@@ -38,12 +33,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spark\\": "src/"
+            "Equip\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SparkTests\\": "tests/"
+            "EquipTests\\": "tests/"
         }
     }
 }

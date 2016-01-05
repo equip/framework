@@ -1,5 +1,5 @@
 <?php
-namespace Spark\Handler;
+namespace Equip\Handler;
 
 class FormContentHandler extends ContentHandler
 {

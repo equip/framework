@@ -1,9 +1,9 @@
 <?php
 
-namespace Spark;
+namespace Equip;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Spark\Adr\InputInterface;
+use Equip\Adr\InputInterface;
 
 class Input implements InputInterface
 {

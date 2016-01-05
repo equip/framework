@@ -1,10 +1,10 @@
 <?php
 
-namespace SparkTests\Responder;
+namespace EquipTests\Responder;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Payload;
-use Spark\Responder\RedirectResponder;
+use Equip\Payload;
+use Equip\Responder\RedirectResponder;
 use Zend\Diactoros\Response;
 
 class RedirectResponderTest extends TestCase

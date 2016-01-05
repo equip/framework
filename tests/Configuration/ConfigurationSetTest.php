@@ -1,10 +1,10 @@
 <?php
 
-namespace SparkTests\Configuration;
+namespace EquipTests\Configuration;
 
 use Auryn\Injector;
-use Spark\Configuration\ConfigurationInterface;
-use Spark\Configuration\ConfigurationSet;
+use Equip\Configuration\ConfigurationInterface;
+use Equip\Configuration\ConfigurationSet;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class ConfigurationSetTest extends TestCase
@@ -50,7 +50,7 @@ class ConfigurationSetTest extends TestCase
     }
 
     /**
-     * @expectedException Spark\Exception\ConfigurationException
+     * @expectedException Equip\Exception\ConfigurationException
      * @expectedExceptionRegExp /class .* must implement ConfigurationInterface/i
      */
     public function testInvalidClass()

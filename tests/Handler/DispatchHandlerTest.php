@@ -1,11 +1,11 @@
 <?php
 
-namespace SparkTests\Handler;
+namespace EquipTests\Handler;
 
-use SparkTests\DirectoryTestCase;
-use Spark\Directory;
-use Spark\Handler\ActionHandler;
-use Spark\Handler\DispatchHandler;
+use EquipTests\DirectoryTestCase;
+use Equip\Directory;
+use Equip\Handler\ActionHandler;
+use Equip\Handler\DispatchHandler;
 use Zend\Diactoros\Uri;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
@@ -39,7 +39,7 @@ class DispatchHandlerTest extends DirectoryTestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\HttpException
+     * @expectedException \Equip\Exception\HttpException
      * @expectedExceptionRegExp /cannot find any resource at/i
      */
     public function testNotFoundException()
@@ -59,7 +59,7 @@ class DispatchHandlerTest extends DirectoryTestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\HttpException
+     * @expectedException \Equip\Exception\HttpException
      * @expectedExceptionRegExp /cannot access resource .* using method/i
      */
     public function testMethodNotAllowedException()

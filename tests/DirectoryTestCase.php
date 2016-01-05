@@ -1,9 +1,9 @@
 <?php
 
-namespace SparkTests;
+namespace EquipTests;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Adr\DomainInterface;
+use Equip\Adr\DomainInterface;
 
 abstract class DirectoryTestCase extends TestCase
 {
@@ -23,7 +23,7 @@ abstract class DirectoryTestCase extends TestCase
             $domain = get_class($this->getMockDomain());
         }
 
-        $action = $this->getMockBuilder('Spark\Action');
+        $action = $this->getMockBuilder('Equip\Action');
 
         $action->setConstructorArgs([
             $domain,
@@ -39,6 +39,6 @@ abstract class DirectoryTestCase extends TestCase
      */
     protected function getMockDomain()
     {
-        return $this->getMock('Spark\Adr\DomainInterface');
+        return $this->getMock('Equip\Adr\DomainInterface');
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Spark\Resolver;
+namespace Equip\Resolver;
 
 use Auryn\Injector;
 use Relay\ResolverInterface;
