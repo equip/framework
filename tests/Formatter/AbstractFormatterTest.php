@@ -1,9 +1,9 @@
 <?php
 
-namespace SparkTests\Formatter;
+namespace EquipTests\Formatter;
 
-use Spark\Payload;
-use Spark\Formatter\AbstractFormatter;
+use Equip\Payload;
+use Equip\Formatter\AbstractFormatter;
 
 class AbstractFormatterTest extends \PHPUnit_Framework_TestCase
 {

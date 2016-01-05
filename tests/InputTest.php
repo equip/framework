@@ -1,9 +1,9 @@
 <?php
 
-namespace SparkTests;
+namespace EquipTests;
 
 use Psr\Http\Message\UploadedFileInterface;
-use Spark\Input;
+use Equip\Input;
 use Zend\Diactoros\ServerRequest;
 
 class InputTest extends \PHPUnit_Framework_TestCase

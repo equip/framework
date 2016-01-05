@@ -1,13 +1,13 @@
 <?php
 
-namespace Spark;
+namespace Equip;
 
 use Arbiter\Action as Arbiter;
 
 class Action extends Arbiter
 {
-    protected $input = 'Spark\Input';
-    protected $responder = 'Spark\Responder\ChainedResponder';
+    protected $input = 'Equip\Input';
+    protected $responder = 'Equip\Responder\ChainedResponder';
 
     /**
      * @inheritDoc

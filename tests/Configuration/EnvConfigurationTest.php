@@ -1,9 +1,9 @@
 <?php
 
-namespace SparkTests\Configuration;
+namespace EquipTests\Configuration;
 
-use Spark\Configuration\EnvConfiguration;
-use Spark\Env;
+use Equip\Configuration\EnvConfiguration;
+use Equip\Env;
 
 class EnvConfigurationTest extends ConfigurationTestCase
 {
@@ -42,7 +42,7 @@ class EnvConfigurationTest extends ConfigurationTestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\EnvException
+     * @expectedException \Equip\Exception\EnvException
      * @expectedExceptionMessageRegExp /unable to automatically detect/i
      */
     public function testUnableToDetect()
@@ -51,7 +51,7 @@ class EnvConfigurationTest extends ConfigurationTestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\EnvException
+     * @expectedException \Equip\Exception\EnvException
      * @expectedExceptionMessageRegExp /environment file .* does not exist/i
      */
     public function testInvalidRoot()

@@ -1,9 +1,9 @@
 <?php
 
-namespace SparkTests\Formatter;
+namespace EquipTests\Formatter;
 
-use Spark\Payload;
-use Spark\Formatter\HtmlFormatter;
+use Equip\Payload;
+use Equip\Formatter\HtmlFormatter;
 
 class HtmlFormatterTest extends \PHPUnit_Framework_TestCase
 {

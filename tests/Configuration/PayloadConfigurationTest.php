@@ -1,10 +1,10 @@
 <?php
 
-namespace SparkTests\Configuration;
+namespace EquipTests\Configuration;
 
-use Spark\Adr\PayloadInterface;
-use Spark\Configuration\PayloadConfiguration;
-use Spark\Payload;
+use Equip\Adr\PayloadInterface;
+use Equip\Configuration\PayloadConfiguration;
+use Equip\Payload;
 
 class PayloadConfigurationTest extends ConfigurationTestCase
 {

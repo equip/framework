@@ -1,9 +1,9 @@
 <?php
 
-namespace SparkTests\Formatter;
+namespace EquipTests\Formatter;
 
-use Spark\Payload;
-use Spark\Formatter\JsonFormatter;
+use Equip\Payload;
+use Equip\Formatter\JsonFormatter;
 
 class JsonFormatterTest extends \PHPUnit_Framework_TestCase
 {

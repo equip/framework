@@ -1,10 +1,10 @@
 <?php
 
-namespace Spark;
+namespace Equip;
 
-use Spark\Action;
+use Equip\Action;
 use Destrukt\Dictionary;
-use Spark\Exception\DirectoryException;
+use Equip\Exception\DirectoryException;
 
 class Directory extends Dictionary
 {

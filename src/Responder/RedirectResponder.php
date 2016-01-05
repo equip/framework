@@ -1,11 +1,11 @@
 <?php
 
-namespace Spark\Responder;
+namespace Equip\Responder;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Spark\Adr\PayloadInterface;
-use Spark\Adr\ResponderInterface;
+use Equip\Adr\PayloadInterface;
+use Equip\Adr\ResponderInterface;
 
 class RedirectResponder implements ResponderInterface
 {

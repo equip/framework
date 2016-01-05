@@ -1,7 +1,7 @@
 <?php
-namespace Spark\Handler;
+namespace Equip\Handler;
 
-use Spark\Exception\HttpException;
+use Equip\Exception\HttpException;
 
 class JsonContentHandler extends ContentHandler
 {

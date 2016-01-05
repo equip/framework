@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Handler;
+namespace Equip\Handler;
 
 use Destrukt\Dictionary;
 use Whoops\Handler\JsonResponseHandler;

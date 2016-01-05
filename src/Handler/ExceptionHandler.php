@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Handler;
+namespace Equip\Handler;
 
 use Exception;
 use InvalidArgumentException;
@@ -8,7 +8,7 @@ use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Relay\ResolverInterface;
-use Spark\Exception\HttpException;
+use Equip\Exception\HttpException;
 use Whoops\Run as Whoops;
 
 class ExceptionHandler

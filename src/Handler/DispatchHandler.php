@@ -1,15 +1,15 @@
 <?php
 
-namespace Spark\Handler;
+namespace Equip\Handler;
 
 use FastRoute;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Spark\Directory;
-use Spark\Exception\HttpException;
-use Spark\Handler\ActionHandler;
+use Equip\Directory;
+use Equip\Exception\HttpException;
+use Equip\Handler\ActionHandler;
 
 class DispatchHandler
 {

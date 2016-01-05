@@ -1,14 +1,14 @@
 <?php
 
-namespace Spark\Responder;
+namespace Equip\Responder;
 
 use Destrukt\Set;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Spark\Adr\PayloadInterface;
-use Spark\Adr\ResponderInterface;
-use Spark\Resolver\ResolverTrait;
+use Equip\Adr\PayloadInterface;
+use Equip\Adr\ResponderInterface;
+use Equip\Resolver\ResolverTrait;
 use Relay\ResolverInterface;
 
 class ChainedResponder extends Set implements ResponderInterface

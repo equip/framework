@@ -1,7 +1,7 @@
-site_name: Spark
+site_name: Equip Framework
 theme: 'readthedocs'
 pages:
-- Spark: index.md
+- Framework: index.md
 - Authentication: auth.md
 - Data: data.md
 - Commands: commands.md

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Middleware;
+namespace Equip\Middleware;
 
 use Destrukt\Set;
 

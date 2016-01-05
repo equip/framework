@@ -1,8 +1,8 @@
 <?php
-namespace SparkTests\Handler;
+namespace EquipTests\Handler;
 
-use Spark\Exception\HttpBadRequestException;
-use Spark\Handler\JsonContentHandler;
+use Equip\Exception\HttpBadRequestException;
+use Equip\Handler\JsonContentHandler;
 use Zend\Diactoros\Response;
 
 class JsonContentHandlerTest extends ContentHandlerTestCase
@@ -23,7 +23,7 @@ class JsonContentHandlerTest extends ContentHandlerTestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\HttpException
+     * @expectedException \Equip\Exception\HttpException
      * @expectedExceptionCode 400
      * @expectedExceptionMessageRegExp /json syntax error/i
      */

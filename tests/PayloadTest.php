@@ -1,8 +1,8 @@
 <?php
 
-namespace SparkTests;
+namespace EquipTests;
 
-use Spark\Payload;
+use Equip\Payload;
 
 class PayloadTest extends \PHPUnit_Framework_TestCase
 {

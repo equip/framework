@@ -1,10 +1,10 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Equip\Configuration;
 
 use Auryn\Injector;
-use Spark\Formatter\PlatesFormatter;
-use Spark\Responder\FormattedResponder;
+use Equip\Formatter\PlatesFormatter;
+use Equip\Responder\FormattedResponder;
 
 class PlatesResponderConfiguration implements ConfigurationInterface
 {

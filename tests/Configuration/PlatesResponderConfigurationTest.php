@@ -1,11 +1,11 @@
 <?php
 
-namespace SparkTests\Configuration;
+namespace EquipTests\Configuration;
 
-use Spark\Configuration\AurynConfiguration;
-use Spark\Configuration\PlatesResponderConfiguration;
-use Spark\Formatter\PlatesFormatter;
-use Spark\Responder\FormattedResponder;
+use Equip\Configuration\AurynConfiguration;
+use Equip\Configuration\PlatesResponderConfiguration;
+use Equip\Formatter\PlatesFormatter;
+use Equip\Responder\FormattedResponder;
 
 class PlatesResponderConfigurationTest extends ConfigurationTestCase
 {

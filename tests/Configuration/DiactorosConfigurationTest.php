@@ -1,11 +1,11 @@
 <?php
 
-namespace SparkTests\Configuration;
+namespace EquipTests\Configuration;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Spark\Configuration\DiactorosConfiguration;
+use Equip\Configuration\DiactorosConfiguration;
 
 class DiactorosConfigurationTest extends ConfigurationTestCase
 {

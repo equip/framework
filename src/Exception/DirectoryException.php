@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Exception;
+namespace Equip\Exception;
 
 use InvalidArgumentException;
 

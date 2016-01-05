@@ -1,12 +1,12 @@
 <?php
-namespace SparkTests\Handler;
+namespace EquipTests\Handler;
 
-use Spark\Action;
-use Spark\Configuration\ArbiterConfiguration;
-use Spark\Configuration\AurynConfiguration;
-use Spark\Handler\ActionHandler;
-use SparkTests\Configuration\ConfigurationTestCase;
-use SparkTests\Fake\FakeDomain;
+use Equip\Action;
+use Equip\Configuration\ArbiterConfiguration;
+use Equip\Configuration\AurynConfiguration;
+use Equip\Handler\ActionHandler;
+use EquipTests\Configuration\ConfigurationTestCase;
+use EquipTests\Fake\FakeDomain;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 

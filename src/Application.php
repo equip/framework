@@ -1,11 +1,11 @@
 <?php
 
-namespace Spark;
+namespace Equip;
 
 use Auryn\Injector;
-use Spark\Configuration\ConfigurationSet;
-use Spark\Middleware\MiddlewareSet;
-use Spark\Router;
+use Equip\Configuration\ConfigurationSet;
+use Equip\Middleware\MiddlewareSet;
+use Equip\Router;
 
 class Application
 {
@@ -113,7 +113,7 @@ class Application
 
         return $this->injector
             ->share($this->middleware)
-            ->prepare('Spark\Directory', $this->routing)
+            ->prepare('Equip\Directory', $this->routing)
             ->execute($runner);
     }
 }

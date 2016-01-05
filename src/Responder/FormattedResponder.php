@@ -1,17 +1,17 @@
 <?php
 
-namespace Spark\Responder;
+namespace Equip\Responder;
 
 use Destrukt\Dictionary;
 use Negotiation\Negotiator;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Spark\Adr\PayloadInterface;
-use Spark\Adr\ResponderInterface;
-use Spark\Formatter\AbstractFormatter;
-use Spark\Formatter\JsonFormatter;
-use Spark\Resolver\ResolverTrait;
+use Equip\Adr\PayloadInterface;
+use Equip\Adr\ResponderInterface;
+use Equip\Formatter\AbstractFormatter;
+use Equip\Formatter\JsonFormatter;
+use Equip\Resolver\ResolverTrait;
 use Relay\ResolverInterface;
 
 class FormattedResponder extends Dictionary implements ResponderInterface

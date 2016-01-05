@@ -1,9 +1,9 @@
 <?php
-namespace SparkTests\Configuration;
+namespace EquipTests\Configuration;
 
 use Relay\Relay;
-use Spark\Configuration\AurynConfiguration;
-use Spark\Configuration\RelayConfiguration;
+use Equip\Configuration\AurynConfiguration;
+use Equip\Configuration\RelayConfiguration;
 
 class RelayConfigurationTest extends ConfigurationTestCase
 {

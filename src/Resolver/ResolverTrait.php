@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Resolver;
+namespace Equip\Resolver;
 
 trait ResolverTrait
 {

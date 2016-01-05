@@ -1,16 +1,16 @@
 <?php
 
-namespace SparkTests\Responder;
+namespace EquipTests\Responder;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Spark\Adr\ResponderInterface;
-use Spark\Adr\PayloadInterface;
-use Spark\Configuration\AurynConfiguration;
-use Spark\Responder\ChainedResponder;
-use Spark\Responder\FormattedResponder;
-use Spark\Responder\RedirectResponder;
-use SparkTests\Configuration\ConfigurationTestCase;
+use Equip\Adr\ResponderInterface;
+use Equip\Adr\PayloadInterface;
+use Equip\Configuration\AurynConfiguration;
+use Equip\Responder\ChainedResponder;
+use Equip\Responder\FormattedResponder;
+use Equip\Responder\RedirectResponder;
+use EquipTests\Configuration\ConfigurationTestCase;
 
 class ChainedResponderTest extends ConfigurationTestCase
 {

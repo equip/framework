@@ -1,6 +1,6 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Equip\Configuration;
 
 use Auryn\Injector;
 use Whoops\Run as Whoops;

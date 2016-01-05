@@ -1,9 +1,9 @@
 <?php
-namespace SparkTests\Fake;
+namespace EquipTests\Fake;
 
 use Exception;
 use Psr\Http\Message\ResponseInterface;
-use Spark\Handler\ExceptionHandler;
+use Equip\Handler\ExceptionHandler;
 
 class FakeExceptionHandler extends ExceptionHandler
 {

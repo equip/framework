@@ -1,8 +1,8 @@
 <?php
 
-namespace Spark\Formatter;
+namespace Equip\Formatter;
 
-use Spark\Adr\PayloadInterface;
+use Equip\Adr\PayloadInterface;
 
 abstract class HtmlFormatter extends AbstractFormatter
 {

@@ -1,18 +1,18 @@
 # Session
 
-[sparkphp/session](https://github.com/sparkphp/session) is an optional library for using sessions in Spark applications.
+[equip/session](https://github.com/equip/session) is an optional library for using sessions in Equip applications.
 
 The benefit of using session objects instead of a global variable is primarily in testing, where the session object can be mocked and operations verified. Using session objects also makes it much easier to switch to a distributed session storage as your application scales.
 
 ## Configuration
 
-To use the [native session](https://github.com/sparkphp/session/blob/master/src/NativeSession.php) implementation the [configuration](https://github.com/sparkphp/session/blob/master/src/Configuration/SessionConfiguration.php) must be enabled in the [application bootstrap](https://spark.readthedocs.org/en/latest/#bootstrap):
+To use the [native session](https://github.com/equip/session/blob/master/src/NativeSession.php) implementation the [configuration](https://github.com/equip/session/blob/master/src/Configuration/SessionConfiguration.php) must be enabled in the [application bootstrap](https://equipframework.readthedocs.org/en/latest/#bootstrap):
 
 ```php
-Spark\Application::build()
+Equip\Application::build()
 ->setConfiguration([
     // ...
-    Spark\Configuration\SessionConfiguration::class,
+    Equip\Configuration\SessionConfiguration::class,
 ])
 // ...
 ```
@@ -22,8 +22,8 @@ Spark\Application::build()
 ```php
 namespace Acme\Domain;
 
-use Spark\SessionInterface;
-use Spark\Adr\DomainInterface;
+use Equip\SessionInterface;
+use Equip\Adr\DomainInterface;
 
 class WidgetDomain implements DomainInterface
 {
@@ -47,7 +47,7 @@ class WidgetDomain implements DomainInterface
 
 ## Usage
 
-The [session object](https://github.com/sparkphp/session/blob/master/src/SessionInterface.php) can be modified using methods or [with array operations](http://php.net/arrayaccess):
+The [session object](https://github.com/equip/session/blob/master/src/SessionInterface.php) can be modified using methods or [with array operations](http://php.net/arrayaccess):
 
 ```php
 // Set a value using object methods:

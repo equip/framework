@@ -1,12 +1,12 @@
 <?php
 
-namespace SparkTests;
+namespace EquipTests;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Action;
-use Spark\Adr\DomainInterface;
-use Spark\Adr\InputInterface;
-use Spark\Adr\ResponderInterface;
+use Equip\Action;
+use Equip\Adr\DomainInterface;
+use Equip\Adr\InputInterface;
+use Equip\Adr\ResponderInterface;
 
 class ActionTest extends TestCase
 {
@@ -16,8 +16,8 @@ class ActionTest extends TestCase
         $action = new Action($domain);
 
         $this->assertSame($domain, $action->getDomain());
-        $this->assertSame('Spark\Input', $action->getInput());
-        $this->assertSame('Spark\Responder\ChainedResponder', $action->getResponder());
+        $this->assertSame('Equip\Input', $action->getInput());
+        $this->assertSame('Equip\Responder\ChainedResponder', $action->getResponder());
 
         $responder = get_class($this->getMock(ResponderInterface::class));
         $action = new Action($domain, $responder);
@@ -28,6 +28,6 @@ class ActionTest extends TestCase
         $action = new Action($domain, null, $input);
 
         $this->assertSame($input, $action->getInput());
-        $this->assertSame('Spark\Responder\ChainedResponder', $action->getResponder());
+        $this->assertSame('Equip\Responder\ChainedResponder', $action->getResponder());
     }
 }

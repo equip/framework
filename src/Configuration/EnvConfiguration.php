@@ -1,11 +1,11 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Equip\Configuration;
 
 use Auryn\Injector;
 use josegonzalez\Dotenv\Loader;
-use Spark\Env;
-use Spark\Exception\EnvException;
+use Equip\Env;
+use Equip\Exception\EnvException;
 
 class EnvConfiguration implements ConfigurationInterface
 {

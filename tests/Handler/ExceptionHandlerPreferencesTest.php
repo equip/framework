@@ -1,9 +1,9 @@
 <?php
 
-namespace SparkTests\Handler;
+namespace EquipTests\Handler;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Spark\Handler\ExceptionHandlerPreferences;
+use Equip\Handler\ExceptionHandlerPreferences;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Handler\PrettyPageHandler;

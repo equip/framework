@@ -1,10 +1,10 @@
 <?php
 
-namespace SparkTests\Formatter;
+namespace EquipTests\Formatter;
 
 use League\Plates\Engine;
-use Spark\Payload;
-use Spark\Formatter\PlatesFormatter;
+use Equip\Payload;
+use Equip\Formatter\PlatesFormatter;
 
 class PlatesFormatterTest extends \PHPUnit_Framework_TestCase
 {

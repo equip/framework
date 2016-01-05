@@ -1,11 +1,11 @@
 <?php
 
-namespace SparkTests\Configuration;
+namespace EquipTests\Configuration;
 
 use Auryn\Injector;
 use Relay\ResolverInterface;
-use Spark\Configuration\AurynConfiguration;
-use Spark\Resolver\AurynResolver;
+use Equip\Configuration\AurynConfiguration;
+use Equip\Resolver\AurynResolver;
 
 class AurynConfigurationTest extends ConfigurationTestCase
 {

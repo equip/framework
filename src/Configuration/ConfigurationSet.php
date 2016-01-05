@@ -1,10 +1,10 @@
 <?php
 
-namespace Spark\Configuration;
+namespace Equip\Configuration;
 
 use Auryn\Injector;
 use Destrukt\Set;
-use Spark\Exception\ConfigurationException;
+use Equip\Exception\ConfigurationException;
 
 class ConfigurationSet extends Set implements ConfigurationInterface
 {

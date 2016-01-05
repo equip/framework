@@ -1,13 +1,13 @@
 <?php
 
-namespace SparkTests\Handler;
+namespace EquipTests\Handler;
 
 use Auryn\Injector;
-use Spark\Handler\ExceptionHandler;
-use Spark\Configuration\AurynConfiguration;
-use Spark\Configuration\WhoopsConfiguration;
-use Spark\Exception\HttpException;
-use SparkTests\Configuration\ConfigurationTestCase;
+use Equip\Handler\ExceptionHandler;
+use Equip\Configuration\AurynConfiguration;
+use Equip\Configuration\WhoopsConfiguration;
+use Equip\Exception\HttpException;
+use EquipTests\Configuration\ConfigurationTestCase;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
 

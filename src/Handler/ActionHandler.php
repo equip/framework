@@ -1,19 +1,19 @@
 <?php
 
-namespace Spark\Handler;
+namespace Equip\Handler;
 
 use Arbiter\Action;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Relay\ResolverInterface;
-use Spark\Adr\PayloadInterface;
-use Spark\Adr\DomainInterface;
-use Spark\Adr\InputInterface;
-use Spark\Adr\ResponderInterface;
+use Equip\Adr\PayloadInterface;
+use Equip\Adr\DomainInterface;
+use Equip\Adr\InputInterface;
+use Equip\Adr\ResponderInterface;
 
 class ActionHandler
 {
-    const ACTION_ATTRIBUTE = 'spark/adr:action';
+    const ACTION_ATTRIBUTE = 'equip/adr:action';
 
     /**
      * @var ResolverInterface

@@ -1,10 +1,10 @@
 <?php
 
-namespace SparkTests;
+namespace EquipTests;
 
-use Spark\Adr\DomainInterface;
-use Spark\Input;
-use Spark\Directory;
+use Equip\Adr\DomainInterface;
+use Equip\Input;
+use Equip\Directory;
 
 class DirectoryTest extends DirectoryTestCase
 {
@@ -24,7 +24,7 @@ class DirectoryTest extends DirectoryTestCase
     }
 
     /**
-     * @expectedException \Spark\Exception\DirectoryException
+     * @expectedException \Equip\Exception\DirectoryException
      * @expectedExceptionRegExp /entry .* is not an action/i
      */
     public function testInvalidAction()
