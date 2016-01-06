@@ -7,6 +7,7 @@ use InvalidArgumentException;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Relay\ResolverInterface;
 use Equip\Exception\HttpException;
 use Whoops\Run as Whoops;
@@ -34,21 +35,29 @@ class ExceptionHandler
     private $whoops;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param ExceptionHandlerPreferences $preferences
      * @param Negotiator $negotiator
      * @param ResolverInterface $resolver
      * @param Whoops $whoops
+     * @param LoggerInterface $logger
      */
     public function __construct(
         ExceptionHandlerPreferences $preferences,
         Negotiator $negotiator,
         ResolverInterface $resolver,
-        Whoops $whoops
+        Whoops $whoops,
+        LoggerInterface $logger
     ) {
         $this->preferences = $preferences;
         $this->negotiator = $negotiator;
         $this->resolver = $resolver;
         $this->whoops = $whoops;
+        $this->logger = $logger;
     }
 
     /**
@@ -83,6 +92,10 @@ class ExceptionHandler
 
             $handler = $this->handler($type);
             $this->whoops->pushHandler($handler);
+
+            $this->whoops->pushHandler(function($exception) {
+                $this->logger->error($exception);
+            });
 
             $body = $this->whoops->handleException($e);
             $response->getBody()->write($body);
