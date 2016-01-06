@@ -3,9 +3,11 @@
 namespace EquipTests\Handler;
 
 use Auryn\Injector;
-use Equip\Handler\ExceptionHandler;
 use Equip\Configuration\AurynConfiguration;
+use Equip\Configuration\LoggerConfiguration;
 use Equip\Configuration\WhoopsConfiguration;
+use Equip\Env;
+use Equip\Handler\ExceptionHandler;
 use Equip\Exception\HttpException;
 use EquipTests\Configuration\ConfigurationTestCase;
 use Zend\Diactoros\ServerRequest;
@@ -18,6 +20,7 @@ class ExceptionHandlerTest extends ConfigurationTestCase
         return [
             new AurynConfiguration,
             new WhoopsConfiguration,
+            new LoggerConfiguration(new Env),
         ];
     }
 
