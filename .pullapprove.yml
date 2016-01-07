@@ -3,3 +3,12 @@ approve_by_comment: true
 reset_on_push: true
 approve_regex: '^:\+1:'
 reject_regex: '^:\-1:'
+reviewers:
+    -
+        name: stack
+        required: 1
+        members:
+            - ameech
+            - dolfelt
+            - shadowhand
+            - elazar
