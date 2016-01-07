@@ -2,14 +2,15 @@
 
 namespace EquipTests\Responder;
 
+use Equip\Configuration\AurynConfiguration;
+use Equip\Formatter\AbstractFormatter;
+use Equip\Formatter\JsonFormatter;
+use Equip\Payload;
+use Equip\Responder\FormattedResponder;
+use EquipTests\Configuration\ConfigurationTestCase;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Equip\Configuration\AurynConfiguration;
-use Equip\Payload;
-use Equip\Responder\FormattedResponder;
-use Equip\Formatter\JsonFormatter;
-use EquipTests\Configuration\ConfigurationTestCase;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 
@@ -51,6 +52,31 @@ class FormattedResponderTest extends ConfigurationTestCase
 
         $formatters = $this->responder->withData($formatters)->toArray();
         $sortedcopy = $formatters;
+    }
+
+    public function testSorting()
+    {
+        $a = $this->getMockBuilder(AbstractFormatter::class)
+            ->setMockClassName('FooFormatter')
+            ->getMockForAbstractClass();
+
+        $b = $this->getMockBuilder(AbstractFormatter::class)
+            ->setMockClassName('BarFormatter')
+            ->getMockForAbstractClass();
+
+        $values = [
+            get_class($a) => 0.5,
+            get_class($b) => 1.0,
+        ];
+
+        $responder = $this->responder->withData($values);
+        $formatters = $responder->toArray();
+
+        $this->assertNotSame($values, $formatters);
+
+        arsort($values);
+
+        $this->assertSame($values, $formatters);
     }
 
     /**

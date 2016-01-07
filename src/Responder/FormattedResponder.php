@@ -2,7 +2,7 @@
 
 namespace Equip\Responder;
 
-use Destrukt\Dictionary;
+use Destrukt\SortedDictionary;
 use Negotiation\Negotiator;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,9 +14,14 @@ use Equip\Formatter\JsonFormatter;
 use Equip\Resolver\ResolverTrait;
 use Relay\ResolverInterface;
 
-class FormattedResponder extends Dictionary implements ResponderInterface
+class FormattedResponder extends SortedDictionary implements ResponderInterface
 {
     use ResolverTrait;
+
+    /**
+     * @var callable
+     */
+    protected $sorter = 'arsort';
 
     /**
      * @var Negotiator
