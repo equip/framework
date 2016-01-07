@@ -1,0 +1,5 @@
+author_approval: ignored
+approve_by_comment: true
+reset_on_push: true
+approve_regex: '^:\+1:'
+reject_regex: '^:\-1:'
