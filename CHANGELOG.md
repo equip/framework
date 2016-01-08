@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
-## 1.1.0 - 2016-01-05
+## 1.1.0 - 2016-01-08
 
 - Ensure that sorting on `FormattedResponder` formatters is preserved by using `SortedDictionary`
 
