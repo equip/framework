@@ -20,7 +20,7 @@ class DirectoryTest extends DirectoryTestCase
 
     public function testDictionary()
     {
-        $this->assertInstanceOf('Destrukt\Dictionary', $this->directory);
+        $this->assertInstanceOf('Equip\Structure\Dictionary', $this->directory);
     }
 
     /**

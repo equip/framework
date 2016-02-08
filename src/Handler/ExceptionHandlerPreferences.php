@@ -2,7 +2,8 @@
 
 namespace Equip\Handler;
 
-use Destrukt\Dictionary;
+use Equip\Compatibility\StructureWithDataAlias;
+use Equip\Structure\Dictionary;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Handler\PrettyPageHandler;
@@ -10,6 +11,8 @@ use Whoops\Handler\XmlResponseHandler;
 
 class ExceptionHandlerPreferences extends Dictionary
 {
+    use StructureWithDataAlias;
+
     /**
      * @inheritDoc
      */

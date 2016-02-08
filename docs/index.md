@@ -417,20 +417,20 @@ Equip provides a few native responder implementations.
 
 ### Chained Responder
 
-[`ChainedResponder`](https://github.com/equip/framework/blob/master/src/Responder/ChainedResponder.php) is the default responder which allows multiple responders to be applied to the same response instance. This is intended to allow for [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) in configuring different areas of the response. The `ChainedResponder` extends [`Destrukt\Set`](https://github.com/destruktphp/destrukt/blob/master/src/Set.php).
+[`ChainedResponder`](https://github.com/equip/framework/blob/master/src/Responder/ChainedResponder.php) is the default responder which allows multiple responders to be applied to the same response instance. This is intended to allow for [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) in configuring different areas of the response. The `ChainedResponder` extends [`Equip\Structure\Set`](https://github.com/equip/structure/blob/master/src/Set.php).
 
-By default [`ChainedResponder`](https://github.com/equip/framework/blob/master/src/Responder/ChainedResponder.php) includes [all the default responders](https://github.com/equip/framework/blob/master/src/Responder). Responders can be added using its `withValue()` method or overwritten entirely using its `withData()` method.
+By default [`ChainedResponder`](https://github.com/equip/framework/blob/master/src/Responder/ChainedResponder.php) includes [all the default responders](https://github.com/equip/framework/blob/master/src/Responder). Responders can be added using its `withValue()` method or overwritten entirely using its `withValues()` method.
 
 ### Formatted Responder
 
-[`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) uses the [Negotiation](https://github.com/willdurand/negotiation) library to support [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation). When a desirable format has been founded, it uses an appropriate implementation of [`AbstractFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/AbstractFormatter.php) to encode the payload data and return it as a string. The `FormattedResponder` extends [`Destrukt\Dictionary`](https://github.com/destruktphp/destrukt/blob/master/src/Dictionary.php).
+[`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) uses the [Negotiation](https://github.com/willdurand/negotiation) library to support [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation). When a desirable format has been founded, it uses an appropriate implementation of [`AbstractFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/AbstractFormatter.php) to encode the payload data and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
 
 Here are the formatter implementations that are natively supported:
 
 * [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php) - Encodes the payload as [JSON](http://www.json.org/)
 * [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) - Applies the payload data to a [Plates](http://platesphp.com/) template specified in the payload and returns the result
 
-By default [`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) includes `JsonFormatter`. Responders can be added using its `withValue()` method or overwritten entirely using its `withData()` method.
+By default [`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) includes `JsonFormatter`. Responders can be added using its `withValue()` method or overwritten entirely using its `withValues()` method.
 
 ### Redirect
 
