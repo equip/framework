@@ -2,13 +2,22 @@
 
 namespace EquipTests\Formatter;
 
-use League\Plates\Engine;
-use Equip\Payload;
 use Equip\Formatter\PlatesFormatter;
+use Equip\Payload;
+use League\Plates\Engine;
+use Lukasoppermann\Httpstatus\Httpstatus;
 
 class PlatesFormatterTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Engine
+     */
     protected $templates;
+
+    /**
+     * @var PlatesFormatter
+     */
+    private $formatter;
 
     public function setUp()
     {
@@ -17,6 +26,10 @@ class PlatesFormatterTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->templates = new Engine(__DIR__ . '/../_templates');
+        $this->formatter = new PlatesFormatter(
+            $this->templates,
+            new HttpStatus
+        );
     }
 
     public function testAccepts()
@@ -26,7 +39,7 @@ class PlatesFormatterTest extends \PHPUnit_Framework_TestCase
 
     public function testType()
     {
-        $this->assertEquals('text/html', (new PlatesFormatter($this->templates))->type());
+        $this->assertEquals('text/html', $this->formatter->type());
     }
 
     public function testResponse()
@@ -38,7 +51,7 @@ class PlatesFormatterTest extends \PHPUnit_Framework_TestCase
                 'footer'   => 'footer',
             ]);
 
-        $body = (string) (new PlatesFormatter($this->templates))->body($payload);
+        $body = (string) $this->formatter->body($payload);
 
         $this->assertEquals("<h1>header</h1>\n<p>body</p>\n<span>footer</span>\n", $body);
     }
