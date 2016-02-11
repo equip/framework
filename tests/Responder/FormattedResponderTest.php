@@ -8,6 +8,7 @@ use Equip\Formatter\JsonFormatter;
 use Equip\Payload;
 use Equip\Responder\FormattedResponder;
 use EquipTests\Configuration\ConfigurationTestCase;
+use Lukasoppermann\Httpstatus\Httpstatus;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -56,12 +57,16 @@ class FormattedResponderTest extends ConfigurationTestCase
 
     public function testSorting()
     {
+        $args = [new Httpstatus];
+
         $a = $this->getMockBuilder(AbstractFormatter::class)
             ->setMockClassName('FooFormatter')
+            ->setConstructorArgs($args)
             ->getMockForAbstractClass();
 
         $b = $this->getMockBuilder(AbstractFormatter::class)
             ->setMockClassName('BarFormatter')
+            ->setConstructorArgs($args)
             ->getMockForAbstractClass();
 
         $values = [
