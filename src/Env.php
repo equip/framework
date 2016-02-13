@@ -2,8 +2,10 @@
 
 namespace Equip;
 
-use Destrukt\Dictionary;
+use Equip\Compatibility\StructureWithDataAlias;
+use Equip\Structure\Dictionary;
 
 class Env extends Dictionary
 {
+    use StructureWithDataAlias;
 }

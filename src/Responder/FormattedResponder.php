@@ -2,26 +2,23 @@
 
 namespace Equip\Responder;
 
-use Destrukt\SortedDictionary;
 use Negotiation\Negotiator;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
+use Equip\Compatibility\StructureWithDataAlias;
 use Equip\Formatter\AbstractFormatter;
 use Equip\Formatter\JsonFormatter;
 use Equip\Resolver\ResolverTrait;
+use Equip\Structure\SortedDictionary;
 use Relay\ResolverInterface;
 
 class FormattedResponder extends SortedDictionary implements ResponderInterface
 {
     use ResolverTrait;
-
-    /**
-     * @var callable
-     */
-    protected $sorter = 'arsort';
+    use StructureWithDataAlias;
 
     /**
      * @var Negotiator
@@ -43,31 +40,6 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
         $this->resolver   = $resolver;
 
         parent::__construct($formatters);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function validate(array $data)
-    {
-        parent::validate($data);
-
-        foreach ($data as $formatter => $quality) {
-            if (!is_subclass_of($formatter, AbstractFormatter::class)) {
-                throw new InvalidArgumentException(sprintf(
-                    'All formatters in `%s` must implement `%s`',
-                    static::class,
-                    AbstractFormatter::class
-                ));
-            }
-
-            if (!is_float($quality)) {
-                throw new InvalidArgumentException(sprintf(
-                    'All formatters in `%s` must have a quality value',
-                    static::class
-                ));
-            }
-        }
     }
 
     /**
@@ -165,5 +137,42 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
         $response->getBody()->write($formatter->body($payload));
 
         return $response;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws InvalidArgumentException
+     *  If a formatter does not implement the correct interface, or does not
+     *  have a quality value.
+     */
+    protected function assertValid(array $data)
+    {
+        parent::assertValid($data);
+
+        foreach ($data as $formatter => $quality) {
+            if (!is_subclass_of($formatter, AbstractFormatter::class)) {
+                throw new InvalidArgumentException(sprintf(
+                    'All formatters in `%s` must implement `%s`',
+                    static::class,
+                    AbstractFormatter::class
+                ));
+            }
+
+            if (!is_float($quality)) {
+                throw new InvalidArgumentException(sprintf(
+                    'All formatters in `%s` must have a quality value',
+                    static::class
+                ));
+            }
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function sortValues()
+    {
+        arsort($this->values);
     }
 }

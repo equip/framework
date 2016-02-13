@@ -2,18 +2,20 @@
 
 namespace Equip\Responder;
 
-use Destrukt\Set;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
+use Equip\Compatibility\StructureWithDataAlias;
 use Equip\Resolver\ResolverTrait;
+use Equip\Structure\Set;
 use Relay\ResolverInterface;
 
 class ChainedResponder extends Set implements ResponderInterface
 {
     use ResolverTrait;
+    use StructureWithDataAlias;
 
     /**
      * @param ResolverInterface $resolver
@@ -34,24 +36,6 @@ class ChainedResponder extends Set implements ResponderInterface
     /**
      * @inheritDoc
      */
-    public function validate(array $data)
-    {
-        parent::validate($data);
-
-        foreach ($data as $responder) {
-            if (!is_subclass_of($responder, ResponderInterface::class)) {
-                throw new InvalidArgumentException(sprintf(
-                    'All responders in `%s` must implement `%s`',
-                    static::class,
-                    ResponderInterface::class
-                ));
-            }
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function __invoke(
         ServerRequestInterface $request,
         ResponseInterface      $response,
@@ -63,5 +47,25 @@ class ChainedResponder extends Set implements ResponderInterface
         }
 
         return $response;
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws InvalidArgumentException If a responder does not implement the correct interface.
+     */
+    protected function assertValid(array $data)
+    {
+        parent::assertValid($data);
+
+        foreach ($data as $responder) {
+            if (!is_subclass_of($responder, ResponderInterface::class)) {
+                throw new InvalidArgumentException(sprintf(
+                    'All responders in `%s` must implement `%s`',
+                    static::class,
+                    ResponderInterface::class
+                ));
+            }
+        }
     }
 }
