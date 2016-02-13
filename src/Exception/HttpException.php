@@ -65,7 +65,7 @@ class HttpException extends RuntimeException
      */
     public function withResponse(ResponseInterface $response)
     {
-        if ($this->allowed) {
+        if (!empty($this->allowed)) {
             $response = $response->withHeader('Allow', implode(',', $this->allowed));
         }
 
