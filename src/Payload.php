@@ -6,7 +6,7 @@ use Equip\Adr\PayloadInterface;
 class Payload implements PayloadInterface
 {
     /**
-     * @var integer
+     * @var string
      */
     private $status;
 
@@ -28,10 +28,10 @@ class Payload implements PayloadInterface
     /**
      * @inheritDoc
      */
-    public function withStatus($code)
+    public function withStatus($status)
     {
         $copy = clone $this;
-        $copy->status = $code;
+        $copy->status = $status;
 
         return $copy;
     }
