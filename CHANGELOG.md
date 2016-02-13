@@ -5,7 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-_..._
+
+
+## 1.2.0 - 2016-02-11
+
+- `AbstractFormatter` and all its subclasses can now use the new `PayloadInterface` status codes added to equip/adr v1.1.0
 
 ## 1.1.0 - 2016-01-08
 
