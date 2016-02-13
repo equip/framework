@@ -5,7 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+_..._
 
+## 1.3.0 - 2016-02-13
+
+- Upgrade Whoops exception handler to v2
+- Switch from destrukt/destrukt to equip/structure
 
 ## 1.2.0 - 2016-02-11
 
