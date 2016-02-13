@@ -59,7 +59,6 @@ class DispatchHandler
     {
         return FastRoute\simpleDispatcher(function (RouteCollector $collector) {
             foreach ($this->directory as $request => $action) {
-                // 'GET /foo' becomes ['GET', '/foo']
                 list($method, $path) = explode(' ', $request, 2);
                 $collector->addRoute($method, $path, $action);
             }
