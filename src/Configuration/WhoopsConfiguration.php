@@ -49,6 +49,6 @@ class WhoopsConfiguration implements ConfigurationInterface
      */
     public function preparePlainTextHandler(PlainTextHandler $handler)
     {
-        $handler->outputOnlyIfCommandLine(false);
+        $handler->addTraceToOutput(true);
     }
 }

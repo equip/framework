@@ -12,9 +12,9 @@
     "require": {
         "php": ">=5.5",
         "arbiter/arbiter": "^0.1",
-        "destrukt/destrukt": "^0.8.1",
         "equip/adr": "^1.1",
-        "filp/whoops": "^1.1",
+        "equip/structure": "^1.0",
+        "filp/whoops": "^2.0",
         "lukasoppermann/http-status": "^2",
         "nikic/fast-route": "^0.7",
         "rdlowrey/auryn": "^1.1",

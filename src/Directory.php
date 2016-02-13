@@ -3,11 +3,14 @@
 namespace Equip;
 
 use Equip\Action;
-use Destrukt\Dictionary;
+use Equip\Compatibility\StructureWithDataAlias;
 use Equip\Exception\DirectoryException;
+use Equip\Structure\Dictionary;
 
 class Directory extends Dictionary
 {
+    use StructureWithDataAlias;
+
     const GET = 'GET';
     const POST = 'POST';
     const PUT = 'PUT';
@@ -15,22 +18,6 @@ class Directory extends Dictionary
     const HEAD = 'HEAD';
     const DELETE = 'DELETE';
     const OPTIONS = 'OPTIONS';
-
-    /**
-     * @inheritDoc
-     *
-     * @throws DirectoryException If a value is not an Action instance
-     */
-    public function validate(array $data)
-    {
-        parent::validate($data);
-
-        foreach ($data as $value) {
-            if (!is_object($value) || !$value instanceof Action) {
-                throw DirectoryException::invalidEntry($value);
-            }
-        }
-    }
 
     /**
      * @param string $path
@@ -125,5 +112,21 @@ class Directory extends Dictionary
         }
 
         return $this->withValue("$method $path", $action);
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * @throws DirectoryException If a value is not an Action instance
+     */
+    protected function assertValid(array $data)
+    {
+        parent::assertValid($data);
+
+        foreach ($data as $value) {
+            if (!is_object($value) || !$value instanceof Action) {
+                throw DirectoryException::invalidEntry($value);
+            }
+        }
     }
 }
