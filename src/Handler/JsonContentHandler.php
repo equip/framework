@@ -10,7 +10,7 @@ class JsonContentHandler extends ContentHandler
      */
     protected function isApplicableMimeType($mime)
     {
-        return preg_match('~^application/([a-z.]+\+)?json$~', $mime);
+        return preg_match('~^application/([a-z.]+\+)?json($|;)~', $mime);
     }
 
     /**
