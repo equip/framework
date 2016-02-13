@@ -35,7 +35,7 @@ class DispatchHandler
         callable $next
     ) {
         /**
-         * @var $action Arbiter\Action
+         * @var $action Equip\Action
          */
         list($action, $args) = $this->dispatch(
             $this->dispatcher(),
@@ -66,14 +66,14 @@ class DispatchHandler
     }
 
     /**
+     * @throws HttpNotFound
+     * @throws HttpMethodNotAllowed
+     *
      * @param Dispatcher $dispatcher
      * @param string $method
      * @param string $path
      *
-     * @return [Action, $arguments]
-     *
-     * @throws HttpNotFound
-     * @throws HttpMethodNotAllowed
+     * @return array [Action, $arguments]
      */
     private function dispatch(Dispatcher $dispatcher, $method, $path)
     {
