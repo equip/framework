@@ -111,7 +111,7 @@ class Directory extends Dictionary
             $action = new Action($domainOrAction);
         }
 
-        return $this->withValue("$method $path", $action);
+        return $this->withValue(sprintf('%s %s', $method, $path), $action);
     }
 
     /**
