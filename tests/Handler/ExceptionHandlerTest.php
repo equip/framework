@@ -63,6 +63,17 @@ class ExceptionHandlerTest extends ConfigurationTestCase
         $this->assertEquals($mime, $response->getHeaderLine('Content-Type'));
     }
 
+    public function testHandleWithHttpStatusCode()
+    {
+        $request = new ServerRequest;
+
+        $response = $this->execute(function ($request, $response) {
+            throw new ExceptionWithHttpStatusCode('foo');
+        }, $request);
+
+        $this->assertEquals(400, $response->getStatusCode());
+    }
+
     public function testNotFound()
     {
         $response = $this->execute(function ($request, $response) {
@@ -80,5 +91,13 @@ class ExceptionHandlerTest extends ConfigurationTestCase
 
         $this->assertEquals(405, $response->getStatusCode());
         $this->assertEquals('GET,PUT', $response->getHeaderLine('Allow'));
+    }
+}
+
+class ExceptionWithHttpStatusCode extends \Exception
+{
+    public function getHttpStatus()
+    {
+        return 400;
     }
 }

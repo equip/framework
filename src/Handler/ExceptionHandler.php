@@ -71,7 +71,12 @@ class ExceptionHandler
             $response = $response->withHeader('Content-Type', $type);
 
             try {
-                $response = $response->withStatus($e->getCode());
+                if (method_exists($e, 'getHttpStatus')) {
+                    $code = $e->getHttpStatus();
+                } else {
+                    $code = $e->getCode();
+                }
+                $response = $response->withStatus($code);
             } catch (InvalidArgumentException $_) {
                 // Exception did not contain a valid code
                 $response = $response->withStatus(500);
