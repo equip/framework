@@ -5,7 +5,6 @@ namespace Equip;
 use Auryn\Injector;
 use Equip\Configuration\ConfigurationSet;
 use Equip\Middleware\MiddlewareSet;
-use Equip\Router;
 
 class Application
 {
