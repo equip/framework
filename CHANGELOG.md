@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 1.4.0 - 2016-03-01
+
+- Modify `ExceptionHandler` to support using the return value of `getHttpStatus()` if the exception implements it
+
 ## 1.3.0 - 2016-02-13
 
 - Upgrade Whoops exception handler to v2
