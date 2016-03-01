@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 1.5.0 - 2016-03-01
+
+- Add Redis configuration
+
 ## 1.4.0 - 2016-03-01
 
 - Add support for `getHttpStatus` for any exception caught by `ExceptionHandler`
