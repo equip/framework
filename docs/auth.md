@@ -71,7 +71,7 @@ It is possible that implementations will be added for common use cases in the fu
 
 ## Request Filter
 
-The middleware made need to skip authentication altogether depending on the request. A common use case for this is requests with the `OPTIONS` method, which are used for implementing [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+The middleware may need to skip authentication altogether depending on the request. A common use case for this is requests with the `OPTIONS` method, which are used for implementing [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
 
 The check for determining whether authentication should happen is represented by an implementation of [`RequestFilterInterface`](https://github.com/equip/auth/blob/master/src/RequestFilterInterface.php), which is the fourth parameter passed to the [`AuthHandler`](https://github.com/equip/auth/blob/master/src/AuthHandler.php) constructor. This parameter is optional; if no value is specified, authentication will happen for all requests.
 

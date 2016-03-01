@@ -2,14 +2,14 @@
 
 namespace Equip\Handler;
 
+use Equip\Directory;
+use Equip\Exception\HttpException;
+use Equip\Handler\ActionHandler;
 use FastRoute;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Equip\Directory;
-use Equip\Exception\HttpException;
-use Equip\Handler\ActionHandler;
 
 class DispatchHandler
 {
@@ -35,7 +35,7 @@ class DispatchHandler
         callable $next
     ) {
         /**
-         * @var $action Arbiter\Action
+         * @var $action Equip\Action
          */
         list($action, $args) = $this->dispatch(
             $this->dispatcher(),
@@ -59,7 +59,6 @@ class DispatchHandler
     {
         return FastRoute\simpleDispatcher(function (RouteCollector $collector) {
             foreach ($this->directory as $request => $action) {
-                // 'GET /foo' becomes ['GET', '/foo']
                 list($method, $path) = explode(' ', $request, 2);
                 $collector->addRoute($method, $path, $action);
             }
@@ -67,14 +66,14 @@ class DispatchHandler
     }
 
     /**
+     * @throws HttpNotFound
+     * @throws HttpMethodNotAllowed
+     *
      * @param Dispatcher $dispatcher
      * @param string $method
      * @param string $path
      *
-     * @return [Action, $arguments]
-     *
-     * @throws HttpNotFound
-     * @throws HttpMethodNotAllowed
+     * @return array [Action, $arguments]
      */
     private function dispatch(Dispatcher $dispatcher, $method, $path)
     {

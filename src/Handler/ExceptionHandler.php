@@ -2,13 +2,13 @@
 
 namespace Equip\Handler;
 
+use Equip\Exception\HttpException;
 use Exception;
 use InvalidArgumentException;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Relay\ResolverInterface;
-use Equip\Exception\HttpException;
 use Whoops\Run as Whoops;
 
 class ExceptionHandler
@@ -71,7 +71,12 @@ class ExceptionHandler
             $response = $response->withHeader('Content-Type', $type);
 
             try {
-                $response = $response->withStatus($e->getCode());
+                if (method_exists($e, 'getHttpStatus')) {
+                    $code = $e->getHttpStatus();
+                } else {
+                    $code = $e->getCode();
+                }
+                $response = $response->withStatus($code);
             } catch (InvalidArgumentException $_) {
                 // Exception did not contain a valid code
                 $response = $response->withStatus(500);

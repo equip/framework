@@ -21,7 +21,7 @@ class EnvConfiguration implements ConfigurationInterface
      */
     public function __construct($envfile = null)
     {
-        if (!$envfile) {
+        if (empty($envfile)) {
             $envfile = $this->detectEnvFile();
         }
 

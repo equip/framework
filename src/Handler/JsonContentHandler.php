@@ -1,30 +1,36 @@
 <?php
+
 namespace Equip\Handler;
 
 use Equip\Exception\HttpException;
+use Relay\Middleware\JsonContentHandler as AbstractHandler;
 
-class JsonContentHandler extends ContentHandler
+/**
+ * @deprecated 1.4.0 Switched to Relay.Middleware
+ */
+class JsonContentHandler extends AbstractHandler
 {
     /**
      * @inheritDoc
      */
-    protected function isApplicableMimeType($mime)
+    public function __construct($assoc = true, $maxDepth = 512, $options = 0)
     {
-        return preg_match('~^application/([a-z.]+\+)?json$~', $mime);
+        return parent::__construct($assoc, $maxDepth, $options);
     }
 
     /**
      * @inheritDoc
      */
-    protected function getParsedBody($body)
+    protected function isApplicableMimeType($mime)
     {
-        $body = json_decode($body, true);
+        return preg_match('~^application/([a-z.]+\+)?json($|;)~', $mime);
+    }
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $message = 'JSON ' . json_last_error_msg();
-            throw HttpException::badRequest($message);
-        }
-
-        return $body;
+    /**
+     * @inheritDoc
+     */
+    protected function throwException($message)
+    {
+        throw HttpException::badRequest($message);
     }
 }
