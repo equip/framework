@@ -2,13 +2,13 @@
 
 namespace Equip\Handler;
 
+use Equip\Exception\HttpException;
 use Exception;
 use InvalidArgumentException;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Relay\ResolverInterface;
-use Equip\Exception\HttpException;
 use Whoops\Run as Whoops;
 
 class ExceptionHandler
