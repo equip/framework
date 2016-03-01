@@ -25,7 +25,7 @@ class JsonContentHandlerTest extends ContentHandlerTestCase
     /**
      * @expectedException \Equip\Exception\HttpException
      * @expectedExceptionCode 400
-     * @expectedExceptionMessageRegExp /json syntax error/i
+     * @expectedExceptionMessageRegExp /json.* syntax error/i
      */
     public function testInvokeWithMalformedBody()
     {

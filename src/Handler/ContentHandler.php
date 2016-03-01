@@ -1,51 +1,12 @@
 <?php
+
 namespace Equip\Handler;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Relay\Middleware\ContentHandler as AbstractHandler;
 
-abstract class ContentHandler
+/**
+ * @deprecated 1.4.0 Switched to Relay.Middleware
+ */
+abstract class ContentHandler extends AbstractHandler
 {
-    /**
-     * Parses request bodies based on content type.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
-     *
-     * @return Response
-     */
-    public function __invoke(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next
-    ) {
-        $mime = strtolower($request->getHeaderLine('Content-Type'));
-
-        if ($this->isApplicableMimeType($mime) && !$request->getParsedBody()) {
-            $body = (string) $request->getBody();
-            $parsed = $this->getParsedBody($body);
-            $request = $request->withParsedBody($parsed);
-        }
-
-        return $next($request, $response);
-    }
-
-    /**
-     * Check if the content type is appropriate for handling.
-     *
-     * @param string $mime
-     *
-     * @return boolean
-     */
-    abstract protected function isApplicableMimeType($mime);
-
-    /**
-     * Parse the request body.
-     *
-     * @param string $body
-     *
-     * @return mixed
-     */
-    abstract protected function getParsedBody($body);
 }

@@ -7,10 +7,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 1.4.0 - ???
+
+- Add support for `getHttpStatus` for any exception caught by `ExceptionHandler`
+- Switch to Relay.Middleware content handling
+
 ## 1.3.0 - 2016-02-13
 
 - Upgrade Whoops exception handler to v2
-- Switch from destrukt/destrukt to equip/structure
+- Switch from `destrukt/destrukt` to `equip/structure`
 
 ## 1.2.0 - 2016-02-11
 

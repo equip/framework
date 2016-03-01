@@ -1,22 +1,12 @@
 <?php
+
 namespace Equip\Handler;
 
-class FormContentHandler extends ContentHandler
-{
-    /**
-     * @inheritDoc
-     */
-    protected function isApplicableMimeType($mime)
-    {
-        return $mime === 'application/x-www-form-urlencoded';
-    }
+use Relay\Middleware\FormContentHandler as AbstractHandler;
 
-    /**
-     * @inheritDoc
-     */
-    protected function getParsedBody($body)
-    {
-        parse_str($body, $parsed);
-        return $parsed;
-    }
+/**
+ * @deprecated 1.4.0 Switched to Relay.Middleware
+ */
+class FormContentHandler extends AbstractHandler
+{
 }
