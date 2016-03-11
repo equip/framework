@@ -12,7 +12,7 @@
     "require": {
         "php": ">=5.5",
         "arbiter/arbiter": "^0.1",
-        "equip/adr": "^1.1",
+        "equip/adr": "^1.3",
         "equip/structure": "^1.0",
         "filp/whoops": "^2.0",
         "lukasoppermann/http-status": "^2",
