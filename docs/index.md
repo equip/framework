@@ -237,6 +237,7 @@ Equip\Application::build()
 // ...
 ->setRouting(function (Equip\Directory $directory) {
     return $directory
+    ->any('/', Domain\Providers::class)
     ->get('/providers', Domain\GetProviders::class)
     ->get('/providers/{provider}', Domain\GetProvider::class)
     ->post('/providers/{provider}', Domain\SynchronizeProvider::class)
