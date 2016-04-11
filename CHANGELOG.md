@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
-## 1.6.0 - 2016-04-10
+## 1.6.0 - 2016-04-11
 
 - Bump nikic/fast-route dependency version to 0.8
 
