@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 1.6.0 - 2016-04-10
+
+- Bump nikic/fast-route dependency version to 0.8
+
 ## 1.5.1 - 2016-03-11
 
 - Bump equip/adr dependency version to 1.3

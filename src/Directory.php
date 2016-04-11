@@ -11,6 +11,7 @@ class Directory extends Dictionary
 {
     use StructureWithDataAlias;
 
+    const ANY = '*';
     const GET = 'GET';
     const POST = 'POST';
     const PUT = 'PUT';
@@ -18,6 +19,17 @@ class Directory extends Dictionary
     const HEAD = 'HEAD';
     const DELETE = 'DELETE';
     const OPTIONS = 'OPTIONS';
+
+    /**
+     * @param string $path
+     * @param string|Action $domainOrAction
+     *
+     * @return static
+     */
+    public function any($path, $domainOrAction)
+    {
+        return $this->action(self::ANY, $path, $domainOrAction);
+    }
 
     /**
      * @param string $path
