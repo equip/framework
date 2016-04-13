@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 1.7.0 - 2016-04-13
+
+- Add `PlatesConfiguration`
+
 ## 1.6.0 - 2016-04-11
 
 - Bump nikic/fast-route dependency version to 0.8
