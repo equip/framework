@@ -114,6 +114,7 @@ The following configurations are typically used by default:
 The following configurations are available but not used by default:
 
 * [`EnvConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/EnvConfiguration.php) - Use [Dotenv](https://github.com/josegonzalez/php-dotenv) to populate the content of [`Env`](https://github.com/equip/framework/blob/master/src/Env.php)
+* [`PlatesConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesConfiguration.php) - Configure the [Plates](http://platesphp.com/) template engine
 * [`PlatesResponderConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesResponderConfiguration.php) - Use [Plates](http://platesphp.com/) as the default [responder](#responders)
 * [`RedisConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/RedisConfiguration.php) - Use [Redis](http://redis.io) for in-memory store
 
