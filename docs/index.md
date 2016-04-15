@@ -466,7 +466,7 @@ Using [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/For
 Equip\Application::build()
 ->setConfiguration([
     // ...
-    Equip\Configuration\PlatesResponderConfiguration
+    Equip\Configuration\PlatesResponderConfiguration::class
 ])
 // ...
 ```
