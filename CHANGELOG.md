@@ -7,6 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 1.8.0 - 2016-04-28
+
+- Add optional support for `LoggerInterface` to log exceptions caught by `ExceptionHandler`
+- Add `MonologConfiguration`
+
 ## 1.7.0 - 2016-04-13
 
 - Add `PlatesConfiguration`
