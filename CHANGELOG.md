@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 1.8.1 - 2016-04-29
+
+- Small bugfix to ensure exceptions are logged correctly in `ExceptionHandler`
+
 ## 1.8.0 - 2016-04-28
 
 - Add optional support for `LoggerInterface` to log exceptions caught by `ExceptionHandler`

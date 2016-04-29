@@ -2,7 +2,6 @@
 
 namespace Equip\Handler;
 
-use Auryn\InjectionException;
 use Equip\Exception\HttpException;
 use Exception;
 use InvalidArgumentException;
@@ -76,6 +75,12 @@ class ExceptionHandler
         try {
             return $next($request, $response);
         } catch (Exception $e) {
+            if ($this->logger) {
+                $this->logger->error($e->getMessage(), [
+                    'exception' => $e
+                ]);
+            }
+
             $type = $this->type($request);
 
             $response = $response->withHeader('Content-Type', $type);
@@ -103,12 +108,6 @@ class ExceptionHandler
             $response->getBody()->write($body);
 
             $this->whoops->popHandler();
-
-            if ($this->logger) {
-                $this->logger->error($e->getMessage(), [
-                    'exception' => $e
-                ]);
-            }
 
             return $response;
         }
