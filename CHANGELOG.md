@@ -7,6 +7,27 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 1.8.1 - 2016-04-29
+
+- Small bugfix to ensure exceptions are logged correctly in `ExceptionHandler`
+
+## 1.8.0 - 2016-04-28
+
+- Add optional support for `LoggerInterface` to log exceptions caught by `ExceptionHandler`
+- Add `MonologConfiguration`
+
+## 1.7.0 - 2016-04-13
+
+- Add `PlatesConfiguration`
+
+## 1.6.0 - 2016-04-11
+
+- Bump nikic/fast-route dependency version to 0.8
+
+## 1.5.1 - 2016-03-11
+
+- Bump equip/adr dependency version to 1.3
+
 ## 1.5.0 - 2016-03-01
 
 - Add Redis configuration

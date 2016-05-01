@@ -3,11 +3,14 @@
 namespace EquipTests\Handler;
 
 use Auryn\Injector;
+use Equip\Configuration\ConfigurationInterface;
 use Equip\Handler\ExceptionHandler;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Configuration\WhoopsConfiguration;
 use Equip\Exception\HttpException;
 use EquipTests\Configuration\ConfigurationTestCase;
+use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Log\LoggerInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
 
@@ -17,6 +20,7 @@ class ExceptionHandlerTest extends ConfigurationTestCase
     {
         return [
             new AurynConfiguration,
+            new MockMonologConfiguration,
             new WhoopsConfiguration,
         ];
     }
@@ -99,5 +103,22 @@ class ExceptionWithHttpStatusCode extends \Exception
     public function getHttpStatus()
     {
         return 400;
+    }
+}
+
+class MockMonologConfiguration extends TestCase implements ConfigurationInterface
+{
+    public function apply(Injector $injector)
+    {
+        $injector->delegate(LoggerInterface::class, function () {
+            $loggerMock = $this->getMock(LoggerInterface::class);
+
+            $loggerMock
+                ->expects($this->atLeastOnce())
+                ->method('error');
+
+            return $loggerMock;
+        });
+        $injector->share(LoggerInterface::class);
     }
 }

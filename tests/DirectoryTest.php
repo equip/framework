@@ -58,21 +58,23 @@ class DirectoryTest extends DirectoryTestCase
         $action = $this->getMockAction();
         $callback = [$this->directory, strtolower($method)];
         $directory = call_user_func($callback, '/', $action);
+        $match = constant(get_class($directory).'::'.$method);
 
-        $this->assertTrue($directory->hasValue("$method /"));
-        $this->assertSame($action, $directory->getValue("$method /"));
+        $this->assertTrue($directory->hasValue("$match /"));
+        $this->assertSame($action, $directory->getValue("$match /"));
     }
 
     public function dataHttpMethods()
     {
         return [
+            ['ANY'],
             ['GET'],
             ['POST'],
             ['PUT'],
             ['PATCH'],
             ['HEAD'],
             ['DELETE'],
-            ['OPTIONS'],
+            ['OPTIONS']
         ];
     }
 }

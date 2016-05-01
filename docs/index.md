@@ -114,6 +114,8 @@ The following configurations are typically used by default:
 The following configurations are available but not used by default:
 
 * [`EnvConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/EnvConfiguration.php) - Use [Dotenv](https://github.com/josegonzalez/php-dotenv) to populate the content of [`Env`](https://github.com/equip/framework/blob/master/src/Env.php)
+* [`MonologConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/MonologConfiguration.php) - Use [Monolog](https://github.com/Seldaek/monolog/) for the framework [PSR-3](http://www.php-fig.org/psr/psr-3/) implementation
+* [`PlatesConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesConfiguration.php) - Configure the [Plates](http://platesphp.com/) template engine
 * [`PlatesResponderConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesResponderConfiguration.php) - Use [Plates](http://platesphp.com/) as the default [responder](#responders)
 * [`RedisConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/RedisConfiguration.php) - Use [Redis](http://redis.io) for in-memory store
 
@@ -237,6 +239,7 @@ Equip\Application::build()
 // ...
 ->setRouting(function (Equip\Directory $directory) {
     return $directory
+    ->any('/', Domain\Providers::class)
     ->get('/providers', Domain\GetProviders::class)
     ->get('/providers/{provider}', Domain\GetProvider::class)
     ->post('/providers/{provider}', Domain\SynchronizeProvider::class)
@@ -315,7 +318,7 @@ For a Equip application to handle requests properly it will require some middlew
 The following middlewares are typically used by default, in this order:
 
 * [`Relay\Middleware\ResponseSender`](https://github.com/relayphp/Relay.Middleware/blob/master/src/ResponseSender.php) - Outputs data from the [PSR-7 Response object](https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php) to be sent back to the client
-* [`Equip\Handler\ExceptionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ExceptionHandler.php) - Handles exceptions thrown by subsequent middlewares and domains by returning an appropriate application-level response
+* [`Equip\Handler\ExceptionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ExceptionHandler.php) - Handles exceptions thrown by subsequent middlewares and domains by [logging the exception](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md#13-context) and returning an appropriate application-level response
 * [`Equip\Handler\RouteHandler`](https://github.com/equip/framework/blob/master/src/Handler/RouteHandler.php) - Resolves the request route to the corresponding action to execute
 * [`Equip\Handler\ContentHandler`](https://github.com/equip/framework/blob/master/src/Handler/ContentHandler.php) - Parses request bodies encoded in common formats and makes the parsed version available via the `getParsedBody()` method of the [PSR-7 Request object](https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php)
 * [`Equip\Handler\ActionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ActionHandler.php) - Invokes the [domain](https://github.com/pmjones/adr#model-vs-domain) corresponding to the resolved [action](https://github.com/pmjones/adr#controller-vs-action), applies the [responder](https://github.com/pmjones/adr#view-vs-responder) to the resulting payload, and returns the resulting response
@@ -464,7 +467,7 @@ Using [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/For
 Equip\Application::build()
 ->setConfiguration([
     // ...
-    Equip\Configuration\PlatesResponderConfiguration
+    Equip\Configuration\PlatesResponderConfiguration::class
 ])
 // ...
 ```
