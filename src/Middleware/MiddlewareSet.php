@@ -3,13 +3,10 @@
 namespace Equip\Middleware;
 
 use DomainException;
-use Equip\Compatibility\StructureWithDataAlias;
 use Equip\Structure\Set;
 
 class MiddlewareSet extends Set
 {
-    use StructureWithDataAlias;
-
     /**
      * @inheritDoc
      *

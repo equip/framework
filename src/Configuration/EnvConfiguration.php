@@ -46,7 +46,7 @@ class EnvConfiguration implements ConfigurationInterface
         $injector->prepare(Env::class, function (Env $env, Injector $injector) {
             $loader = $injector->make(Loader::class);
             $values = $loader->parse()->toArray();
-            return $env->withData($values);
+            return $env->withValues($values);
         });
     }
 

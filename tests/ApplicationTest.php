@@ -66,7 +66,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $configuration = $this->getMock(ConfigurationSet::class);
         $configuration
             ->expects($this->once())
-            ->method('withData')
+            ->method('withValues')
             ->with($data)
             ->willReturn(clone $configuration);
 
@@ -85,7 +85,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $middleware = $this->getMock(MiddlewareSet::class);
         $middleware
             ->expects($this->once())
-            ->method('withData')
+            ->method('withValues')
             ->with($data)
             ->willReturn(clone $middleware);
 

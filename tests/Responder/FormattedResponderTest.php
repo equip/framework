@@ -44,14 +44,14 @@ class FormattedResponderTest extends ConfigurationTestCase
 
         unset($formatters[JsonFormatter::class]);
 
-        $formatters = $this->responder->withData($formatters)->toArray();
+        $formatters = $this->responder->withValues($formatters)->toArray();
 
         $this->assertArrayNotHasKey(JsonFormatter::class, $formatters);
 
         // Append another one with high quality
         $formatters[JsonFormatter::class] = 1.0;
 
-        $formatters = $this->responder->withData($formatters)->toArray();
+        $formatters = $this->responder->withValues($formatters)->toArray();
         $sortedcopy = $formatters;
     }
 
@@ -74,7 +74,7 @@ class FormattedResponderTest extends ConfigurationTestCase
             get_class($b) => 1.0,
         ];
 
-        $responder = $this->responder->withData($values);
+        $responder = $this->responder->withValues($values);
         $formatters = $responder->toArray();
 
         $this->assertNotSame($values, $formatters);

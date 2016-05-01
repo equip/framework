@@ -8,7 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
-use Equip\Compatibility\StructureWithDataAlias;
 use Equip\Formatter\AbstractFormatter;
 use Equip\Formatter\JsonFormatter;
 use Equip\Resolver\ResolverTrait;
@@ -18,7 +17,6 @@ use Relay\ResolverInterface;
 class FormattedResponder extends SortedDictionary implements ResponderInterface
 {
     use ResolverTrait;
-    use StructureWithDataAlias;
 
     /**
      * @var Negotiator

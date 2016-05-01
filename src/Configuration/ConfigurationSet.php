@@ -3,14 +3,11 @@
 namespace Equip\Configuration;
 
 use Auryn\Injector;
-use Equip\Compatibility\StructureWithDataAlias;
 use Equip\Exception\ConfigurationException;
 use Equip\Structure\Set;
 
 class ConfigurationSet extends Set implements ConfigurationInterface
 {
-    use StructureWithDataAlias;
-
     /**
      * @inheritDoc
      */
