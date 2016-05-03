@@ -81,7 +81,7 @@ class FizzbuzzCommand extends AbstractCommand
 }
 ```
 
-Command classes are tended to be injected (using [Auryn](http://equipframework.readthedocs.org/en/latest/#dependencies)) into and receive options from other classes. Here's an example of a domain class that does this.
+Command classes are tended to be injected (using [Auryn](/en/latest/#dependencies)) into and receive options from other classes. Here's an example of a domain class that does this.
 
 ```php
 use Equip\Adr\DomainInterface;
