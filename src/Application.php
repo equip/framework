@@ -69,7 +69,7 @@ class Application
      */
     public function setConfiguration(array $configuration)
     {
-        $this->configuration = $this->configuration->withData($configuration);
+        $this->configuration = $this->configuration->withValues($configuration);
         return $this;
     }
 
@@ -82,7 +82,7 @@ class Application
      */
     public function setMiddleware(array $middleware)
     {
-        $this->middleware = $this->middleware->withData($middleware);
+        $this->middleware = $this->middleware->withValues($middleware);
         return $this;
     }
 

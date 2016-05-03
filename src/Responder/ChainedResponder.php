@@ -7,7 +7,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
-use Equip\Compatibility\StructureWithDataAlias;
 use Equip\Resolver\ResolverTrait;
 use Equip\Structure\Set;
 use Relay\ResolverInterface;
@@ -15,7 +14,6 @@ use Relay\ResolverInterface;
 class ChainedResponder extends Set implements ResponderInterface
 {
     use ResolverTrait;
-    use StructureWithDataAlias;
 
     /**
      * @param ResolverInterface $resolver
