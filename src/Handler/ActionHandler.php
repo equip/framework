@@ -5,11 +5,11 @@ namespace Equip\Handler;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Relay\ResolverInterface;
+use Equip\Action;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\DomainInterface;
 use Equip\Adr\InputInterface;
 use Equip\Adr\ResponderInterface;
-use Equip\Action;
 
 class ActionHandler
 {
