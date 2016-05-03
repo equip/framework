@@ -2,12 +2,31 @@
 
 namespace Equip;
 
-use Arbiter\Action as Arbiter;
+use Equip\Input;
+use Equip\Responder\ChainedResponder;
 
-class Action extends Arbiter
+class Action
 {
-    protected $input = 'Equip\Input';
-    protected $responder = 'Equip\Responder\ChainedResponder';
+    /**
+     * The domain specification.
+     *
+     * @var DomainInterface
+     */
+    protected $domain;
+
+    /**
+     * The responder specification.
+     *
+     * @var ResponderInterface
+     */
+    protected $responder = ChainedResponder::class;
+
+    /**
+     * The input specification.
+     *
+     * @var InputInterface
+     */
+    protected $input = Input::class;
 
     /**
      * @inheritDoc
@@ -26,5 +45,35 @@ class Action extends Arbiter
         if ($input) {
             $this->input = $input;
         }
+    }
+
+    /**
+     * Returns the domain specification.
+     *
+     * @return DomainInterface
+     */
+    public function getDomain()
+    {
+        return $this->domain;
+    }
+
+    /**
+     * Returns the responder specification.
+     *
+     * @return ResponderInterface
+     */
+    public function getResponder()
+    {
+        return $this->responder;
+    }
+
+    /**
+     * Returns the input specification.
+     *
+     * @return InputInterface
+     */
+    public function getInput()
+    {
+        return $this->input;
     }
 }
