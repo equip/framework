@@ -1,11 +1,11 @@
 <?php
 namespace EquipTests\Handler;
 
-use EquipTests\Configuration\ConfigurationTestCase;
-use EquipTests\Fake\FakeDomain;
 use Equip\Action;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Handler\ActionHandler;
+use EquipTests\Configuration\ConfigurationTestCase;
+use EquipTests\Fake\FakeDomain;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 
