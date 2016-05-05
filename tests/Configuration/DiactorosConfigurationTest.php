@@ -2,10 +2,10 @@
 
 namespace EquipTests\Configuration;
 
+use Equip\Configuration\DiactorosConfiguration;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Equip\Configuration\DiactorosConfiguration;
 
 class DiactorosConfigurationTest extends ConfigurationTestCase
 {

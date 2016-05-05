@@ -2,12 +2,12 @@
 
 namespace EquipTests\Responder;
 
+use EquipTests\Configuration\ConfigurationTestCase;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Formatter\AbstractFormatter;
 use Equip\Formatter\JsonFormatter;
 use Equip\Payload;
 use Equip\Responder\FormattedResponder;
-use EquipTests\Configuration\ConfigurationTestCase;
 use Lukasoppermann\Httpstatus\Httpstatus;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;

@@ -3,8 +3,8 @@
 namespace EquipTests;
 
 use Equip\Adr\DomainInterface;
-use Equip\Input;
 use Equip\Directory;
+use Equip\Input;
 
 class DirectoryTest extends DirectoryTestCase
 {

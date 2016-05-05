@@ -2,16 +2,16 @@
 
 namespace Equip\Responder;
 
-use Negotiation\Negotiator;
-use InvalidArgumentException;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
 use Equip\Formatter\AbstractFormatter;
 use Equip\Formatter\JsonFormatter;
 use Equip\Resolver\ResolverTrait;
 use Equip\Structure\SortedDictionary;
+use InvalidArgumentException;
+use Negotiation\Negotiator;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Relay\ResolverInterface;
 
 class FormattedResponder extends SortedDictionary implements ResponderInterface

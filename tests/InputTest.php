@@ -2,11 +2,12 @@
 
 namespace EquipTests;
 
-use Psr\Http\Message\UploadedFileInterface;
 use Equip\Input;
+use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\UploadedFileInterface;
 use Zend\Diactoros\ServerRequest;
 
-class InputTest extends \PHPUnit_Framework_TestCase
+class InputTest extends TestCase
 {
     public function testCollectEmptyRequest()
     {

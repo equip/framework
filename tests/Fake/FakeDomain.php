@@ -1,8 +1,9 @@
 <?php
+
 namespace EquipTests\Fake;
 
-use Equip\Payload;
 use Equip\Adr\DomainInterface;
+use Equip\Payload;
 
 class FakeDomain implements DomainInterface
 {

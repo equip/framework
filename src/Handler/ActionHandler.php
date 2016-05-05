@@ -2,14 +2,14 @@
 
 namespace Equip\Handler;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Relay\ResolverInterface;
 use Equip\Action;
-use Equip\Adr\PayloadInterface;
 use Equip\Adr\DomainInterface;
 use Equip\Adr\InputInterface;
+use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Relay\ResolverInterface;
 
 class ActionHandler
 {

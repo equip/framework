@@ -2,8 +2,8 @@
 
 namespace EquipTests;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Equip\Adr\DomainInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 
 abstract class DirectoryTestCase extends TestCase
 {

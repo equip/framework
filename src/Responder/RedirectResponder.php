@@ -2,10 +2,10 @@
 
 namespace Equip\Responder;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class RedirectResponder implements ResponderInterface
 {

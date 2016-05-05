@@ -6,9 +6,9 @@ use EquipTests\DirectoryTestCase;
 use Equip\Directory;
 use Equip\Handler\ActionHandler;
 use Equip\Handler\DispatchHandler;
-use Zend\Diactoros\Uri;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\Uri;
 
 class DispatchHandlerTest extends DirectoryTestCase
 {

@@ -3,8 +3,8 @@
 namespace Equip\Configuration;
 
 use Auryn\Injector;
-use Relay\RelayBuilder;
 use Equip\Middleware\MiddlewareSet;
+use Relay\RelayBuilder;
 
 class RelayConfiguration implements ConfigurationInterface
 {

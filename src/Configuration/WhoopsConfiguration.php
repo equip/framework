@@ -3,9 +3,9 @@
 namespace Equip\Configuration;
 
 use Auryn\Injector;
-use Whoops\Run as Whoops;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PlainTextHandler;
+use Whoops\Run as Whoops;
 
 class WhoopsConfiguration implements ConfigurationInterface
 {

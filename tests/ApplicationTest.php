@@ -3,14 +3,15 @@
 namespace EquipTests;
 
 use Auryn\Injector;
-use ReflectionObject;
-use Relay\MiddlewareInterface;
+use Equip\Application;
 use Equip\Configuration\ConfigurationInterface;
 use Equip\Configuration\ConfigurationSet;
 use Equip\Middleware\MiddlewareSet;
-use Equip\Application;
+use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionObject;
+use Relay\MiddlewareInterface;
 
-class ApplicationTest extends \PHPUnit_Framework_TestCase
+class ApplicationTest extends TestCase
 {
     private function assertApplication($app)
     {

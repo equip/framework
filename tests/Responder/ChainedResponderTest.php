@@ -2,15 +2,15 @@
 
 namespace EquipTests\Responder;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Equip\Adr\ResponderInterface;
+use EquipTests\Configuration\ConfigurationTestCase;
 use Equip\Adr\PayloadInterface;
+use Equip\Adr\ResponderInterface;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Responder\ChainedResponder;
 use Equip\Responder\FormattedResponder;
 use Equip\Responder\RedirectResponder;
-use EquipTests\Configuration\ConfigurationTestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ChainedResponderTest extends ConfigurationTestCase
 {

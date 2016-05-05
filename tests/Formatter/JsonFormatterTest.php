@@ -2,11 +2,12 @@
 
 namespace EquipTests\Formatter;
 
-use Equip\Payload;
 use Equip\Formatter\JsonFormatter;
+use Equip\Payload;
 use Lukasoppermann\Httpstatus\Httpstatus;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class JsonFormatterTest extends \PHPUnit_Framework_TestCase
+class JsonFormatterTest extends TestCase
 {
     /**
      * @var JsonFormatter

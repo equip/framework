@@ -2,11 +2,11 @@
 
 namespace EquipTests;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Equip\Action;
 use Equip\Adr\DomainInterface;
 use Equip\Adr\InputInterface;
 use Equip\Adr\ResponderInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 
 class ActionTest extends TestCase
 {
