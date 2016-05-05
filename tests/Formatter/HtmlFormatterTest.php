@@ -2,11 +2,12 @@
 
 namespace EquipTests\Formatter;
 
-use Equip\Payload;
 use Equip\Formatter\HtmlFormatter;
+use Equip\Payload;
 use Lukasoppermann\Httpstatus\Httpstatus;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class HtmlFormatterTest extends \PHPUnit_Framework_TestCase
+class HtmlFormatterTest extends TestCase
 {
     public function testAccepts()
     {

@@ -3,16 +3,16 @@
 namespace EquipTests\Handler;
 
 use Auryn\Injector;
-use Equip\Configuration\ConfigurationInterface;
-use Equip\Handler\ExceptionHandler;
+use EquipTests\Configuration\ConfigurationTestCase;
 use Equip\Configuration\AurynConfiguration;
+use Equip\Configuration\ConfigurationInterface;
 use Equip\Configuration\WhoopsConfiguration;
 use Equip\Exception\HttpException;
-use EquipTests\Configuration\ConfigurationTestCase;
+use Equip\Handler\ExceptionHandler;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\LoggerInterface;
-use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
 
 class ExceptionHandlerTest extends ConfigurationTestCase
 {

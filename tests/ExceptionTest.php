@@ -1,9 +1,10 @@
 <?php
+
 namespace EquipTests;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Equip\Exception\HttpException;
 use Equip\Router;
+use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response;
 
 class ExceptionTest extends TestCase

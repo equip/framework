@@ -1,9 +1,10 @@
 <?php
+
 namespace EquipTests\Configuration;
 
-use Relay\Relay;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Configuration\RelayConfiguration;
+use Relay\Relay;
 
 class RelayConfigurationTest extends ConfigurationTestCase
 {

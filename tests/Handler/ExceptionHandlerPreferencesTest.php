@@ -2,8 +2,8 @@
 
 namespace EquipTests\Handler;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Equip\Handler\ExceptionHandlerPreferences;
+use PHPUnit_Framework_TestCase as TestCase;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Handler\PrettyPageHandler;

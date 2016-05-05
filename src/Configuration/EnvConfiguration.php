@@ -3,9 +3,9 @@
 namespace Equip\Configuration;
 
 use Auryn\Injector;
-use josegonzalez\Dotenv\Loader;
 use Equip\Env;
 use Equip\Exception\EnvException;
+use josegonzalez\Dotenv\Loader;
 
 class EnvConfiguration implements ConfigurationInterface
 {

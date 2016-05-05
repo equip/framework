@@ -2,9 +2,9 @@
 
 namespace EquipTests\Responder;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Equip\Payload;
 use Equip\Responder\RedirectResponder;
+use PHPUnit_Framework_TestCase as TestCase;
 use Zend\Diactoros\Response;
 
 class RedirectResponderTest extends TestCase

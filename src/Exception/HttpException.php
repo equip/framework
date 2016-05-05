@@ -2,8 +2,8 @@
 
 namespace Equip\Exception;
 
-use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 
 class HttpException extends RuntimeException
 {

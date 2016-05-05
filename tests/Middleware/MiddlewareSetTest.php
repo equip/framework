@@ -1,9 +1,10 @@
 <?php
+
 namespace EquipTests\Middleware;
 
+use Equip\Middleware\MiddlewareSet;
 use PHPUnit_Framework_TestCase as TestCase;
 use Relay\MiddlewareInterface;
-use Equip\Middleware\MiddlewareSet;
 
 class MiddlewareSetTest extends TestCase
 {

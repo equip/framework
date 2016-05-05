@@ -6,8 +6,9 @@ use Equip\Formatter\PlatesFormatter;
 use Equip\Payload;
 use League\Plates\Engine;
 use Lukasoppermann\Httpstatus\Httpstatus;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class PlatesFormatterTest extends \PHPUnit_Framework_TestCase
+class PlatesFormatterTest extends TestCase
 {
     /**
      * @var Engine
