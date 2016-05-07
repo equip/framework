@@ -11,7 +11,7 @@ class FakeDomain implements DomainInterface
     public function __invoke(array $input)
     {
         return (new Payload())
-            ->withStatus(Payload::OK)
+            ->withStatus(Payload::STATUS_OK)
             ->withOutput(['success' => true, 'input' => $input]);
     }
 }

@@ -9,10 +9,10 @@ class PayloadTest extends \PHPUnit_Framework_TestCase
     public function testStatus()
     {
         $load = new Payload;
-        $copy = $load->withStatus(Payload::OK);
+        $copy = $load->withStatus(Payload::STATUS_OK);
 
         $this->assertNull($load->getStatus());
-        $this->assertSame(Payload::OK, $copy->getStatus());
+        $this->assertSame(Payload::STATUS_OK, $copy->getStatus());
     }
 
     public function testInput()

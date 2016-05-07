@@ -4,7 +4,7 @@ namespace Equip\Formatter;
 
 use Equip\Adr\PayloadInterface;
 
-abstract class HtmlFormatter extends AbstractFormatter
+abstract class HtmlFormatter implements FormatterInterface
 {
     /**
      * @inheritDoc

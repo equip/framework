@@ -4,7 +4,6 @@ namespace EquipTests\Formatter;
 
 use Equip\Formatter\HtmlFormatter;
 use Equip\Payload;
-use Lukasoppermann\Httpstatus\Httpstatus;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class HtmlFormatterTest extends TestCase
@@ -16,7 +15,7 @@ class HtmlFormatterTest extends TestCase
 
     public function testType()
     {
-        $formatter = $this->getMockForAbstractClass(HtmlFormatter::class, [new Httpstatus]);
+        $formatter = $this->getMockForAbstractClass(HtmlFormatter::class);
         $this->assertEquals('text/html', $formatter->type());
     }
 }
