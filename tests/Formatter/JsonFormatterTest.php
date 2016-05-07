@@ -4,7 +4,6 @@ namespace EquipTests\Formatter;
 
 use Equip\Formatter\JsonFormatter;
 use Equip\Payload;
-use Lukasoppermann\Httpstatus\Httpstatus;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class JsonFormatterTest extends TestCase
@@ -16,7 +15,7 @@ class JsonFormatterTest extends TestCase
 
     protected function setUp()
     {
-        $this->formatter = new JsonFormatter(new Httpstatus);
+        $this->formatter = new JsonFormatter();
     }
 
     public function testAccepts()
@@ -40,4 +39,3 @@ class JsonFormatterTest extends TestCase
         $this->assertEquals('{"success":true}', $body);
     }
 }
-

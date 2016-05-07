@@ -128,7 +128,6 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
         AbstractFormatter $formatter,
         PayloadInterface  $payload
     ) {
-        $response = $response->withStatus($formatter->status($payload));
         $response = $response->withHeader('Content-Type', $formatter->type());
 
         // Overwrite the body instead of making a copy and dealing with the stream.
