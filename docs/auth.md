@@ -4,7 +4,7 @@
 
 ## Authentication Handler
 
-[`AuthHandler`](https://github.com/equip/auth/blob/master/src/AuthHandler.php) is the middleware class that coordinates the authentication process. See Equip documentation for how to [add middleware](http://equipframework.readthedocs.org/en/latest/#middleware) to an application.
+[`AuthHandler`](https://github.com/equip/auth/blob/master/src/AuthHandler.php) is the middleware class that coordinates the authentication process. See Equip documentation for how to [add middleware](/en/latest/#middleware) to an application.
 
 The constructor for [`AuthHandler`](https://github.com/equip/auth/blob/master/src/AuthHandler.php) takes four parameters, which are discussed in the next few sections and should be configured in the [injector](index.md#dependency-injection-container).
 
@@ -57,7 +57,7 @@ $injector->alias(
 );
 ```
 
-**NOTE**: When using `BodyExtractor` it is expected that any [`*ContentHandler` middleware](http://equipframework.readthedocs.org/en/latest/#middleware) will be placed *before* `AuthHandler` to ensure that the request body has been parsed before authentication is attempted.
+**NOTE**: When using `BodyExtractor` it is expected that any [`*ContentHandler` middleware](/en/latest/#middleware) will be placed *before* `AuthHandler` to ensure that the request body has been parsed before authentication is attempted.
 
 ## Adapter
 

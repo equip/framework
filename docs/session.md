@@ -6,7 +6,7 @@ The benefit of using session objects instead of a global variable is primarily i
 
 ## Configuration
 
-To use the [native session](https://github.com/equip/session/blob/master/src/NativeSession.php) implementation the [configuration](https://github.com/equip/session/blob/master/src/Configuration/SessionConfiguration.php) must be enabled in the [application bootstrap](https://equipframework.readthedocs.org/en/latest/#bootstrap):
+To use the [native session](https://github.com/equip/session/blob/master/src/NativeSession.php) implementation the [configuration](https://github.com/equip/session/blob/master/src/Configuration/SessionConfiguration.php) must be enabled in the [application bootstrap](/en/latest/#bootstrap):
 
 ```php
 Equip\Application::build()
