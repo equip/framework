@@ -9,9 +9,10 @@
             "homepage": "https://github.com/equip"
         }
     ],
+    "minimum-stability": "alpha",
     "require": {
         "php": ">=5.5",
-        "equip/adr": "^1.3",
+        "equip/adr": "^2.0",
         "equip/structure": "^1.0",
         "filp/whoops": "^2.0",
         "lukasoppermann/http-status": "^2",

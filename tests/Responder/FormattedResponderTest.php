@@ -4,11 +4,10 @@ namespace EquipTests\Responder;
 
 use EquipTests\Configuration\ConfigurationTestCase;
 use Equip\Configuration\AurynConfiguration;
-use Equip\Formatter\AbstractFormatter;
+use Equip\Formatter\FormatterInterface;
 use Equip\Formatter\JsonFormatter;
 use Equip\Payload;
 use Equip\Responder\FormattedResponder;
-use Lukasoppermann\Httpstatus\Httpstatus;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -57,17 +56,13 @@ class FormattedResponderTest extends ConfigurationTestCase
 
     public function testSorting()
     {
-        $args = [new Httpstatus];
-
-        $a = $this->getMockBuilder(AbstractFormatter::class)
+        $a = $this->getMockBuilder(FormatterInterface::class)
             ->setMockClassName('FooFormatter')
-            ->setConstructorArgs($args)
-            ->getMockForAbstractClass();
+            ->getMock();
 
-        $b = $this->getMockBuilder(AbstractFormatter::class)
+        $b = $this->getMockBuilder(FormatterInterface::class)
             ->setMockClassName('BarFormatter')
-            ->setConstructorArgs($args)
-            ->getMockForAbstractClass();
+            ->getMock();
 
         $values = [
             get_class($a) => 0.5,
@@ -86,7 +81,7 @@ class FormattedResponderTest extends ConfigurationTestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessageRegExp /formatters .* must implement .*AbstractFormatter/i
+     * @expectedExceptionMessageRegExp /formatters .* must implement .*FormatterInterface/i
      */
     public function testInvalidResponder()
     {
@@ -111,13 +106,11 @@ class FormattedResponderTest extends ConfigurationTestCase
 
         $payload = new Payload;
         $payload = $payload
-            ->withStatus(Payload::OK)
             ->withOutput(['test' => 'test']);
 
         $response = call_user_func($this->responder, $request, $response, $payload);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
         $this->assertEquals('{"test":"test"}', (string) $response->getBody());
     }

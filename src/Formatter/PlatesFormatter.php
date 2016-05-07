@@ -5,7 +5,6 @@ namespace Equip\Formatter;
 use Equip\Adr\PayloadInterface;
 use League\Plates\Engine;
 use League\Plates\Template\Template;
-use Lukasoppermann\Httpstatus\Httpstatus;
 
 class PlatesFormatter extends HtmlFormatter
 {
@@ -16,14 +15,10 @@ class PlatesFormatter extends HtmlFormatter
 
     /**
      * @param Engine $engine
-     * @param Httpstatus $http_status
      */
-    public function __construct(
-        Engine $engine,
-        Httpstatus $http_status
-    ) {
+    public function __construct(Engine $engine)
+    {
         $this->engine = $engine;
-        parent::__construct($http_status);
     }
 
     /**
