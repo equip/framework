@@ -4,7 +4,9 @@ namespace Equip;
 
 use Auryn\Injector;
 use Equip\Configuration\ConfigurationSet;
+use Equip\Directory;
 use Equip\Middleware\MiddlewareSet;
+use Relay\Relay;
 
 class Application
 {
@@ -106,13 +108,13 @@ class Application
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function run($runner = 'Relay\Relay')
+    public function run($runner = Relay::class)
     {
         $this->configuration->apply($this->injector);
 
         return $this->injector
             ->share($this->middleware)
-            ->prepare('Equip\Directory', $this->routing)
+            ->prepare(Directory::class, $this->routing)
             ->execute($runner);
     }
 }

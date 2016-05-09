@@ -4,6 +4,7 @@ namespace EquipTests\Configuration;
 
 use Equip\Configuration\EnvConfiguration;
 use Equip\Env;
+use josegonzalez\Dotenv\Loader;
 
 class EnvConfigurationTest extends ConfigurationTestCase
 {
@@ -14,7 +15,7 @@ class EnvConfigurationTest extends ConfigurationTestCase
 
     public function setUp()
     {
-        if (!class_exists('josegonzalez\Dotenv\Loader')) {
+        if (!class_exists(Loader::class)) {
             $this->markTestSkipped('Dotenv is not installed');
         }
 

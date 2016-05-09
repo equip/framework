@@ -6,6 +6,8 @@ use Equip\Action;
 use Equip\Adr\DomainInterface;
 use Equip\Adr\InputInterface;
 use Equip\Adr\ResponderInterface;
+use Equip\Input;
+use Equip\Responder\ChainedResponder;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class ActionTest extends TestCase
@@ -16,8 +18,8 @@ class ActionTest extends TestCase
         $action = new Action($domain);
 
         $this->assertSame($domain, $action->getDomain());
-        $this->assertSame('Equip\Input', $action->getInput());
-        $this->assertSame('Equip\Responder\ChainedResponder', $action->getResponder());
+        $this->assertSame(Input::class, $action->getInput());
+        $this->assertSame(ChainedResponder::class, $action->getResponder());
 
         $responder = get_class($this->getMock(ResponderInterface::class));
         $action = new Action($domain, $responder);
@@ -28,6 +30,6 @@ class ActionTest extends TestCase
         $action = new Action($domain, null, $input);
 
         $this->assertSame($input, $action->getInput());
-        $this->assertSame('Equip\Responder\ChainedResponder', $action->getResponder());
+        $this->assertSame(ChainedResponder::class, $action->getResponder());
     }
 }
