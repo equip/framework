@@ -3,6 +3,8 @@
 namespace Equip\Configuration;
 
 use Auryn\Injector;
+use Equip\Adr\PayloadInterface;
+use Equip\Payload;
 
 class PayloadConfiguration implements ConfigurationInterface
 {
@@ -12,8 +14,8 @@ class PayloadConfiguration implements ConfigurationInterface
     public function apply(Injector $injector)
     {
         $injector->alias(
-            'Equip\Adr\PayloadInterface',
-            'Equip\Payload'
+            PayloadInterface::class,
+            Payload::class
         );
     }
 }

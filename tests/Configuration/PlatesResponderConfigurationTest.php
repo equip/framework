@@ -6,12 +6,13 @@ use Equip\Configuration\AurynConfiguration;
 use Equip\Configuration\PlatesResponderConfiguration;
 use Equip\Formatter\PlatesFormatter;
 use Equip\Responder\FormattedResponder;
+use League\Plates\Engine;
 
 class PlatesResponderConfigurationTest extends ConfigurationTestCase
 {
     protected function getConfigurations()
     {
-        if (!class_exists('League\Plates\Engine')) {
+        if (!class_exists(Engine::class)) {
             $this->markTestSkipped('Plates is not installed');
         }
 

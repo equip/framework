@@ -6,10 +6,12 @@ use Auryn\Injector;
 use Equip\Application;
 use Equip\Configuration\ConfigurationInterface;
 use Equip\Configuration\ConfigurationSet;
+use Equip\Directory;
 use Equip\Middleware\MiddlewareSet;
 use PHPUnit_Framework_TestCase as TestCase;
 use ReflectionObject;
 use Relay\MiddlewareInterface;
+use Relay\Relay;
 
 class ApplicationTest extends TestCase
 {
@@ -144,13 +146,13 @@ class ApplicationTest extends TestCase
         $injector
             ->expects($this->once())
             ->method('prepare')
-            ->with('Equip\Directory', $routing)
+            ->with(Directory::class, $routing)
             ->willReturnSelf();
 
         $injector
             ->expects($this->once())
             ->method('execute')
-            ->with('Relay\Relay');
+            ->with(Relay::class);
 
         $app = Application::build($injector, null, $middleware);
         $app->setConfiguration([get_class($config1), $config2]);

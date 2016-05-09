@@ -5,6 +5,8 @@ namespace EquipTests\Responder;
 use Equip\Payload;
 use Equip\Responder\RedirectResponder;
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
 class RedirectResponderTest extends TestCase
@@ -26,12 +28,12 @@ class RedirectResponderTest extends TestCase
             'redirect' => '/',
         ]);
 
-        $request = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
+        $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
         $response = new Response;
 
         $response = call_user_func($this->responder, $request, $response, $payload);
 
-        $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/', $response->getHeaderLine('Location'));
 
@@ -49,8 +51,8 @@ class RedirectResponderTest extends TestCase
     public function testEmptyPayload()
     {
         $payload = new Payload;
-        $request = $this->getMockBuilder('Psr\Http\Message\ServerRequestInterface')->getMock();
-        $response = $this->getMockBuilder('Psr\Http\Message\ResponseInterface')->getMock();
+        $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
+        $response = $this->getMockBuilder(ResponseInterface::class)->getMock();
         $returned = call_user_func($this->responder, $request, $response, $payload);
         $this->assertSame($returned, $response);
     }
