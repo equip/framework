@@ -4,7 +4,6 @@ namespace Equip\Formatter;
 
 use Equip\Adr\PayloadInterface;
 use League\Plates\Engine;
-use League\Plates\Template\Template;
 
 class PlatesFormatter extends HtmlFormatter
 {
@@ -26,27 +25,19 @@ class PlatesFormatter extends HtmlFormatter
      */
     public function body(PayloadInterface $payload)
     {
-        $template = $this->template($payload);
-        $template = $this->engine->make($template);
-        return $this->render($template, $payload);
+        return $this->render($payload);
     }
 
     /**
      * @param PayloadInterface $payload
-     * @return string
+     *
+     * @return string The rendered template
      */
-    protected function template(PayloadInterface $payload)
+    protected function render(PayloadInterface $payload)
     {
-        return $payload->getOutput()['template'];
-    }
+        $template = $payload->getSetting('template');
+        $output = $payload->getOutput();
 
-    /**
-     * @param Template $template
-     * @param PayloadInterface $payload
-     * @return string
-     */
-    protected function render(Template $template, PayloadInterface $payload)
-    {
-        return $template->render($payload->getOutput());
+        return $this->engine->render($template, $output);
     }
 }
