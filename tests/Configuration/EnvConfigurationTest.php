@@ -53,37 +53,12 @@ class EnvConfigurationTest extends ConfigurationTestCase
 
     /**
      * @expectedException \Equip\Exception\EnvException
-     * @expectedExceptionMessageRegExp /environment file .*: does not exist/i
+     * @expectedExceptionMessageRegExp /environment file .* does not exist/i
      */
-    public function testInvalidWithNonExistingPath()
+    public function testInvalidRoot()
     {
         $config = new EnvConfiguration('/tmp/bad/path/.env');
     }
-
-    /**
-     * @expectedException \Equip\Exception\EnvException
-     * @expectedExceptionMessageRegExp /environment file .*: exists and is not a file/i
-     */
-    public function testInvalidFileWithNonFilePath()
-    {
-        $config = new EnvConfiguration(__DIR__);
-    }
-
-    /**
-     * @expectedException \Equip\Exception\EnvException
-     * @expectedExceptionMessageRegExp /environment file .*: exists and is not a file, is not readable/i
-     */
-    public function testInvalidFileWithNonReadablePath()
-    {
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('testInvalidFile', true);
-
-        mkdir($path, 0333);
-
-        $config = new EnvConfiguration($path);
-
-        rmdir($path);
-    }
-
 
     /**
      * @return void

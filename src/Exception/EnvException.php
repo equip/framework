@@ -13,22 +13,10 @@ class EnvException extends InvalidArgumentException
      */
     public static function invalidFile($path)
     {
-        $messages = [];
-        $filepath = realpath($path);
-
-        if (!$filepath) {
-            $messages[] = 'does not exist';
-        }
-
-        if ($filepath && !is_file($filepath)) {
-            $messages[] = 'exists and is not a file';
-        }
-
-        if ($filepath && !is_readable($filepath)) {
-            $messages[] = 'is not readable';
-        }
-
-        return new self(sprintf('Environment file `%s`: %s', $path, implode(', ', $messages)));
+        return new static(sprintf(
+            'Environment file `%s` does not exist or is not readable',
+            $path
+        ));
     }
 
     /**
