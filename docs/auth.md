@@ -163,8 +163,9 @@ composer require "lcobucci/jwt:^3"
 $injector->define(
     'Equip\\Auth\\Jwt\\Configuration',
     [
-        ':key' => '...',
+        ':publicKey' => '...',
         ':ttl' => 3600, // in seconds, e.g. 1 hour
+        ':algorithm' => 'HS256',
     ]
 );
 $injector->alias(
@@ -193,7 +194,7 @@ composer require "firebase/php-jwt:^3"
 $injector->define(
     'Equip\\Auth\\Jwt\\Configuration',
     [
-        ':key' => '...',
+        ':publicKey' => '...',
         ':ttl' => 3600, // in seconds, e.g. 1 hour
         ':algorithm' => 'HS256',
     ]
