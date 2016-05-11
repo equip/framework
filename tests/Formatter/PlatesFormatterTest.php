@@ -5,16 +5,10 @@ namespace EquipTests\Formatter;
 use Equip\Formatter\PlatesFormatter;
 use Equip\Payload;
 use League\Plates\Engine;
-use Lukasoppermann\Httpstatus\Httpstatus;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class PlatesFormatterTest extends TestCase
 {
-    /**
-     * @var Engine
-     */
-    protected $templates;
-
     /**
      * @var PlatesFormatter
      */
@@ -26,11 +20,9 @@ class PlatesFormatterTest extends TestCase
             $this->markTestSkipped('Plates is not installed');
         }
 
-        $this->templates = new Engine(__DIR__ . '/../_templates');
-        $this->formatter = new PlatesFormatter(
-            $this->templates,
-            new HttpStatus
-        );
+        $engine = new Engine(__DIR__ . '/../_templates');
+
+        $this->formatter = new PlatesFormatter($engine);
     }
 
     public function testAccepts()
