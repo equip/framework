@@ -3,6 +3,7 @@
 namespace Equip\Exception;
 
 use DomainException;
+use Equip\Configuration\ConfigurationInterface;
 
 class ConfigurationException extends DomainException
 {
@@ -14,8 +15,9 @@ class ConfigurationException extends DomainException
     public static function invalidClass($spec)
     {
         return new static(sprintf(
-            'Configuration class `%s` must implement ConfigurationInterface',
-            $spec
+            'Configuration class `%s` must implement `%s`',
+            $spec,
+            ConfigurationInterface::class
         ));
     }
 }
