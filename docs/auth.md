@@ -129,7 +129,7 @@ class MyAdapter implements Adapter
 
     public function validateToken($token)
     {
-        $parsed = $this->parser->parse((string) $token);
+        $parsed = $this->parser->parseToken((string) $token);
 
         // $parsed is an instance of \Equip\Auth\Token. You can call its
         // getMetadata() method here to get all metadata associated with the
