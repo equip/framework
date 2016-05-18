@@ -22,13 +22,14 @@
         "relay/relay": "^1.1",
         "relay/middleware": "^1.0",
         "willdurand/negotiation": "^2.0",
-        "zendframework/zend-diactoros": "^1.0.4"
+        "psr/http-message": "^1.0"
     },
     "require-dev": {
         "josegonzalez/dotenv": "^1.2",
         "league/plates": "^3.1",
         "monolog/monolog": "^1.19",
-        "phpunit/phpunit": "^4.8|^5.0"
+        "phpunit/phpunit": "^4.8|^5.0",
+        "zendframework/zend-diactoros": "^1.0.4"
     },
     "suggest": {
         "josegonzalez/dotenv": "For environment based configuration loading",
