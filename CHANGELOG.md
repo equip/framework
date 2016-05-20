@@ -7,6 +7,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 2.0.0 - ???
+
+- Remove dependency on Arbiter
+- Remove compatibility `StructureWithDataAlias` compatibility trait from:
+  - ConfigurationSet
+  - Directory
+  - Env
+  - ExceptionHandlerPreferences
+  - ChainedResponder
+  - FormattedResponder
+
 ## 1.8.1 - 2016-04-29
 
 - Small bugfix to ensure exceptions are logged correctly in `ExceptionHandler`
