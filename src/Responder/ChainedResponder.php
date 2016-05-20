@@ -24,6 +24,7 @@ class ChainedResponder extends Set implements ResponderInterface
         array $responders = [
             FormattedResponder::class,
             RedirectResponder::class,
+            StatusResponder::class,
         ]
     ) {
         $this->resolver = $resolver;

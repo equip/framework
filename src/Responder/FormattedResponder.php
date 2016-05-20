@@ -4,7 +4,7 @@ namespace Equip\Responder;
 
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
-use Equip\Formatter\AbstractFormatter;
+use Equip\Formatter\FormatterInterface;
 use Equip\Formatter\JsonFormatter;
 use Equip\Resolver\ResolverTrait;
 use Equip\Structure\SortedDictionary;
@@ -94,7 +94,7 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
      *
      * @param ServerRequestInterface $request
      *
-     * @return AbstractFormatter
+     * @return FormatterInterface
      */
     protected function formatter(ServerRequestInterface $request)
     {
@@ -118,17 +118,16 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
      * Update the response by formatting the payload.
      *
      * @param ResponseInterface $response
-     * @param AbstractFormatter $formatter
+     * @param FormatterInterface $formatter
      * @param PayloadInterface $payload
      *
      * @return ResponseInterface
      */
     protected function format(
         ResponseInterface $response,
-        AbstractFormatter $formatter,
-        PayloadInterface  $payload
+        FormatterInterface $formatter,
+        PayloadInterface $payload
     ) {
-        $response = $response->withStatus($formatter->status($payload));
         $response = $response->withHeader('Content-Type', $formatter->type());
 
         // Overwrite the body instead of making a copy and dealing with the stream.
@@ -149,11 +148,11 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
         parent::assertValid($data);
 
         foreach ($data as $formatter => $quality) {
-            if (!is_subclass_of($formatter, AbstractFormatter::class)) {
+            if (!is_subclass_of($formatter, FormatterInterface::class)) {
                 throw new InvalidArgumentException(sprintf(
                     'All formatters in `%s` must implement `%s`',
                     static::class,
-                    AbstractFormatter::class
+                    FormatterInterface::class
                 ));
             }
 

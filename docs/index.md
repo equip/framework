@@ -427,7 +427,7 @@ By default [`ChainedResponder`](https://github.com/equip/framework/blob/master/s
 
 ### Formatted Responder
 
-[`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) uses the [Negotiation](https://github.com/willdurand/negotiation) library to support [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation). When a desirable format has been founded, it uses an appropriate implementation of [`AbstractFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/AbstractFormatter.php) to encode the payload data and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
+[`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) uses the [Negotiation](https://github.com/willdurand/negotiation) library to support [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation). When a desirable format has been founded, it uses an appropriate implementation of [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php) to encode the payload data and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
 
 Here are the formatter implementations that are natively supported:
 
