@@ -134,13 +134,11 @@ class Payload implements PayloadInterface
      */
     public function getSetting($name)
     {
-        $key = array_key_exists($name, (array) $this->settings);
-
-        if ($key === false) {
-            return false;
+        if (isset($this->settings[$name])) {
+            return $this->settings[$name];
         }
 
-        return $this->settings[$name];
+        return null;
     }
 
     /**
