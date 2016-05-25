@@ -1,4 +1,5 @@
 <?php
+
 namespace Equip;
 
 use Equip\Adr\PayloadInterface;
@@ -24,6 +25,11 @@ class Payload implements PayloadInterface
      * @var array
      */
     private $messages;
+
+    /**
+     * @var array
+     */
+    private $settings;
 
     /**
      * @inheritDoc
@@ -60,7 +66,7 @@ class Payload implements PayloadInterface
      */
     public function getInput()
     {
-        return $this->input;
+        return (array) $this->input;
     }
 
     /**
@@ -79,7 +85,7 @@ class Payload implements PayloadInterface
      */
     public function getOutput()
     {
-        return $this->output;
+        return (array) $this->output;
     }
 
     /**
@@ -98,6 +104,50 @@ class Payload implements PayloadInterface
      */
     public function getMessages()
     {
-        return $this->messages;
+        return (array) $this->messages;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withSetting($name, $value)
+    {
+        $copy = clone $this;
+        $copy->settings[$name] = $value;
+
+        return $copy;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withoutSetting($name)
+    {
+        $copy = clone $this;
+        unset($copy->settings[$name]);
+
+        return $copy;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSetting($name)
+    {
+        $key = array_key_exists($name, (array) $this->settings);
+
+        if ($key === false) {
+            return false;
+        }
+
+        return $this->settings[$name];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSettings()
+    {
+        return (array) $this->settings;
     }
 }
