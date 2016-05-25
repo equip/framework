@@ -14,22 +14,22 @@ class Payload implements PayloadInterface
     /**
      * @var array
      */
-    private $input;
+    private $input = [];
 
     /**
      * @var array
      */
-    private $output;
+    private $output = [];
 
     /**
      * @var array
      */
-    private $messages;
+    private $messages = [];
 
     /**
      * @var array
      */
-    private $settings;
+    private $settings = [];
 
     /**
      * @inheritDoc
@@ -66,7 +66,7 @@ class Payload implements PayloadInterface
      */
     public function getInput()
     {
-        return (array) $this->input;
+        return $this->input;
     }
 
     /**
@@ -85,7 +85,7 @@ class Payload implements PayloadInterface
      */
     public function getOutput()
     {
-        return (array) $this->output;
+        return $this->output;
     }
 
     /**
@@ -104,7 +104,7 @@ class Payload implements PayloadInterface
      */
     public function getMessages()
     {
-        return (array) $this->messages;
+        return $this->messages;
     }
 
     /**
@@ -148,6 +148,6 @@ class Payload implements PayloadInterface
      */
     public function getSettings()
     {
-        return (array) $this->settings;
+        return $this->settings;
     }
 }
