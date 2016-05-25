@@ -70,7 +70,7 @@ class PayloadTest extends TestCase
 
         $empty = $copy->withoutSetting($name);
 
-        $this->assertFalse($empty->getSetting($name));
+        $this->assertNull($empty->getSetting($name));
         $this->assertEmpty($empty->getSettings());
     }
 }
