@@ -37,7 +37,7 @@ class PlatesFormatterTest extends TestCase
 
     public function testResponse()
     {
-        $template = 'index';
+        $template = 'test';
         $output = [
             'header' => 'header',
             'body'   => 'body',
@@ -47,14 +47,14 @@ class PlatesFormatterTest extends TestCase
         $payload = $this->getMock(PayloadInterface::class);
 
         $payload->expects($this->any())
-            ->method('getOutput')
-            ->willReturn($output);
-
-        $payload->expects($this->any())
             ->method('getSetting')
             ->willReturn($template);
 
-        $body = (string) $this->formatter->body($payload);
+        $payload->expects($this->any())
+            ->method('getOutput')
+            ->willReturn($output);
+
+        $body = $this->formatter->body($payload);
 
         $this->assertEquals("<h1>header</h1>\n<p>body</p>\n<span>footer</span>\n", $body);
     }
