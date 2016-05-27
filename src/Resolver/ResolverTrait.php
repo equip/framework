@@ -10,18 +10,14 @@ trait ResolverTrait
     private $resolver;
 
     /**
-     * Resolve a class spec into an object, if it is not already instantiated.
+     * Resolve a class spec into an object.
      *
-     * @param string|object $specOrObject
+     * @param string $spec Fully-qualified class name
      *
      * @return object
      */
-    private function resolve($specOrObject)
+    private function resolve($spec)
     {
-        if (is_object($specOrObject)) {
-            return $specOrObject;
-        }
-
-        return call_user_func($this->resolver, $specOrObject);
+        return call_user_func($this->resolver, $spec);
     }
 }
