@@ -9,6 +9,10 @@ _..._
 
 ## 2.0.0 - ???
 
+- Update Plates formatter to use Payload settings for template
+- Allow Resolver to work with already instantiated objects
+- Separate response formatting from HTTP status code with `StatusResponder`
+- Replace `AbstractFormatter` with a `FormatterInterface`
 - Remove dependency on Arbiter
 - Remove compatibility `StructureWithDataAlias` compatibility trait from:
   - ConfigurationSet
