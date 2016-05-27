@@ -2,19 +2,13 @@
 
 namespace EquipTests\Formatter;
 
+use Equip\Adr\PayloadInterface;
 use Equip\Formatter\PlatesFormatter;
-use Equip\Payload;
 use League\Plates\Engine;
-use Lukasoppermann\Httpstatus\Httpstatus;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class PlatesFormatterTest extends TestCase
 {
-    /**
-     * @var Engine
-     */
-    protected $templates;
-
     /**
      * @var PlatesFormatter
      */
@@ -22,14 +16,12 @@ class PlatesFormatterTest extends TestCase
 
     public function setUp()
     {
-        if (!class_exists('League\Plates\Engine')) {
+        if (!class_exists(Engine::class)) {
             $this->markTestSkipped('Plates is not installed');
         }
 
-        $this->templates = new Engine(__DIR__ . '/../_templates');
         $this->formatter = new PlatesFormatter(
-            $this->templates,
-            new HttpStatus
+            new Engine(__DIR__ . '/../_templates')
         );
     }
 
@@ -45,14 +37,24 @@ class PlatesFormatterTest extends TestCase
 
     public function testResponse()
     {
-        $payload = (new Payload)->withOutput([
-                'template' => 'test',
-                'header'   => 'header',
-                'body'     => 'body',
-                'footer'   => 'footer',
-            ]);
+        $template = 'test';
+        $output = [
+            'header' => 'header',
+            'body'   => 'body',
+            'footer' => 'footer'
+        ];
 
-        $body = (string) $this->formatter->body($payload);
+        $payload = $this->getMock(PayloadInterface::class);
+
+        $payload->expects($this->any())
+            ->method('getSetting')
+            ->willReturn($template);
+
+        $payload->expects($this->any())
+            ->method('getOutput')
+            ->willReturn($output);
+
+        $body = $this->formatter->body($payload);
 
         $this->assertEquals("<h1>header</h1>\n<p>body</p>\n<span>footer</span>\n", $body);
     }
