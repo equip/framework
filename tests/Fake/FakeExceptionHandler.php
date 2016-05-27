@@ -1,9 +1,10 @@
 <?php
+
 namespace EquipTests\Fake;
 
+use Equip\Handler\ExceptionHandler;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
-use Equip\Handler\ExceptionHandler;
 
 class FakeExceptionHandler extends ExceptionHandler
 {

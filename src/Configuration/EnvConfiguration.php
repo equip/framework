@@ -3,9 +3,9 @@
 namespace Equip\Configuration;
 
 use Auryn\Injector;
-use josegonzalez\Dotenv\Loader;
 use Equip\Env;
 use Equip\Exception\EnvException;
+use josegonzalez\Dotenv\Loader;
 
 class EnvConfiguration implements ConfigurationInterface
 {
@@ -46,7 +46,7 @@ class EnvConfiguration implements ConfigurationInterface
         $injector->prepare(Env::class, function (Env $env, Injector $injector) {
             $loader = $injector->make(Loader::class);
             $values = $loader->parse()->toArray();
-            return $env->withData($values);
+            return $env->withValues($values);
         });
     }
 

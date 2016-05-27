@@ -3,14 +3,11 @@
 namespace Equip;
 
 use Equip\Action;
-use Equip\Compatibility\StructureWithDataAlias;
 use Equip\Exception\DirectoryException;
 use Equip\Structure\Dictionary;
 
 class Directory extends Dictionary
 {
-    use StructureWithDataAlias;
-
     const ANY = '*';
     const GET = 'GET';
     const POST = 'POST';

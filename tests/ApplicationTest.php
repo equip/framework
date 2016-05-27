@@ -3,14 +3,17 @@
 namespace EquipTests;
 
 use Auryn\Injector;
-use ReflectionObject;
-use Relay\MiddlewareInterface;
+use Equip\Application;
 use Equip\Configuration\ConfigurationInterface;
 use Equip\Configuration\ConfigurationSet;
+use Equip\Directory;
 use Equip\Middleware\MiddlewareSet;
-use Equip\Application;
+use PHPUnit_Framework_TestCase as TestCase;
+use ReflectionObject;
+use Relay\MiddlewareInterface;
+use Relay\Relay;
 
-class ApplicationTest extends \PHPUnit_Framework_TestCase
+class ApplicationTest extends TestCase
 {
     private function assertApplication($app)
     {
@@ -66,7 +69,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $configuration = $this->getMock(ConfigurationSet::class);
         $configuration
             ->expects($this->once())
-            ->method('withData')
+            ->method('withValues')
             ->with($data)
             ->willReturn(clone $configuration);
 
@@ -85,7 +88,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $middleware = $this->getMock(MiddlewareSet::class);
         $middleware
             ->expects($this->once())
-            ->method('withData')
+            ->method('withValues')
             ->with($data)
             ->willReturn(clone $middleware);
 
@@ -143,13 +146,13 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $injector
             ->expects($this->once())
             ->method('prepare')
-            ->with('Equip\Directory', $routing)
+            ->with(Directory::class, $routing)
             ->willReturnSelf();
 
         $injector
             ->expects($this->once())
             ->method('execute')
-            ->with('Relay\Relay');
+            ->with(Relay::class);
 
         $app = Application::build($injector, null, $middleware);
         $app->setConfiguration([get_class($config1), $config2]);

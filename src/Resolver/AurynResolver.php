@@ -1,4 +1,5 @@
 <?php
+
 namespace Equip\Resolver;
 
 use Auryn\Injector;
@@ -17,14 +18,18 @@ class AurynResolver implements ResolverInterface
     }
 
     /**
-     * Get an instance of the given class
+     * Resolve a class spec into an object, if it is not already instantiated.
      *
-     * @param string $spec Fully-qualified class name
+     * @param string|object $specOrObject
      *
      * @return object
      */
-    public function __invoke($spec)
+    public function __invoke($specOrObject)
     {
-        return $this->injector->make($spec);
+        if (is_object($specOrObject)) {
+            return $specOrObject;
+        }
+
+        return $this->injector->make($specOrObject);
     }
 }

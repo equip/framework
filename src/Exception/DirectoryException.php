@@ -2,6 +2,7 @@
 
 namespace Equip\Exception;
 
+use Equip\Action;
 use InvalidArgumentException;
 
 class DirectoryException extends InvalidArgumentException
@@ -16,9 +17,11 @@ class DirectoryException extends InvalidArgumentException
         if (is_object($value)) {
             $value = get_class($value);
         }
+
         return new static(sprintf(
-            'Directory entry `%s` is not an Action instance',
-            $value
+            'Directory entry `%s` is not an `%s` instance',
+            $value,
+            Action::class
         ));
     }
 }

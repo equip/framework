@@ -3,27 +3,22 @@
 namespace Equip\Formatter;
 
 use Equip\Adr\PayloadInterface;
+use Equip\Formatter\HtmlFormatter;
 use League\Plates\Engine;
-use League\Plates\Template\Template;
-use Lukasoppermann\Httpstatus\Httpstatus;
 
 class PlatesFormatter extends HtmlFormatter
 {
     /**
      * @var Engine
      */
-    protected $engine;
+    private $engine;
 
     /**
      * @param Engine $engine
-     * @param Httpstatus $http_status
      */
-    public function __construct(
-        Engine $engine,
-        Httpstatus $http_status
-    ) {
+    public function __construct(Engine $engine)
+    {
         $this->engine = $engine;
-        parent::__construct($http_status);
     }
 
     /**
@@ -31,27 +26,19 @@ class PlatesFormatter extends HtmlFormatter
      */
     public function body(PayloadInterface $payload)
     {
-        $template = $this->template($payload);
-        $template = $this->engine->make($template);
-        return $this->render($template, $payload);
+        return $this->render($payload);
     }
 
     /**
      * @param PayloadInterface $payload
+     *
      * @return string
      */
-    protected function template(PayloadInterface $payload)
+    private function render(PayloadInterface $payload)
     {
-        return $payload->getOutput()['template'];
-    }
+        $template = $payload->getSetting('template');
+        $output = $payload->getOutput();
 
-    /**
-     * @param Template $template
-     * @param PayloadInterface $payload
-     * @return string
-     */
-    protected function render(Template $template, PayloadInterface $payload)
-    {
-        return $template->render($payload->getOutput());
+        return $this->engine->render($template, $output);
     }
 }

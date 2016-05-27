@@ -3,6 +3,12 @@
 namespace Equip\Configuration;
 
 use Auryn\Injector;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\ServerRequestFactory;
 
 class DiactorosConfiguration implements ConfigurationInterface
 {
@@ -12,28 +18,28 @@ class DiactorosConfiguration implements ConfigurationInterface
     public function apply(Injector $injector)
     {
         $injector->alias(
-            'Psr\Http\Message\RequestInterface',
+            RequestInterface::class,
             // It should not be necessary to force all requests to be server
             // requests, except that Relay uses the wrong type hint:
             // https://github.com/relayphp/Relay.Relay/issues/25
             //
             // 'Zend\Diactoros\Request'
-            'Zend\Diactoros\ServerRequest'
+            ServerRequest::class
         );
 
         $injector->alias(
-            'Psr\Http\Message\ResponseInterface',
-            'Zend\Diactoros\Response'
+            ResponseInterface::class,
+            Response::class
         );
 
         $injector->alias(
-            'Psr\Http\Message\ServerRequestInterface',
-            'Zend\Diactoros\ServerRequest'
+            ServerRequestInterface::class,
+            ServerRequest::class
         );
 
         $injector->delegate(
-            'Zend\Diactoros\ServerRequest',
-            'Zend\Diactoros\ServerRequestFactory::fromGlobals'
+            ServerRequest::class,
+            [ServerRequestFactory::class, 'fromGlobals']
         );
     }
 }

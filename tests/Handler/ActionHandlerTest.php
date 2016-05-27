@@ -2,7 +2,6 @@
 namespace EquipTests\Handler;
 
 use Equip\Action;
-use Equip\Configuration\ArbiterConfiguration;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Handler\ActionHandler;
 use EquipTests\Configuration\ConfigurationTestCase;

@@ -3,9 +3,9 @@
 namespace EquipTests\Configuration;
 
 use Auryn\Injector;
-use Relay\ResolverInterface;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Resolver\AurynResolver;
+use Relay\ResolverInterface;
 
 class AurynConfigurationTest extends ConfigurationTestCase
 {

@@ -2,8 +2,8 @@
 
 namespace Equip;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Equip\Adr\InputInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Input implements InputInterface
 {

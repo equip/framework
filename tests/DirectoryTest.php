@@ -3,8 +3,9 @@
 namespace EquipTests;
 
 use Equip\Adr\DomainInterface;
-use Equip\Input;
 use Equip\Directory;
+use Equip\Input;
+use Equip\Structure\Dictionary;
 
 class DirectoryTest extends DirectoryTestCase
 {
@@ -20,7 +21,7 @@ class DirectoryTest extends DirectoryTestCase
 
     public function testDictionary()
     {
-        $this->assertInstanceOf('Equip\Structure\Dictionary', $this->directory);
+        $this->assertInstanceOf(Dictionary::class, $this->directory);
     }
 
     /**

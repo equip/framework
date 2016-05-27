@@ -7,6 +7,22 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 2.0.0 - ???
+
+- Update Plates formatter to use Payload settings for template
+- Update redirect responder to use Payload settings for target location
+- Allow resolver to work with already instantiated objects
+- Separate response formatting from HTTP status code with `StatusResponder`
+- Replace `AbstractFormatter` with a `FormatterInterface`
+- Remove dependency on Arbiter
+- Remove compatibility `StructureWithDataAlias` compatibility trait from:
+  - ConfigurationSet
+  - Directory
+  - Env
+  - ExceptionHandlerPreferences
+  - ChainedResponder
+  - FormattedResponder
+
 ## 1.8.1 - 2016-04-29
 
 - Small bugfix to ensure exceptions are logged correctly in `ExceptionHandler`

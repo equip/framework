@@ -3,8 +3,10 @@
 namespace Equip\Configuration;
 
 use Auryn\Injector;
-use Relay\RelayBuilder;
 use Equip\Middleware\MiddlewareSet;
+use Relay\Relay;
+use Relay\RelayBuilder;
+use Relay\ResolverInterface;
 
 class RelayConfiguration implements ConfigurationInterface
 {
@@ -14,13 +16,13 @@ class RelayConfiguration implements ConfigurationInterface
     public function apply(Injector $injector)
     {
         $injector->define(RelayBuilder::class, [
-            'resolver' => 'Relay\ResolverInterface',
+            'resolver' => ResolverInterface::class
         ]);
 
         $factory = function (RelayBuilder $builder, MiddlewareSet $queue) {
             return $builder->newInstance($queue);
         };
 
-        $injector->delegate('Relay\Relay', $factory);
+        $injector->delegate(Relay::class, $factory);
     }
 }

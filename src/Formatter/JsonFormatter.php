@@ -4,7 +4,7 @@ namespace Equip\Formatter;
 
 use Equip\Adr\PayloadInterface;
 
-class JsonFormatter extends AbstractFormatter
+class JsonFormatter implements FormatterInterface
 {
     /**
      * @inheritDoc
