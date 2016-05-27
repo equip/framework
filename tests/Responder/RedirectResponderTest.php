@@ -2,6 +2,7 @@
 
 namespace EquipTests\Responder;
 
+use Equip\Adr\Status;
 use Equip\Payload;
 use Equip\Responder\RedirectResponder;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -23,10 +24,7 @@ class RedirectResponderTest extends TestCase
 
     public function testRedirect()
     {
-        $payload = new Payload;
-        $payload = $payload->withMessages([
-            'redirect' => '/',
-        ]);
+        $payload = (new Payload())->withSetting('redirect', '/');
 
         $request = $this->getMockBuilder(ServerRequestInterface::class)->getMock();
         $response = new Response;
@@ -34,18 +32,7 @@ class RedirectResponderTest extends TestCase
         $response = call_user_func($this->responder, $request, $response, $payload);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/', $response->getHeaderLine('Location'));
-
-        $payload = new Payload;
-        $payload = $payload->withMessages([
-            'status' => 301,
-            'redirect' => '/',
-        ]);
-
-        $response = call_user_func($this->responder, $request, $response, $payload);
-
-        $this->assertEquals(301, $response->getStatusCode());
     }
 
     public function testEmptyPayload()

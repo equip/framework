@@ -17,29 +17,12 @@ class RedirectResponder implements ResponderInterface
         ResponseInterface $response,
         PayloadInterface $payload
     ) {
-        if ($this->hasRedirect($payload)) {
-            $messages = $payload->getMessages() + [
-                'status' => 302,
-            ];
+        $location = $payload->getSetting('redirect');
 
-            return $response
-                ->withStatus($messages['status'])
-                ->withHeader('Location', $messages['redirect']);
+        if (!empty($location)) {
+            $response = $response->withHeader('Location', $location);
         }
 
         return $response;
-    }
-
-    /**
-     * Check if the payload contains a redirect
-     *
-     * @param PayloadInterface $payload
-     *
-     * @return boolean
-     */
-    private function hasRedirect(PayloadInterface $payload)
-    {
-        $messages = $payload->getMessages();
-        return !empty($messages['redirect']);
     }
 }
