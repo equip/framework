@@ -7,18 +7,16 @@ use Equip\Adr\DomainInterface;
 use Equip\Adr\InputInterface;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
+use Equip\Resolver\ResolverTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Relay\ResolverInterface;
 
 class ActionHandler
 {
-    const ACTION_ATTRIBUTE = 'equip/adr:action';
+    use ResolverTrait;
 
-    /**
-     * @var ResolverInterface
-     */
-    private $resolver;
+    const ACTION_ATTRIBUTE = 'equip/adr:action';
 
     /**
      * @param ResolverInterface $resolver
@@ -68,18 +66,6 @@ class ActionHandler
         $response = $this->response($responder, $request, $response, $payload);
 
         return $response;
-    }
-
-    /**
-     * Resolve the class spec into an object.
-     *
-     * @param string $spec
-     *
-     * @return object
-     */
-    private function resolve($spec)
-    {
-        return call_user_func($this->resolver, $spec);
     }
 
     /**
