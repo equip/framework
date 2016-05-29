@@ -30,4 +30,13 @@ class ExceptionTest extends TestCase
 
         $this->assertEquals(implode(',', $allowed), $response->getHeaderLine('Allow'));
     }
+
+    public function testHttpBadRequest()
+    {
+        $exception = HttpException::badRequest('Cannot parse request');
+
+        $this->assertInstanceOf(HttpException::class, $exception);
+        $this->assertEquals(400, $exception->getCode());
+
+    }
 }
