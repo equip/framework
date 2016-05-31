@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 2.0.1 - 2016-05-31
+
+- Remove deprecation note from JSON and form content handlers
+
 ## 2.0.0 - 2016-05-27
 
 - Update Plates formatter to use Payload settings for template
