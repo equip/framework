@@ -42,7 +42,7 @@ class DispatchingSetTest extends TestCase
         $dispatching = new DispatchingSet($dispatchers);
         $directory = new Directory;
 
-        $prepared = $dispatching($directory, $this->getMock(Injector::class));
+        $prepared = $dispatching($directory, $this->createMock(Injector::class));
 
         $this->assertInstanceOf(Directory::class, $prepared);
         $this->assertNotSame($prepared, $directory);

@@ -121,8 +121,8 @@ class FormattedResponderTest extends ConfigurationTestCase
     public function testEmptyPayload()
     {
         $payload = new Payload;
-        $request = $this->getMock(ServerRequestInterface::class);
-        $response = $this->getMock(ResponseInterface::class);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
         $returned = call_user_func($this->responder, $request, $response, $payload);
         $this->assertSame($returned, $response);
     }

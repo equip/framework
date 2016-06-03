@@ -111,7 +111,7 @@ class MockMonologConfiguration extends TestCase implements ConfigurationInterfac
     public function apply(Injector $injector)
     {
         $injector->delegate(LoggerInterface::class, function () {
-            $loggerMock = $this->getMock(LoggerInterface::class);
+            $loggerMock = $this->createMock(LoggerInterface::class);
 
             $loggerMock
                 ->expects($this->atLeastOnce())

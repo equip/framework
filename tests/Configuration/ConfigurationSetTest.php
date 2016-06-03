@@ -11,8 +11,8 @@ class ConfigurationSetTest extends TestCase
 {
     public function testSet()
     {
-        $config = $this->getMock(ConfigurationInterface::class);
-        $injector = $this->getMock(Injector::class);
+        $config = $this->createMock(ConfigurationInterface::class);
+        $injector = $this->createMock(Injector::class);
 
         $injector
             ->expects($this->once())
@@ -34,8 +34,8 @@ class ConfigurationSetTest extends TestCase
 
     public function testSetObject()
     {
-        $config = $this->getMock(ConfigurationInterface::class);
-        $injector = $this->getMock(Injector::class);
+        $config = $this->createMock(ConfigurationInterface::class);
+        $injector = $this->createMock(Injector::class);
 
         $config
             ->expects($this->once())
