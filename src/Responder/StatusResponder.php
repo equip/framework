@@ -32,7 +32,7 @@ class StatusResponder implements ResponderInterface
         PayloadInterface $payload
     ) {
         if ($this->hasStatus($payload)) {
-            $response = $response->withStatus($this->status($payload));
+            $response = $this->status($response, $payload);
         }
 
         return $response;
@@ -51,16 +51,20 @@ class StatusResponder implements ResponderInterface
     }
 
     /**
-     * Get the response status from the payload.
+     * Get the response with the status code from the payload.
      *
+     * @param ResponseInterface $response
      * @param PayloadInterface $payload
      *
-     * @return integer
+     * @return ResponseInterface
      */
-    private function status(PayloadInterface $payload)
-    {
+    private function status(
+        ResponseInterface $response,
+        PayloadInterface $payload
+    ) {
         $status = $payload->getStatus();
+        $code = $this->http_status->getStatusCode($status);
 
-        return $this->http_status->getStatusCode($status);
+        return $response->withStatus($code);
     }
 }
