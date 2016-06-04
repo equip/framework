@@ -4,11 +4,11 @@ namespace EquipTests\Responder;
 
 use EquipTests\Configuration\ConfigurationTestCase;
 use Equip\Configuration\AurynConfiguration;
+use Equip\Exception\FormatterException;
 use Equip\Formatter\FormatterInterface;
 use Equip\Formatter\JsonFormatter;
 use Equip\Payload;
 use Equip\Responder\FormattedResponder;
-use InvalidArgumentException;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -83,19 +83,21 @@ class FormattedResponderTest extends ConfigurationTestCase
     public function testInvalidResponder()
     {
         $this->setExpectedExceptionRegExp(
-            InvalidArgumentException::class,
-            '/formatters .* must implement .*FormatterInterface/i'
+            FormatterException::class,
+            '/Formatter class .* must implement .*FormatterInterface/i'
         );
-        $responder = $this->responder->withValue(get_class($this), 1.0);
+
+        $this->responder->withValue(get_class($this), 1.0);
     }
 
     public function testInvalidResponderQuality()
     {
         $this->setExpectedExceptionRegExp(
-            InvalidArgumentException::class,
-            '/formatters .* must have a quality/ii'
+            FormatterException::class,
+            '/No quality have been set for the .*/ii'
         );
-        $responder = $this->responder->withValue(JsonFormatter::class, false);
+
+        $this->responder->withValue(JsonFormatter::class, false);
     }
 
     public function testResponse()
