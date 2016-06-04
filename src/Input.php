@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class Input implements InputInterface
 {
     /**
-     * Flatten all input from the request
+     * Flatten all input from the request.
      *
      * @param ServerRequestInterface $request
      *
@@ -18,19 +18,10 @@ class Input implements InputInterface
         ServerRequestInterface $request
     ) {
         $attrs = $request->getAttributes();
-        $body = $request->getParsedBody();
+        $body = $this->body($request);
         $cookies = $request->getCookieParams();
         $query = $request->getQueryParams();
         $uploads = $request->getUploadedFiles();
-
-        if (empty($body)) {
-            $body = [];
-        } elseif (is_object($body)) {
-            // Because the parsed body may also be represented as an object,
-            // additional parsing is required. This is a bit dirty but works
-            // very well for anonymous objects.
-            $body = json_decode(json_encode($body), true);
-        }
 
         // Order matters here! Important values go last!
         return array_replace(
@@ -40,5 +31,28 @@ class Input implements InputInterface
             $cookies,
             $attrs
         );
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     *
+     * @return array
+     */
+    private function body(ServerRequestInterface $request)
+    {
+        $body = $request->getParsedBody();
+
+        if (empty($body)) {
+            return [];
+        }
+
+        if (is_object($body)) {
+            // Because the parsed body may also be represented as an object,
+            // additional parsing is required. This is a bit dirty but works
+            // very well for anonymous objects.
+            $body = json_decode(json_encode($body), true);
+        }
+
+        return $body;
     }
 }

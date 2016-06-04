@@ -2,7 +2,7 @@
 
 namespace Equip\Middleware;
 
-use DomainException;
+use Equip\Exception\MiddlewareException;
 use Equip\Structure\Set;
 
 class MiddlewareSet extends Set
@@ -10,17 +10,16 @@ class MiddlewareSet extends Set
     /**
      * @inheritDoc
      *
-     * @throws \DomainException if $middlewares does not conform to type expectations
+     * @throws MiddlewareException
+     *  If $classes does not conform to type expectations.
      */
-    protected function assertValid(array $middlewares)
+    protected function assertValid(array $classes)
     {
-        parent::assertValid($middlewares);
+        parent::assertValid($classes);
 
-        foreach ($middlewares as $middleware) {
+        foreach ($classes as $middleware) {
             if (!(is_callable($middleware) || method_exists($middleware, '__invoke'))) {
-                throw new DomainException(
-                    'All elements of $middlewares must be callable'
-                );
+                throw MiddlewareException::notInvokable($middleware);
             }
         }
     }

@@ -4,11 +4,11 @@ namespace Equip\Responder;
 
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
+use Equip\Exception\FormatterException;
 use Equip\Formatter\FormatterInterface;
 use Equip\Formatter\JsonFormatter;
 use Equip\Resolver\ResolverTrait;
 use Equip\Structure\SortedDictionary;
-use InvalidArgumentException;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -139,28 +139,21 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
     /**
      * @inheritDoc
      *
-     * @throws InvalidArgumentException
-     *  If a formatter does not implement the correct interface, or does not
-     *  have a quality value.
+     * @throws FormatterException
+     *  If $classes does not implement the correct interface,
+     *  or does not have a quality value.
      */
-    protected function assertValid(array $data)
+    protected function assertValid(array $classes)
     {
-        parent::assertValid($data);
+        parent::assertValid($classes);
 
-        foreach ($data as $formatter => $quality) {
+        foreach ($classes as $formatter => $quality) {
             if (!is_subclass_of($formatter, FormatterInterface::class)) {
-                throw new InvalidArgumentException(sprintf(
-                    'All formatters in `%s` must implement `%s`',
-                    static::class,
-                    FormatterInterface::class
-                ));
+                throw FormatterException::invalidClass($formatter);
             }
 
             if (!is_float($quality)) {
-                throw new InvalidArgumentException(sprintf(
-                    'All formatters in `%s` must have a quality value',
-                    static::class
-                ));
+                throw FormatterException::needsQuality($formatter);
             }
         }
     }
