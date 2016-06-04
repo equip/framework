@@ -144,7 +144,11 @@ class MyAdapter implements Adapter
         // Validate $credentials here, then assign to $claims an array
         // containing the JWT claims to associate with the generated token.
 
-        return $this->generator->getToken($claims);
+        // You can store metadata associated with the token such as a unique identifier
+        // for the user. 
+        $metadata = [];
+        
+        return new \Equip\Auth\Token($this->generator->getToken($claims), $metadata);
     }
 }
 ```

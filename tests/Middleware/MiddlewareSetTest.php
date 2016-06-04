@@ -2,20 +2,21 @@
 
 namespace EquipTests\Middleware;
 
+use Equip\Exception\MiddlewareException;
 use Equip\Middleware\MiddlewareSet;
 use PHPUnit_Framework_TestCase as TestCase;
 use Relay\MiddlewareInterface;
 
 class MiddlewareSetTest extends TestCase
 {
-    /**
-     * @expectedException \DomainException
-     * @expectedExceptionRegExp /must be callable/i
-     */
     public function testWithInvalidEntries()
     {
-        $middleware = ['foo'];
-        $collection = new MiddlewareSet($middleware);
+        $this->setExpectedExceptionRegExp(
+            MiddlewareException::class,
+            '/Middleware .* is not invokable/i'
+        );
+
+        new MiddlewareSet(['foo']);
     }
 
     public function testWithValidEntries()
