@@ -52,7 +52,7 @@ class ChainedResponder extends Set implements ResponderInterface
      * @inheritDoc
      *
      * @throws ResponderException
-     * If $classes does not implement the correct interface.
+     *  If $classes does not implement the correct interface.
      */
     protected function assertValid(array $classes)
     {

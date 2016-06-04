@@ -11,7 +11,7 @@ class MiddlewareSet extends Set
      * @inheritDoc
      *
      * @throws MiddlewareException
-     * If $classes does not conform to type expectations.
+     *  If $classes does not conform to type expectations.
      */
     protected function assertValid(array $classes)
     {
