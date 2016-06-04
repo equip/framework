@@ -6,6 +6,7 @@ use EquipTests\Configuration\ConfigurationTestCase;
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
 use Equip\Configuration\AurynConfiguration;
+use Equip\Exception\ResponderException;
 use Equip\Responder\ChainedResponder;
 use Equip\Responder\FormattedResponder;
 use Equip\Responder\RedirectResponder;
@@ -41,13 +42,14 @@ class ChainedResponderTest extends ConfigurationTestCase
         $this->assertContains(RedirectResponder::class, $responders);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessageRegExp /responders .* must implement .*ResponderInterface/i
-     */
     public function testInvalidResponder()
     {
-        $responder = $this->responder->withValue(get_class($this));
+        $this->setExpectedExceptionRegExp(
+            ResponderException::class,
+            '/Responder class .* must implement .*ResponderInterface/i'
+        );
+
+        $this->responder->withValue(get_class($this));
     }
 
     public function testAddResponder()

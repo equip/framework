@@ -4,9 +4,9 @@ namespace Equip\Responder;
 
 use Equip\Adr\PayloadInterface;
 use Equip\Adr\ResponderInterface;
+use Equip\Exception\ResponderException;
 use Equip\Resolver\ResolverTrait;
 use Equip\Structure\Set;
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Relay\ResolverInterface;
@@ -37,8 +37,8 @@ class ChainedResponder extends Set implements ResponderInterface
      */
     public function __invoke(
         ServerRequestInterface $request,
-        ResponseInterface      $response,
-        PayloadInterface       $payload
+        ResponseInterface $response,
+        PayloadInterface $payload
     ) {
         foreach ($this as $responder) {
             $responder = $this->resolve($responder);
@@ -51,19 +51,16 @@ class ChainedResponder extends Set implements ResponderInterface
     /**
      * @inheritDoc
      *
-     * @throws InvalidArgumentException If a responder does not implement the correct interface.
+     * @throws ResponderException
+     *  If $classes does not implement the correct interface.
      */
-    protected function assertValid(array $data)
+    protected function assertValid(array $classes)
     {
-        parent::assertValid($data);
+        parent::assertValid($classes);
 
-        foreach ($data as $responder) {
+        foreach ($classes as $responder) {
             if (!is_subclass_of($responder, ResponderInterface::class)) {
-                throw new InvalidArgumentException(sprintf(
-                    'All responders in `%s` must implement `%s`',
-                    static::class,
-                    ResponderInterface::class
-                ));
+                throw ResponderException::invalidClass($responder);
             }
         }
     }
