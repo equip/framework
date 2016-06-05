@@ -2,10 +2,11 @@
 
 namespace Equip\Exception;
 
+use Equip\Exception\ExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
-class HttpException extends RuntimeException
+class HttpException extends RuntimeException implements ExceptionInterface
 {
     /**
      * @param string $path
