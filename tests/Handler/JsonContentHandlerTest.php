@@ -1,7 +1,7 @@
 <?php
 namespace EquipTests\Handler;
 
-use Equip\Exception\HttpBadRequestException;
+use Equip\Exception\HttpException;
 use Equip\Handler\JsonContentHandler;
 use Zend\Diactoros\Response;
 
@@ -22,20 +22,22 @@ class JsonContentHandlerTest extends ContentHandlerTestCase
         });
     }
 
-    /**
-     * @expectedException \Equip\Exception\HttpException
-     * @expectedExceptionCode 400
-     * @expectedExceptionMessageRegExp /json.* syntax error/i
-     */
     public function testInvokeWithMalformedBody()
     {
+        $this->setExpectedExceptionRegExp(
+            HttpException::class,
+            '/json.* syntax error/i',
+            400
+        );
+
         $request = $this->getRequest(
             $mime = 'application/json',
             $body = '{not json}'
         );
         $response = new Response;
         $handler = new JsonContentHandler;
-        $resolved = $handler($request, $response, function ($req, $res) {
+
+        $handler($request, $response, function ($req, $res) {
             $this->fail('Handler callback unexpectedly invoked');
         });
     }

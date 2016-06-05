@@ -4,6 +4,7 @@ namespace EquipTests\Configuration;
 
 use Equip\Configuration\EnvConfiguration;
 use Equip\Env;
+use Equip\Exception\EnvException;
 use josegonzalez\Dotenv\Loader;
 
 class EnvConfigurationTest extends ConfigurationTestCase
@@ -42,22 +43,24 @@ class EnvConfigurationTest extends ConfigurationTestCase
         $this->destroyEnv();
     }
 
-    /**
-     * @expectedException \Equip\Exception\EnvException
-     * @expectedExceptionMessageRegExp /unable to automatically detect/i
-     */
     public function testUnableToDetect()
     {
-        $config = new EnvConfiguration;
+        $this->setExpectedExceptionRegExp(
+            EnvException::class,
+            '/unable to automatically detect/i'
+        );
+
+        new EnvConfiguration;
     }
 
-    /**
-     * @expectedException \Equip\Exception\EnvException
-     * @expectedExceptionMessageRegExp /environment file .* does not exist/i
-     */
     public function testInvalidRoot()
     {
-        $config = new EnvConfiguration('/tmp/bad/path/.env');
+        $this->setExpectedExceptionRegExp(
+            EnvException::class,
+            '/environment file .* does not exist/i'
+        );
+
+        new EnvConfiguration('/tmp/bad/path/.env');
     }
 
     /**

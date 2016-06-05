@@ -4,6 +4,7 @@ namespace EquipTests\Handler;
 
 use EquipTests\DirectoryTestCase;
 use Equip\Directory;
+use Equip\Exception\HttpException;
 use Equip\Handler\ActionHandler;
 use Equip\Handler\DispatchHandler;
 use Zend\Diactoros\Response;
@@ -38,12 +39,13 @@ class DispatchHandlerTest extends DirectoryTestCase
         $this->dispatch($directory, $request, $response, $next);
     }
 
-    /**
-     * @expectedException \Equip\Exception\HttpException
-     * @expectedExceptionRegExp /cannot find any resource at/i
-     */
     public function testNotFoundException()
     {
+        $this->setExpectedExceptionRegExp(
+            HttpException::class,
+            '/cannot find any resource at/i'
+        );
+
         $handler = new DispatchHandler($this->directory);
         $request = $this->getRequest('GET', '/');
         $response = new Response;
@@ -58,12 +60,13 @@ class DispatchHandlerTest extends DirectoryTestCase
         );
     }
 
-    /**
-     * @expectedException \Equip\Exception\HttpException
-     * @expectedExceptionRegExp /cannot access resource .* using method/i
-     */
     public function testMethodNotAllowedException()
     {
+        $this->setExpectedExceptionRegExp(
+            HttpException::class,
+            '/cannot access resource .* using method/i'
+        );
+
         $handler = new DispatchHandler($this->directory);
         $request = $this->getRequest('POST');
         $response = new Response;
