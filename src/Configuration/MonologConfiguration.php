@@ -10,10 +10,20 @@ class MonologConfiguration implements ConfigurationInterface
 {
     use EnvTrait;
 
+    /**
+     * @inheritDoc
+     */
     public function apply(Injector $injector)
     {
-        $injector->alias(LoggerInterface::class, Logger::class);
+        $injector->alias(
+            LoggerInterface::class,
+            Logger::class
+        );
+
         $injector->share(Logger::class);
-        $injector->define(Logger::class, [':name' => $this->env->getValue('LOGGER_NAME', 'equip')]);
+
+        $injector->define(Logger::class, [
+            ':name' => $this->env->getValue('LOGGER_NAME', 'equip')
+        ]);
     }
 }
