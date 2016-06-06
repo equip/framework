@@ -5,6 +5,7 @@ namespace Equip;
 use Auryn\Injector;
 use Equip\Configuration\ConfigurationSet;
 use Equip\Directory;
+use Equip\Dispatching\DispatchingSet;
 use Equip\Middleware\MiddlewareSet;
 use Relay\Relay;
 
@@ -16,15 +17,17 @@ class Application
      * @param Injector $injector
      * @param ConfigurationSet $configuration
      * @param MiddlewareSet $middleware
+     * @param DispatchingSet $dispatching
      *
      * @return static
      */
     public static function build(
         Injector $injector = null,
         ConfigurationSet $configuration = null,
-        MiddlewareSet $middleware = null
+        MiddlewareSet $middleware = null,
+        DispatchingSet $dispatching = null
     ) {
-        return new static($injector, $configuration, $middleware);
+        return new static($injector, $configuration, $middleware, $dispatching);
     }
 
     /**
@@ -43,23 +46,26 @@ class Application
     private $middleware;
 
     /**
-     * @var callable|string
+     * @var DispatchingSet
      */
-    private $routing;
+    private $dispatching;
 
     /**
      * @param Injector $injector
      * @param ConfigurationSet $configuration
      * @param MiddlewareSet $middleware
+     * @param DispatchingSet $dispatching
      */
     public function __construct(
         Injector $injector = null,
         ConfigurationSet $configuration = null,
-        MiddlewareSet $middleware = null
+        MiddlewareSet $middleware = null,
+        DispatchingSet $dispatching = null
     ) {
         $this->injector = $injector ?: new Injector;
         $this->configuration = $configuration ?: new ConfigurationSet;
         $this->middleware = $middleware ?: new MiddlewareSet;
+        $this->dispatching = $dispatching ?: new DispatchingSet;
     }
 
     /**
@@ -89,15 +95,15 @@ class Application
     }
 
     /**
-     * Change routing
+     * Change dispatching
      *
-     * @param callable|string $routing
+     * @param array $dispatching
      *
      * @return self
      */
-    public function setRouting($routing)
+    public function setDispatching(array $dispatching)
     {
-        $this->routing = $routing;
+        $this->dispatching = $this->dispatching->withValues($dispatching);
         return $this;
     }
 
@@ -114,7 +120,7 @@ class Application
 
         return $this->injector
             ->share($this->middleware)
-            ->prepare(Directory::class, $this->routing)
+            ->prepare(Directory::class, $this->dispatching)
             ->execute($runner);
     }
 }
