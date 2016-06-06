@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
+## 3.0.0 - ?
+
+- Replace routing with dispatching, see MIGRATING for details
+
 ## 2.2.0 - ?
 
 - Replace generic exceptions with specific exceptions in handlers
