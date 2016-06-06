@@ -24,15 +24,16 @@ class ConfigurationSet extends Set implements ConfigurationInterface
     /**
      * @inheritDoc
      *
-     * @throws ConfigurationException If any class is not of the expected type
+     * @throws ConfigurationException
+     *  If $classes does not implement the correct interface.
      */
     protected function assertValid(array $classes)
     {
         parent::assertValid($classes);
 
-        foreach ($classes as $class) {
-            if (!is_subclass_of($class, ConfigurationInterface::class)) {
-                throw ConfigurationException::invalidClass($class);
+        foreach ($classes as $config) {
+            if (!is_subclass_of($config, ConfigurationInterface::class)) {
+                throw ConfigurationException::invalidClass($config);
             }
         }
     }
