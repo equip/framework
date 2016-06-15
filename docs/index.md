@@ -10,6 +10,8 @@ To install Equip, [use Composer](https://getcomposer.org/doc/01-basic-usage.md#i
 composer require equip/framework
 ```
 
+You will also need to install a package that provides [`psr/http-message-implementation`](https://packagist.org/providers/psr/http-message-implementation). By default Equip only provides configuration for [`zendframework/zend-diactoros`](https://packagist.org/packages/zendframework/zend-diactoros) but any package that provides a `ServerRequestInterface` implementation should work equally well with proper configuration.
+
 Subsequent examples will assume your project has a directory structure similar to this:
 
 ```
