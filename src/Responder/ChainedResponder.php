@@ -29,7 +29,7 @@ class ChainedResponder extends Set implements ResponderInterface
     ) {
         $this->resolver = $resolver;
 
-        return parent::__construct($responders);
+        parent::__construct($responders);
     }
 
     /**

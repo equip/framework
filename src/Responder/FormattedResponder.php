@@ -49,8 +49,7 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
         PayloadInterface $payload
     ) {
         if ($this->hasOutput($payload)) {
-            $formatter = $this->formatter($request);
-            $response = $this->format($response, $formatter, $payload);
+            $response = $this->format($request, $response, $payload);
         }
 
         return $response;
@@ -117,19 +116,20 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
     /**
      * Update the response by formatting the payload.
      *
+     * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param FormatterInterface $formatter
      * @param PayloadInterface $payload
      *
      * @return ResponseInterface
      */
     protected function format(
+        ServerRequestInterface $request,
         ResponseInterface $response,
-        FormatterInterface $formatter,
         PayloadInterface $payload
     ) {
-        $response = $response->withHeader('Content-Type', $formatter->type());
+        $formatter = $this->formatter($request);
 
+        $response = $response->withHeader('Content-Type', $formatter->type());
         // Overwrite the body instead of making a copy and dealing with the stream.
         $response->getBody()->write($formatter->body($payload));
 
