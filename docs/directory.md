@@ -3,7 +3,7 @@
 Package | Docs| Version | Code Coverage 
 --------|-----|---------|---------------
 [adr](https://github.com/equip/adr) | [api](https://codedoc.pub/equip/adr/master/index.html) | ![Version](https://img.shields.io/packagist/v/equip/adr.svg) | n/a
-[assist](https://github.com/equip/assist) | [api](https://codedoc.pub/equip/assist/master/index.html) | ![Version](https://img.shields.io/packagist/v/equip/assist.svg) | n/a
+[assist](https://github.com/equip/assist) | [api](https://codedoc.pub/equip/assist/master/index.html) | ![Version](https://img.shields.io/packagist/v/equip/assist.svg) | ![Code Coverage](https://scrutinizer-ci.com/g/equip/assist/badges/coverage.png?b=master)
 [auth](https://github.com/equip/auth) | [api](https://codedoc.pub/equip/auth/master/index.html) | ![Version](https://img.shields.io/packagist/v/equip/auth.svg) | ![Code Coverage](https://scrutinizer-ci.com/g/equip/auth/badges/coverage.png?b=master)
 [beanstalkd-consumer](https://github.com/equip/beanstalkd-consumer) | [api](https://codedoc.pub/equip/beanstalkd-consumer/master/index.html) | ![Version](https://img.shields.io/packagist/v/equip/beanstalkd-consumer.svg) | ![Code Coverage](https://scrutinizer-ci.com/g/equip/beanstalkd-consumer/badges/coverage.png?b=master)
 [command](https://github.com/equip/command) | [api](https://codedoc.pub/equip/command/master/index.html) | ![Version](https://img.shields.io/packagist/v/equip/command.svg) | ![Code Coverage](https://scrutinizer-ci.com/g/equip/command/badges/coverage.png?b=master)
