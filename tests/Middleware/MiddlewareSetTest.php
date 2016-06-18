@@ -22,7 +22,7 @@ class MiddlewareSetTest extends TestCase
     public function testWithValidEntries()
     {
         $middleware = [
-            $this->getMock(MiddlewareInterface::class),
+            $this->createMock(MiddlewareInterface::class),
             function () {
             }
         ];

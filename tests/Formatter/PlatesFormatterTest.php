@@ -44,7 +44,7 @@ class PlatesFormatterTest extends TestCase
             'footer' => 'footer'
         ];
 
-        $payload = $this->getMock(PayloadInterface::class);
+        $payload = $this->createMock(PayloadInterface::class);
 
         $payload->expects($this->any())
             ->method('getSetting')

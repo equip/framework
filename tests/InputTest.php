@@ -68,7 +68,7 @@ class InputTest extends TestCase
     public function testUploadedFiles()
     {
         $files = [
-            'file' => $this->getMock(UploadedFileInterface::class),
+            'file' => $this->createMock(UploadedFileInterface::class),
         ];
 
         $request = new ServerRequest;
@@ -123,7 +123,7 @@ class InputTest extends TestCase
         $this->assertSame($value, $this->execute($request));
 
         $value = [
-            'merge' => $this->getMock(UploadedFileInterface::class),
+            'merge' => $this->createMock(UploadedFileInterface::class),
         ];
         $request = $request->withParsedBody($value);
         $this->assertSame($value, $this->execute($request));

@@ -5,14 +5,16 @@ namespace EquipTests\Configuration;
 use Auryn\Injector;
 use Equip\Configuration\ConfigurationInterface;
 use Equip\Configuration\ConfigurationSet;
+use Equip\Exception\ConfigurationException;
 use PHPUnit_Framework_TestCase as TestCase;
+use stdClass;
 
 class ConfigurationSetTest extends TestCase
 {
     public function testSet()
     {
-        $config = $this->getMock(ConfigurationInterface::class);
-        $injector = $this->getMock(Injector::class);
+        $config = $this->createMock(ConfigurationInterface::class);
+        $injector = $this->createMock(Injector::class);
 
         $injector
             ->expects($this->once())
@@ -34,8 +36,8 @@ class ConfigurationSetTest extends TestCase
 
     public function testSetObject()
     {
-        $config = $this->getMock(ConfigurationInterface::class);
-        $injector = $this->getMock(Injector::class);
+        $config = $this->createMock(ConfigurationInterface::class);
+        $injector = $this->createMock(Injector::class);
 
         $config
             ->expects($this->once())
@@ -49,13 +51,13 @@ class ConfigurationSetTest extends TestCase
         $set->apply($injector);
     }
 
-    /**
-     * @expectedException Equip\Exception\ConfigurationException
-     * @expectedExceptionRegExp /class .* must implement ConfigurationInterface/i
-     */
     public function testInvalidClass()
     {
-        $set = new ConfigurationSet;
-        $set = $set->withValue('\stdClass');
+        $this->setExpectedExceptionRegExp(
+            ConfigurationException::class,
+            '/class .* must implement .*ConfigurationInterface/i'
+        );
+
+        (new ConfigurationSet)->withValue(stdClass::class);
     }
 }

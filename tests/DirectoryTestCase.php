@@ -40,6 +40,6 @@ abstract class DirectoryTestCase extends TestCase
      */
     protected function getMockDomain()
     {
-        return $this->getMock(DomainInterface::class);
+        return $this->createMock(DomainInterface::class);
     }
 }

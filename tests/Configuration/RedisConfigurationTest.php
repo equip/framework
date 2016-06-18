@@ -12,9 +12,13 @@ class RedisConfigurationTest extends TestCase
 {
     public function testApply()
     {
+        if (!class_exists(Redis::class)) {
+            $this->markTestSkipped('Redis is not installed');
+        }
+
         $injector = new Injector;
         $injector->delegate(Redis::class, function() {
-            $redisMock = $this->getMock(Redis::class, ['connect']);
+            $redisMock = $this->createMock(Redis::class, ['connect']);
 
             $redisMock
                 ->expects($this->once())
@@ -24,7 +28,7 @@ class RedisConfigurationTest extends TestCase
         });
 
         $config = new RedisConfiguration(
-            $this->getMock(Env::class)
+            $this->createMock(Env::class)
         );
         $config->apply($injector);
 
