@@ -2,62 +2,71 @@
 
 namespace Equip\Handler;
 
+use Equip\Exception\ExceptionInterface;
 use Equip\Exception\HttpException;
+use Equip\Formatter\WhoopsHtmlFormatter;
+use Equip\Formatter\WhoopsJsonFormatter;
+use Equip\Formatter\WhoopsPlainFormatter;
+use Equip\Payload;
+use Equip\Resolver\ResolverTrait;
+use Equip\Responder\FormattedResponder;
 use Exception;
-use InvalidArgumentException;
-use Negotiation\Negotiator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
 use Relay\ResolverInterface;
-use Whoops\Run as Whoops;
+use Throwable;
 
 class ExceptionHandler
 {
-    /**
-     * @var Negotiator
-     */
-    private $negotiator;
+    use ResolverTrait;
 
     /**
-     * @var ExceptionHandlerPreferences
+     * Allowed range for a valid HTTP status code.
+     *
+     * @const integer
+     * @const integer
      */
-    private $preferences;
+    const MINIMUM_HTTP_CODE = 100;
+    const MAXIMUM_HTTP_CODE = 599;
 
     /**
-     * @var ResolverInterface
+     * The code for missing or invalid HTTP status code.
+     *
+     * @const integer
      */
-    private $resolver;
+    const MISSING_HTTP_CODE = 500;
 
     /**
-     * @var Whoops
+     * An exception handlers as the formatters.
+     *
+     * @var array $formatters
      */
-    private $whoops;
+    private $formatters = [];
 
     /**
-     * @var LoggerInterface|null
+     * The modified code for missing or invalid HTTP status code.
+     *
+     * @var integer
      */
-    private $logger;
+    private $missingHttpCode;
 
     /**
-     * @param ExceptionHandlerPreferences $preferences
-     * @param Negotiator $negotiator
      * @param ResolverInterface $resolver
-     * @param Whoops $whoops
-     * @param LoggerInterface|null $logger
+     * @param array $formatters
+     * @param integer $missingHttpCode
      */
     public function __construct(
-        ExceptionHandlerPreferences $preferences,
-        Negotiator $negotiator,
         ResolverInterface $resolver,
-        Whoops $whoops,
-        LoggerInterface $logger = null
+        array $formatters = [
+            WhoopsHtmlFormatter::class => 1.0,
+            WhoopsJsonFormatter::class => 1.0,
+            WhoopsPlainFormatter::class => 1.0,
+        ],
+        $missingHttpCode = self::MISSING_HTTP_CODE
     ) {
-        $this->preferences = $preferences;
-        $this->logger = $logger;
-        $this->negotiator = $negotiator;
         $this->resolver = $resolver;
-        $this->whoops = $whoops;
+        $this->formatters = $formatters;
+        $this->missingHttpCode = $missingHttpCode;
     }
 
     /**
@@ -74,77 +83,116 @@ class ExceptionHandler
     ) {
         try {
             return $next($request, $response);
-        } catch (Exception $e) {
-            if ($this->logger) {
-                $this->logger->error($e->getMessage(), [
-                    'exception' => $e
-                ]);
-            }
-
-            $type = $this->type($request);
-
-            $response = $response->withHeader('Content-Type', $type);
-
-            try {
-                if (method_exists($e, 'getHttpStatus')) {
-                    $code = $e->getHttpStatus();
-                } else {
-                    $code = $e->getCode();
-                }
-                $response = $response->withStatus($code);
-            } catch (InvalidArgumentException $_) {
-                // Exception did not contain a valid code
-                $response = $response->withStatus(500);
-            }
-
-            if ($e instanceof HttpException) {
-                $response = $e->withResponse($response);
-            }
-
-            $handler = $this->handler($type);
-            $this->whoops->pushHandler($handler);
-
-            $body = $this->whoops->handleException($e);
-            $response->getBody()->write($body);
-
-            $this->whoops->popHandler();
-
-            return $response;
+        } catch (ExceptionInterface $exception) {
+            return $this->withEquipException($request, $response, $exception);
+        } catch (Throwable $throwable) {
+            return $this->withException($request, $response, $throwable);
+        } catch (Exception $exception) {
+            return $this->withException($request, $response, $exception);
         }
     }
 
     /**
-     * Determine the preferred content type for the current request
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param ExceptionInterface $exception
+     *
+     * @return ResponseInterface
+     */
+    public function withEquipException(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        ExceptionInterface $exception
+    ) {
+        if ($exception instanceof HttpException) {
+            $response = $exception->withResponse($response);
+        }
+
+        return $this->withException($request, $response, $exception);
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param Throwable|Exception $exception
+     *
+     * @return ResponseInterface
+     */
+    public function withException(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        $exception
+    ) {
+        $response = $this->status($response, $exception);
+        $response = $this->format($request, $response, $exception);
+
+        return $response;
+    }
+
+    /**
+     * Get the response with the status code from the exception.
+     *
+     * @param ResponseInterface $response
+     * @param Throwable|Exception $exception
+     *
+     * @return ResponseInterface
+     */
+    private function status(
+        ResponseInterface $response,
+        $exception
+    ) {
+        $exceptionCode = $exception->getCode();
+
+        $code = filter_var($exceptionCode, FILTER_VALIDATE_INT, [
+            'options' => [
+                'default'   => $this->missingHttpCode,
+                'min_range' => self::MINIMUM_HTTP_CODE,
+                'max_range' => self::MAXIMUM_HTTP_CODE,
+            ]
+        ]);
+
+        return $response->withStatus($code);
+    }
+
+    /**
+     * Update the response by formatting the exception handler.
      *
      * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param Throwable|Exception $exception
      *
-     * @return string
+     * @return ResponseInterface
      */
-    private function type(ServerRequestInterface $request)
-    {
-        $accept = $request->getHeaderLine('Accept');
-        $priorities = $this->preferences->toArray();
+    private function format(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        $exception
+    ) {
+        $formatter = $this->resolve(FormattedResponder::class);
+        $formatter = $formatter->withValues($this->formatters);
 
-        if (!empty($accept)) {
-            $preferred = $this->negotiator->getBest($accept, array_keys($priorities));
-        }
+        $payload = $this->payload($request, $response, $exception);
 
-        if (!empty($preferred)) {
-            return $preferred->getValue();
-        }
-
-        return key($priorities);
+        return $formatter($request, $response, $payload);
     }
 
     /**
-     * Retrieve the handler to use for the given type
+     * Get the payload with the request, response, exception.
      *
-     * @param string $type
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param Throwable|Exception $exception
      *
-     * @return \Whoops\Handler\HandlerInterface
+     * @return Payload
      */
-    private function handler($type)
-    {
-        return call_user_func($this->resolver, $this->preferences[$type]);
+    private function payload(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        $exception
+    ) {
+        $payload = $this->resolve(Payload::class);
+        $output = compact('request', 'response', 'exception');
+
+        return $payload->withOutput($output);
     }
 }
