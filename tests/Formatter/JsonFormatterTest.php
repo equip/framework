@@ -2,8 +2,8 @@
 
 namespace EquipTests\Formatter;
 
+use Equip\Adr\PayloadInterface;
 use Equip\Formatter\JsonFormatter;
-use Equip\Payload;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class JsonFormatterTest extends TestCase
@@ -20,7 +20,15 @@ class JsonFormatterTest extends TestCase
 
     public function testAccepts()
     {
-        $this->assertEquals(['application/json'], JsonFormatter::accepts());
+        $accepts = [
+            'application/json',
+            'application/javascript',
+            'application/ld+json',
+            'application/vnd.api+json',
+            'application/vnd.geo+json',
+        ];
+
+        $this->assertEquals($accepts, JsonFormatter::accepts());
     }
 
     public function testType()
@@ -30,9 +38,12 @@ class JsonFormatterTest extends TestCase
 
     public function testBody()
     {
-        $payload = (new Payload)->withOutput([
-            'success' => true,
-        ]);
+        $output = [
+            'success' => true
+        ];
+
+        $payload = $this->createMock(PayloadInterface::class);
+        $payload->expects($this->any())->method('getOutput')->willReturn($output);
 
         $body = $this->formatter->body($payload);
 

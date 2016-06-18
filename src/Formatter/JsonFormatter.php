@@ -3,6 +3,7 @@
 namespace Equip\Formatter;
 
 use Equip\Adr\PayloadInterface;
+use Equip\Formatter\FormatterInterface;
 
 class JsonFormatter implements FormatterInterface
 {
@@ -11,7 +12,13 @@ class JsonFormatter implements FormatterInterface
      */
     public static function accepts()
     {
-        return ['application/json'];
+        return [
+            'application/json',
+            'application/javascript',
+            'application/ld+json',
+            'application/vnd.api+json',
+            'application/vnd.geo+json',
+        ];
     }
 
     /**
