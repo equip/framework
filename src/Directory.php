@@ -18,6 +18,51 @@ class Directory extends Dictionary
     const OPTIONS = 'OPTIONS';
 
     /**
+     * @var string
+     */
+    private $prefix = '';
+
+    /**
+     * Set the directory path prefix.
+     *
+     * @param string $prefix
+     *
+     * @return static
+     */
+    public function withPrefix($prefix)
+    {
+        $copy = clone $this;
+        $copy->prefix = '/' . trim($prefix, '/');
+
+        return $copy;
+    }
+
+    /**
+     * Remove the directory path prefix.
+     *
+     * @return static
+     */
+    public function withoutPrefix()
+    {
+        $copy = clone $this;
+        $copy->prefix = '';
+
+        return $copy;
+    }
+
+    /**
+     * Add the prefix to a path.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public function prefix($path)
+    {
+        return $this->prefix . $path;
+    }
+
+    /**
      * @param string $path
      * @param string|Action $domainOrAction
      *
