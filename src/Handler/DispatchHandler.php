@@ -60,7 +60,12 @@ class DispatchHandler
         return FastRoute\simpleDispatcher(function (RouteCollector $collector) {
             foreach ($this->directory as $request => $action) {
                 list($method, $path) = explode(' ', $request, 2);
-                $collector->addRoute($method, $path, $action);
+
+                $collector->addRoute(
+                    $method,
+                    $this->directory->prefix($path),
+                    $action
+                );
             }
         });
     }
