@@ -307,6 +307,22 @@ Equip\Application::build()
 ->setRouting(Acme\Routing::class);
 ```
 
+#### Routing with Prefixes
+
+If your application is installed in a subdirectory of your root URL, you will probably want to use route prefixes. This prevents your routes from having to include the subdirectory in every path and makes it easier to move your application directory at a later date.
+
+To add a prefix, use the `withPrefix()` of the directory:
+
+```php
+$directory = $directory->withPrefix('sub/directory/path');
+```
+
+If you wish to remove the prefix, you can use `withoutPrefix()` to remove it:
+
+```php
+$directory = $directory->withoutPrefix();
+```
+
 ### Middleware
 
 [Relay](http://relayphp.com/) is the recommended middleware dispatcher to use with Equip. It [creates instances of middleware classes](http://relayphp.com/#resolvers) and [invokes them](http://relayphp.com/#middleware-logic) in a chain-like fashion. A consequence of this invocation approach is that the order in which middlewares are specified can be important.
