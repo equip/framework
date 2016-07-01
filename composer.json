@@ -13,6 +13,7 @@
     "require": {
         "php": ">=5.5",
         "equip/adr": "^2.0",
+        "equip/config": "^1.0.1",
         "equip/structure": "^1.0",
         "filp/whoops": "^2.0",
         "lukasoppermann/http-status": "^2",
