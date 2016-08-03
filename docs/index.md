@@ -24,7 +24,7 @@ Subsequent examples will assume your project has a directory structure similar t
     └── index.php
 ```
 
-Instead of installing Equip via Composer, you can get going a little faster by using the [sample project](https://github.com/equip/project) that shows the best way to use this framework.
+Instead of installing Equip via Composer, you can get going a little faster by using the [sample project](https://github.com/equip/project) that shows a good way to use this framework.
 ```
 composer create-project -s dev equip/project equip-project
 ```
