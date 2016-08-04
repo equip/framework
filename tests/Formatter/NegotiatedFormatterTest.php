@@ -46,7 +46,7 @@ class NegotiatedFormatterTest extends ConfigurationTestCase
 
         $this->assertArrayNotHasKey(JsonFormatter::class, $formatters);
 
-        // Append another one with high quality
+        // Append another one with high priority
         $formatters[JsonFormatter::class] = 1.0;
 
         $formatters = $this->formatter->withValues($formatters)->toArray();
@@ -92,7 +92,7 @@ class NegotiatedFormatterTest extends ConfigurationTestCase
     {
         $this->setExpectedExceptionRegExp(
             FormatterException::class,
-            '/No quality have been set for the .*/ii'
+            '/No quality have been set for the .*/i'
         );
 
         $this->formatter->withValue(JsonFormatter::class, false);
