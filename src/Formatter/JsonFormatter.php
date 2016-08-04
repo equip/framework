@@ -2,8 +2,6 @@
 
 namespace Equip\Formatter;
 
-use Equip\Adr\PayloadInterface;
-
 class JsonFormatter implements FormatterInterface
 {
     /**
@@ -25,9 +23,9 @@ class JsonFormatter implements FormatterInterface
     /**
      * @inheritDoc
      */
-    public function body(PayloadInterface $payload)
+    public function format($content)
     {
-        return json_encode($payload->getOutput(), $this->options());
+        return json_encode($content, $this->options());
     }
 
     /**

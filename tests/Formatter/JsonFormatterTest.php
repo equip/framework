@@ -3,7 +3,6 @@
 namespace EquipTests\Formatter;
 
 use Equip\Formatter\JsonFormatter;
-use Equip\Payload;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class JsonFormatterTest extends TestCase
@@ -30,11 +29,11 @@ class JsonFormatterTest extends TestCase
 
     public function testBody()
     {
-        $payload = (new Payload)->withOutput([
+        $content = [
             'success' => true,
-        ]);
+        ];
 
-        $body = $this->formatter->body($payload);
+        $body = $this->formatter->format($content);
 
         $this->assertEquals('{"success":true}', $body);
     }
