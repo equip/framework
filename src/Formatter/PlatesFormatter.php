@@ -2,7 +2,6 @@
 
 namespace Equip\Formatter;
 
-use Equip\Adr\PayloadInterface;
 use Equip\Formatter\HtmlFormatter;
 use League\Plates\Engine;
 
@@ -14,6 +13,11 @@ class PlatesFormatter extends HtmlFormatter
     private $engine;
 
     /**
+     * @var string
+     */
+    private $template;
+
+    /**
      * @param Engine $engine
      */
     public function __construct(Engine $engine)
@@ -22,23 +26,25 @@ class PlatesFormatter extends HtmlFormatter
     }
 
     /**
-     * @inheritDoc
+     * Get a copy that uses a different template.
+     *
+     * @param string $template
+     *
+     * @return static
      */
-    public function body(PayloadInterface $payload)
+    public function withTemplate($template)
     {
-        return $this->render($payload);
+        $copy = clone $this;
+        $copy->template = $template;
+
+        return $copy;
     }
 
     /**
-     * @param PayloadInterface $payload
-     *
-     * @return string
+     * @inheritDoc
      */
-    private function render(PayloadInterface $payload)
+    public function format($content)
     {
-        $template = $payload->getSetting('template');
-        $output = $payload->getOutput();
-
-        return $this->engine->render($template, $output);
+        return $this->engine->render($this->template, $content);
     }
 }
