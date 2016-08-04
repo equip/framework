@@ -4,8 +4,8 @@ namespace EquipTests\Configuration;
 
 use Equip\Configuration\AurynConfiguration;
 use Equip\Configuration\PlatesFormatterConfiguration;
+use Equip\ContentNegotiation;
 use Equip\Formatter\PlatesFormatter;
-use Equip\Formatter\NegotiatedFormatter;
 use League\Plates\Engine;
 
 class PlatesFormatterConfigurationTest extends ConfigurationTestCase
@@ -24,9 +24,9 @@ class PlatesFormatterConfigurationTest extends ConfigurationTestCase
 
     public function testApply()
     {
-        $formatter = $this->injector->make(NegotiatedFormatter::class);
+        $negotiator = $this->injector->make(ContentNegotiation::class);
 
-        $this->assertArrayHasKey(PlatesFormatter::class, $formatter);
-        $this->assertSame(1.0, $formatter[PlatesFormatter::class]);
+        $this->assertArrayHasKey(PlatesFormatter::class, $negotiator);
+        $this->assertSame(1.0, $negotiator[PlatesFormatter::class]);
     }
 }

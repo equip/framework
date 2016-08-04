@@ -1,22 +1,22 @@
 <?php
 
-namespace EquipTests\Formatter;
+namespace EquipTests;
 
 use EquipTests\Configuration\ConfigurationTestCase;
 use Equip\Configuration\AurynConfiguration;
+use Equip\ContentNegotiation;
 use Equip\Exception\FormatterException;
 use Equip\Formatter\FormatterInterface;
 use Equip\Formatter\JsonFormatter;
-use Equip\Formatter\NegotiatedFormatter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 
-class NegotiatedFormatterTest extends ConfigurationTestCase
+class ContentNegotiationTest extends ConfigurationTestCase
 {
     /**
-     * @var NegotiatedFormatter
+     * @var ContentNegotiation
      */
     private $formatter;
 
@@ -31,7 +31,7 @@ class NegotiatedFormatterTest extends ConfigurationTestCase
     {
         parent::setUp();
 
-        $this->formatter = $this->injector->make(NegotiatedFormatter::class);
+        $this->formatter = $this->injector->make(ContentNegotiation::class);
     }
 
     public function testFormatters()

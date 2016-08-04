@@ -1,8 +1,10 @@
 <?php
 
-namespace Equip\Formatter;
+namespace Equip;
 
 use Equip\Exception\FormatterException;
+use Equip\Formatter\FormatterInterface;
+use Equip\Formatter\JsonFormatter;
 use Equip\Resolver\ResolverTrait;
 use Equip\Structure\SortedDictionary;
 use Negotiation\Negotiator;
@@ -10,7 +12,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Relay\ResolverInterface;
 
-class NegotiatedFormatter extends SortedDictionary
+class ContentNegotiation extends SortedDictionary
 {
     use ResolverTrait;
 
