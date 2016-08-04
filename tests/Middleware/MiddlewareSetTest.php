@@ -6,6 +6,7 @@ use Equip\Exception\MiddlewareException;
 use Equip\Middleware\MiddlewareSet;
 use PHPUnit_Framework_TestCase as TestCase;
 use Relay\MiddlewareInterface;
+use stdClass;
 
 class MiddlewareSetTest extends TestCase
 {
@@ -16,7 +17,7 @@ class MiddlewareSetTest extends TestCase
             '/Middleware .* is not invokable/i'
         );
 
-        new MiddlewareSet(['foo']);
+        new MiddlewareSet([new stdClass]);
     }
 
     public function testWithValidEntries()

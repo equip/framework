@@ -11,9 +11,10 @@ _..._
 
 - Replace routing with dispatching, see MIGRATING for details
 
-## 2.2.0 - ?
+## 2.1.0 - ?
 
 - Replace generic exceptions with specific exceptions in handlers
+- Add URI prefix support for routing with `Directory` class
 
 ## 2.0.1 - 2016-05-31
 

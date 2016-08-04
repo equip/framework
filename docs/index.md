@@ -10,6 +10,8 @@ To install Equip, [use Composer](https://getcomposer.org/doc/01-basic-usage.md#i
 composer require equip/framework
 ```
 
+You will also need to install a package that provides [`psr/http-message-implementation`](https://packagist.org/providers/psr/http-message-implementation). By default Equip only provides configuration for [`zendframework/zend-diactoros`](https://packagist.org/packages/zendframework/zend-diactoros) but any package that provides a `ServerRequestInterface` implementation should work equally well with proper configuration.
+
 Subsequent examples will assume your project has a directory structure similar to this:
 
 ```
@@ -303,6 +305,22 @@ use Acme\Domain;
 Equip\Application::build()
 // ...
 ->setRouting(Acme\Routing::class);
+```
+
+#### Routing with Prefixes
+
+If your application is installed in a subdirectory of your root URL, you will probably want to use route prefixes. This prevents your routes from having to include the subdirectory in every path and makes it easier to move your application directory at a later date.
+
+To add a prefix, use the `withPrefix()` of the directory:
+
+```php
+$directory = $directory->withPrefix('sub/directory/path');
+```
+
+If you wish to remove the prefix, you can use `withoutPrefix()` to remove it:
+
+```php
+$directory = $directory->withoutPrefix();
 ```
 
 ### Middleware

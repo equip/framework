@@ -39,6 +39,23 @@ class DispatchHandlerTest extends DirectoryTestCase
         $this->dispatch($directory, $request, $response, $next);
     }
 
+    public function testPrefixed()
+    {
+        $action = $this->getMockAction();
+        $directory = $this->directory->withPrefix('prefix');
+        $directory = $directory->get('/[{name}]', $action);
+        $request = $this->getRequest('GET', '/prefix/tester');
+        $response = new Response;
+
+        $next = function (ServerRequest $request, Response $response) use ($action) {
+            $this->assertSame($action, $request->getAttribute(ActionHandler::ACTION_ATTRIBUTE));
+            $this->assertSame('tester', $request->getAttribute('name'));
+            return $response;
+        };
+
+        $this->dispatch($directory, $request, $response, $next);
+    }
+
     public function testNotFoundException()
     {
         $this->setExpectedExceptionRegExp(

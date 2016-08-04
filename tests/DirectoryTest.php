@@ -80,4 +80,15 @@ class DirectoryTest extends DirectoryTestCase
             ['OPTIONS'],
         ];
     }
+
+    public function testPrefix()
+    {
+        $directory = $this->directory->withPrefix('/test/');
+
+        $this->assertSame('/test/path', $directory->prefix('/path'));
+
+        $directory = $this->directory->withoutPrefix();
+
+        $this->assertSame('/same', $directory->prefix('/same'));
+    }
 }
