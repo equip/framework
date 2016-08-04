@@ -1,0 +1,25 @@
+<?php
+
+namespace Equip\Contract;
+
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
+interface ActionInterface
+{
+    /**
+     * Boundary between HTTP layer and domain layer.
+     *
+     * Parses request input and invokes domain logic. Formats domain output for
+     * the response.
+     *
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     *
+     * @return ResponseInterface
+     */
+    public function __invoke(
+        RequestInterface $request,
+        ResponseInterface $response
+    );
+}

@@ -2,13 +2,13 @@
 
 namespace Equip\Exception;
 
-use Equip\Action;
+use Equip\Contract\ActionInterface;
 use InvalidArgumentException;
 
 class DirectoryException extends InvalidArgumentException
 {
     /**
-     * @param mixed $value
+     * @param string|object $value
      *
      * @return static
      */
@@ -19,9 +19,9 @@ class DirectoryException extends InvalidArgumentException
         }
 
         return new static(sprintf(
-            'Directory entry `%s` is not an `%s` instance',
+            'Directory entry `%s` must be an `%s` instance',
             $value,
-            Action::class
+            ActionInterface::class
         ));
     }
 }
