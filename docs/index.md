@@ -162,7 +162,6 @@ Equip\Application::build()
 ->setConfiguration([
     Equip\Configuration\AurynConfiguration::class,
     Equip\Configuration\DiactorosConfiguration::class,
-    Equip\Configuration\PayloadConfiguration::class,
     Equip\Configuration\RelayConfiguration::class,
     Equip\Configuration\WhoopsConfiguration::class,
 ])
@@ -554,8 +553,8 @@ The `ContentNegotiation` class will read the `Accept` header from the request to
 
 Here are the formatter implementations that are natively supported:
 
-* [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php) - Encodes the payload as [JSON](http://www.json.org/)
-* [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) - Applies the payload data to a [Plates](http://platesphp.com/) template specified in the payload and returns the result
+* [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php) - Encodes the content as [JSON](http://www.json.org/)
+* [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) - Encodes the content using a [Plates](http://platesphp.com/) template set by the responder
 
 By default `ContentNegotiation` includes `JsonFormatter`. Additional formatters can be added using the `withValue()` method or overwritten entirely using the `withValues()` method. All formatters must implement [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php).
 
