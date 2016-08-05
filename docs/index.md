@@ -547,7 +547,7 @@ Content negotiation is provided by the [`ContentNegotiation`](https://github.com
 $response = $this->negotation->apply($request, $response, $content);
 ```
 
-The `ContentNegotiation` class will read the `Accept` header from the request to determine the preferred content type. When a desirable ype has been found, it uses an appropriate implementation of [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php) to format the content and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
+The `ContentNegotiation` class will read the `Accept` header from the request to determine the preferred content type. When a desirable type has been found, it uses an appropriate implementation of [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php) to format the content and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
 
 ### Supported Formatters
 
