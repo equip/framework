@@ -533,7 +533,7 @@ class LoginResponder
 
 This simple responder has separate methods for each possible state that take the exact parameters necessary to generate the response. The response content will always be in JSON format.
 
-This loose structure around actions, input, and responders allows each project to define exactly the right response for the application. There are no hard rules about how the actions are defined, so long as each take a request and produce a response.
+This loose structure around actions, input, and responders allows each project to define exactly the right response for the application. There are no hard rules about how the actions are defined, so long as each takes a request and produces a response.
 
 ## Formatters
 
