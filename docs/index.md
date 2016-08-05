@@ -107,7 +107,6 @@ The following configurations are typically used by default:
 
 * [`AurynConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/AurynConfiguration.php) - Use the `Injector` instance as a singleton and to resolve [actions](https://github.com/pmjones/adr#controller-vs-action)
 * [`DiactorosConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/DiactorosConfiguration.php) - Use [Diactoros](https://github.com/zendframework/zend-diactoros/) for the framework [PSR-7](http://www.php-fig.org/psr/psr-7/) implementation
-* [`PayloadConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PayloadConfiguration.php) - Use the default Equip class as the implementation for [`PayloadInterface`](https://github.com/equip/adr/blob/master/src/PayloadInterface.php)
 * [`RelayConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/RelayConfiguration.php) - Use [Relay](http://relayphp.com) for the framework middleware dispatcher
 * [`WhoopsConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/WhoopsConfiguration.php) - Use [Whoops](http://filp.github.io/whoops/) for handling exceptions
 
@@ -118,7 +117,7 @@ The following configurations are available but not used by default:
 * [`EnvConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/EnvConfiguration.php) - Use [Dotenv](https://github.com/josegonzalez/php-dotenv) to populate the content of [`Env`](https://github.com/equip/framework/blob/master/src/Env.php)
 * [`MonologConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/MonologConfiguration.php) - Use [Monolog](https://github.com/Seldaek/monolog/) for the framework [PSR-3](http://www.php-fig.org/psr/psr-3/) implementation
 * [`PlatesConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesConfiguration.php) - Configure the [Plates](http://platesphp.com/) template engine
-* [`PlatesFormatterConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesFormatterConfiguration.php) - Use [Plates](http://platesphp.com/) to output HTML in [content negotiation](#content-negotiation)
+* [`PlatesFormatterConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesFormatterConfiguration.php) - Use [Plates](http://platesphp.com/) to output HTML for [content negotiation](#content-negotiation)
 * [`RedisConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/RedisConfiguration.php) - Use [Redis](http://redis.io) for in-memory store
 
 #### Setting The Env File
@@ -232,7 +231,7 @@ Equip\Application::build()
 
 Equip uses [FastRoute](https://github.com/nikic/FastRoute) internally for routing. As such, it uses that library's URI pattern syntax; see [its documentation](https://github.com/nikic/FastRoute#defining-routes) for more details.
 
-The directory maps URIs to the corresponding [action](#actions) that the should be used. This is implemented in the Equip [`Directory`](https://github.com/equip/framework/blob/master/src/Directory.php) class. Here is an example of what configuring an instance of it could look like:
+The directory maps URIs to the corresponding [action](#actions) that should be used. This is implemented in the Equip [`Directory`](https://github.com/equip/framework/blob/master/src/Directory.php) class. Here is an example of what configuring an instance of it could look like:
 
 ```php
 use Acme\Action;
@@ -320,11 +319,11 @@ For a Equip application to handle requests properly it will require some middlew
 
 The following middlewares are typically used by default, in this order:
 
-* [`Relay\Middleware\ResponseSender`](https://github.com/relayphp/Relay.Middleware/blob/master/src/ResponseSender.php) - Outputs data from the [PSR-7 Response object](https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php) to be sent back to the client
-* [`Equip\Handler\ExceptionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ExceptionHandler.php) - Handles exceptions thrown by subsequent middlewares and domains by [logging the exception](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md#13-context) and returning an appropriate application-level response
-* [`Equip\Handler\RouteHandler`](https://github.com/equip/framework/blob/master/src/Handler/RouteHandler.php) - Resolves the request route to the corresponding action to execute
-* [`Equip\Handler\ContentHandler`](https://github.com/equip/framework/blob/master/src/Handler/ContentHandler.php) - Parses request bodies encoded in common formats and makes the parsed version available via the `getParsedBody()` method of the [PSR-7 Request object](https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php)
-* [`Equip\Handler\ActionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ActionHandler.php) - Invokes the [domain](https://github.com/pmjones/adr#model-vs-domain) corresponding to the resolved [action](https://github.com/pmjones/adr#controller-vs-action), applies the [responder](https://github.com/pmjones/adr#view-vs-responder) to the resulting payload, and returns the resulting response
+* [`Relay\Middleware\ResponseSender`](https://github.com/relayphp/Relay.Middleware/blob/master/src/ResponseSender.php) - Outputs data from the [PSR-7 Response object](https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php) to be sent back to the client.
+* [`Equip\Handler\ExceptionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ExceptionHandler.php) - Handles exceptions thrown by subsequent middlewares and domains by [logging the exception](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md#13-context) and returning an appropriate application response.
+* [`Equip\Handler\RouteHandler`](https://github.com/equip/framework/blob/master/src/Handler/RouteHandler.php) - Resolves the request route to the corresponding action to execute.
+* [`Equip\Handler\ContentHandler`](https://github.com/equip/framework/blob/master/src/Handler/ContentHandler.php) - Parses request bodies encoded in common formats and makes the parsed version available via the `getParsedBody()` method of the [PSR-7 Request object](https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php).
+* [`Equip\Handler\ActionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ActionHandler.php) - Provides a boundary between HTTP details and your [domain logic](https://en.wikipedia.org/wiki/Business_logic). This is the entry point into the [ADR triad](http://pmjones.io/adr/) that invokes [actions](#actions) to read the request and populate the HTTP response.
 
 #### Custom Middleware
 
@@ -369,9 +368,9 @@ Equip\Application::build()
 
 ## Actions
 
-Actions provide the boundary between the HTTP request/response life cycle and your domain logic. All actions must implement [`ActionInterface`](https://github.com/equip/framework/blob/master/src/Contracts/ActionInterface.php), which contains a single method `__invoke()` that takes a request and a response and returns a modified response.
+Actions provide the boundary between the HTTP request/response life cycle and your domain logic. All actions must implement [`ActionInterface`](https://github.com/equip/framework/blob/master/src/Contracts/ActionInterface.php), which contains a single  `__invoke()` method that takes a request and a response and returns a modified response.
 
-How you choose to implement your actions is entirely up to you. The following is an example of how a user login action could be constructed.
+How you choose to implement your actions is entirely up to you. The following is an example of how a user login action could be defined.
 
 ### Action Example
 
@@ -432,7 +431,7 @@ class LoginAction implements ActionInterface
 }
 ```
 
-This action can only be used with a server request that contains a body. It uses a domain-specific class `Authentication` that contains this applications rules for handling logins. It operates on a value object called `LoginInput` that contains this logic:
+This action can only be used with a server request that contains a body. It uses a domain-specific class `Authentication` that contains this application's rules for handling logins. It operates on a value object called `LoginInput` that contains this logic:
 
 ```php
 namespace Acme\Input;
@@ -475,9 +474,9 @@ class LoginInput
 }
 ```
 
-The details of the `Authentication` class are not important here. Just know that each of its method take `LoginInput` as their only parameter and operate on the values within it.
+The details of the `Authentication` class are not important here. Just know that each of its methods take `LoginInput` as their only parameter and operate on the values within it.
 
-Finally, we have a custom responder that handles each of possible states of the login action: incomplete, invalid, and success.
+Finally, we have a custom responder that handles every possible state of the login action: incomplete, invalid, and success.
 
 ```php
 namespace Acme\Action;
@@ -535,32 +534,40 @@ class LoginResponder
 
 This simple responder has separate methods for each possible state that take the exact parameters necessary to generate the response. The response content will always be in JSON format.
 
-This loose structure around actions, input, and responders allows each project to define exactly the right response for the application. There are no hard rules about how the actions is defined, so long as it takes a request and produces a response.
+This loose structure around actions, input, and responders allows each project to define exactly the right response for the application. There are no hard rules about how the actions are defined, so long as each take a request and produce a response.
 
 ## Formatters
 
-**WIP**
+Equip includes formatters that can be used in responders to simplify the formatting of domain output for the response. If your actions have multiple possible content types you can use [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation) to output multiple formats based the request `Accept` header.
 
 ### Content Negotiation
 
-[`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) uses the [Negotiation](https://github.com/willdurand/negotiation) library to support [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation). When a desirable format has been founded, it uses an appropriate implementation of [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php) to encode the payload data and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
+Content negotiation is provided by the [`ContentNegotiation`](https://github.com/equip/framework/blob/master/src/ContentNegotiation.php) class. Using this object is extremely easy. Create a method in your responder that takes both the request and response and pass both, along with your content, to the `apply()` method:
+
+```php
+$response = $this->negotation->apply($request, $response, $content);
+```
+
+The `ContentNegotiation` class will read the `Accept` header from the request to determine the preferred content type. When a desirable ype has been found, it uses an appropriate implementation of [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php) to format the content and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
+
+### Supported Formatters
 
 Here are the formatter implementations that are natively supported:
 
 * [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php) - Encodes the payload as [JSON](http://www.json.org/)
 * [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) - Applies the payload data to a [Plates](http://platesphp.com/) template specified in the payload and returns the result
 
-By default [`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) includes `JsonFormatter`. Responders can be added using its `withValue()` method or overwritten entirely using its `withValues()` method.
+By default `ContentNegotiation` includes `JsonFormatter`. Additional formatters can be added using the `withValue()` method or overwritten entirely using the `withValues()` method. All formatters must implement [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php).
 
 ### Using Plates
 
-Using [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) requires changing the formatters used by [`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php). The easiest way to do this is by using the `PlatesResponderConfiguration` as in the example below:
+Using [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) requires changing the formatters used by [`ContentNegotiation`](https://github.com/equip/framework/blob/master/src/ContentNegotiation.php). The easiest way to do this is by using the `PlatesFormatterConfiguration` as in the example below:
 
 ```php
 Equip\Application::build()
 ->setConfiguration([
     // ...
-    Equip\Configuration\PlatesResponderConfiguration::class
+    Equip\Configuration\PlatesFormatterConfiguration::class
 ])
 // ...
 ```
