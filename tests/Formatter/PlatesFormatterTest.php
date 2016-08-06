@@ -2,7 +2,6 @@
 
 namespace EquipTests\Formatter;
 
-use Equip\Adr\PayloadInterface;
 use Equip\Formatter\PlatesFormatter;
 use League\Plates\Engine;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -38,23 +37,15 @@ class PlatesFormatterTest extends TestCase
     public function testResponse()
     {
         $template = 'test';
-        $output = [
+        $content = [
             'header' => 'header',
             'body'   => 'body',
             'footer' => 'footer'
         ];
 
-        $payload = $this->createMock(PayloadInterface::class);
-
-        $payload->expects($this->any())
-            ->method('getSetting')
-            ->willReturn($template);
-
-        $payload->expects($this->any())
-            ->method('getOutput')
-            ->willReturn($output);
-
-        $body = $this->formatter->body($payload);
+        $body = $this->formatter
+            ->withTemplate($template)
+            ->format($content);
 
         $this->assertEquals("<h1>header</h1>\n<p>body</p>\n<span>footer</span>\n", $body);
     }

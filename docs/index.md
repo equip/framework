@@ -107,7 +107,6 @@ The following configurations are typically used by default:
 
 * [`AurynConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/AurynConfiguration.php) - Use the `Injector` instance as a singleton and to resolve [actions](https://github.com/pmjones/adr#controller-vs-action)
 * [`DiactorosConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/DiactorosConfiguration.php) - Use [Diactoros](https://github.com/zendframework/zend-diactoros/) for the framework [PSR-7](http://www.php-fig.org/psr/psr-7/) implementation
-* [`PayloadConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PayloadConfiguration.php) - Use the default Equip class as the implementation for [`PayloadInterface`](https://github.com/equip/adr/blob/master/src/PayloadInterface.php)
 * [`RelayConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/RelayConfiguration.php) - Use [Relay](http://relayphp.com) for the framework middleware dispatcher
 * [`WhoopsConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/WhoopsConfiguration.php) - Use [Whoops](http://filp.github.io/whoops/) for handling exceptions
 
@@ -118,7 +117,7 @@ The following configurations are available but not used by default:
 * [`EnvConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/EnvConfiguration.php) - Use [Dotenv](https://github.com/josegonzalez/php-dotenv) to populate the content of [`Env`](https://github.com/equip/framework/blob/master/src/Env.php)
 * [`MonologConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/MonologConfiguration.php) - Use [Monolog](https://github.com/Seldaek/monolog/) for the framework [PSR-3](http://www.php-fig.org/psr/psr-3/) implementation
 * [`PlatesConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesConfiguration.php) - Configure the [Plates](http://platesphp.com/) template engine
-* [`PlatesResponderConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesResponderConfiguration.php) - Use [Plates](http://platesphp.com/) as the default [responder](#responders)
+* [`PlatesFormatterConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesFormatterConfiguration.php) - Use [Plates](http://platesphp.com/) to output HTML for [content negotiation](#content-negotiation)
 * [`RedisConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/RedisConfiguration.php) - Use [Redis](http://redis.io) for in-memory store
 
 #### Setting The Env File
@@ -163,7 +162,6 @@ Equip\Application::build()
 ->setConfiguration([
     Equip\Configuration\AurynConfiguration::class,
     Equip\Configuration\DiactorosConfiguration::class,
-    Equip\Configuration\PayloadConfiguration::class,
     Equip\Configuration\RelayConfiguration::class,
     Equip\Configuration\WhoopsConfiguration::class,
 ])
@@ -232,42 +230,30 @@ Equip\Application::build()
 
 Equip uses [FastRoute](https://github.com/nikic/FastRoute) internally for routing. As such, it uses that library's URI pattern syntax; see [its documentation](https://github.com/nikic/FastRoute#defining-routes) for more details.
 
-The directory maps URIs to the corresponding [domain](https://github.com/pmjones/adr#model-vs-domain) that the should be used. This is implemented in the Equip [`Directory`](https://github.com/equip/framework/blob/master/src/Directory.php) class. Here is an example of what configuring an instance of it could look like:
+The directory maps URIs to the corresponding [action](#actions) that should be used. This is implemented in the Equip [`Directory`](https://github.com/equip/framework/blob/master/src/Directory.php) class. Here is an example of what configuring an instance of it could look like:
 
 ```php
-use Acme\Domain;
+use Acme\Action;
 
 Equip\Application::build()
 // ...
 ->setRouting(function (Equip\Directory $directory) {
     return $directory
-    ->any('/', Domain\Providers::class)
-    ->get('/providers', Domain\GetProviders::class)
-    ->get('/providers/{provider}', Domain\GetProvider::class)
-    ->post('/providers/{provider}', Domain\SynchronizeProvider::class)
-    ->post('/providers/{provider}/connection', Domain\ActivateProvider::class)
-    ->delete('/providers/{provider}/connection', Domain\DeactivateProvider::class)
-    ->get('/providers/{provider}/configuration', Domain\GetProviderConfiguration::class)
-    ->put('/providers/{provider}/configuration', Domain\ChangeProviderConfiguration::class)
+    ->any('/', Action\Providers::class)
+    ->get('/providers', Action\ListProviders::class)
+    ->get('/providers/{provider}', Action\GetProvider::class)
+    ->post('/providers/{provider}', Action\CreateProvider::class)
+    ->put('/providers/{provider}', Action\UpdateProvider::class)
+    ->post('/providers/{provider}/connection', Action\ActivateProvider::class)
+    ->delete('/providers/{provider}/connection', Action\DeactivateProvider::class)
+    ->get('/providers/{provider}/configuration', Action\GetProviderConfiguration::class)
+    ->put('/providers/{provider}/configuration', Action\UpdateProviderConfiguration::class)
     ; // End of routing
 })
 ->run();
 ```
 
 *It is very important to remember that __the `Directory` object is immutable__! You must __always__ return the directory or changes will be lost.*
-
-It is also possible to provide an [`Action`](https://github.com/equip/framework/blob/master/src/Action.php) object instead of a domain class if you want to modify the responder or input class that will be used to handle the action:
-
-```php
-$directory->get('/login', new Equip\Action(
-    Domain\Login::class,
-    Acme\Responder::class,
-    Acme\Input::class
-));
-```
-
-If an `Action` object is not provided one will be constructed with the provided `Domain` reference instead.
-
 
 #### Object Routing
 
@@ -277,7 +263,7 @@ An alternative way to implement routing configuration involves using an [invokab
 // src/Routing.php
 namespace Acme;
 
-use Acme\Domain;
+use Acme\Action;
 use Equip\Directory;
 
 class Routing
@@ -285,13 +271,10 @@ class Routing
     public function __invoke(Directory $directory)
     {
         return $directory
-        ->get('/providers', Domain\GetProviders::class)
-        ->get('/providers/{provider}', Domain\GetProvider::class)
-        ->post('/providers/{provider}', Domain\SynchronizeProvider::class)
-        ->post('/providers/{provider}/connection', Domain\ActivateProvider::class)
-        ->delete('/providers/{provider}/connection', Domain\DeactivateProvider::class)
-        ->get('/providers/{provider}/configuration', Domain\GetProviderConfiguration::class)
-        ->put('/providers/{provider}/configuration', Domain\ChangeProviderConfiguration::class)
+        ->any('/', Action\Providers::class)
+        ->get('/providers', Action\ListProviders::class)
+        // ...
+        ->put('/providers/{provider}/configuration', Action\UpdateProviderConfiguration::class)
         ; // End of routing
     }
 }
@@ -335,11 +318,11 @@ For a Equip application to handle requests properly it will require some middlew
 
 The following middlewares are typically used by default, in this order:
 
-* [`Relay\Middleware\ResponseSender`](https://github.com/relayphp/Relay.Middleware/blob/master/src/ResponseSender.php) - Outputs data from the [PSR-7 Response object](https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php) to be sent back to the client
-* [`Equip\Handler\ExceptionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ExceptionHandler.php) - Handles exceptions thrown by subsequent middlewares and domains by [logging the exception](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md#13-context) and returning an appropriate application-level response
-* [`Equip\Handler\RouteHandler`](https://github.com/equip/framework/blob/master/src/Handler/RouteHandler.php) - Resolves the request route to the corresponding action to execute
-* [`Equip\Handler\ContentHandler`](https://github.com/equip/framework/blob/master/src/Handler/ContentHandler.php) - Parses request bodies encoded in common formats and makes the parsed version available via the `getParsedBody()` method of the [PSR-7 Request object](https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php)
-* [`Equip\Handler\ActionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ActionHandler.php) - Invokes the [domain](https://github.com/pmjones/adr#model-vs-domain) corresponding to the resolved [action](https://github.com/pmjones/adr#controller-vs-action), applies the [responder](https://github.com/pmjones/adr#view-vs-responder) to the resulting payload, and returns the resulting response
+* [`Relay\Middleware\ResponseSender`](https://github.com/relayphp/Relay.Middleware/blob/master/src/ResponseSender.php) - Outputs data from the [PSR-7 Response object](https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php) to be sent back to the client.
+* [`Equip\Handler\ExceptionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ExceptionHandler.php) - Handles exceptions thrown by subsequent middlewares and domains by [logging the exception](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md#13-context) and returning an appropriate application response.
+* [`Equip\Handler\RouteHandler`](https://github.com/equip/framework/blob/master/src/Handler/RouteHandler.php) - Resolves the request route to the corresponding action to execute.
+* [`Equip\Handler\ContentHandler`](https://github.com/equip/framework/blob/master/src/Handler/ContentHandler.php) - Parses request bodies encoded in common formats and makes the parsed version available via the `getParsedBody()` method of the [PSR-7 Request object](https://github.com/php-fig/http-message/blob/master/src/ServerRequestInterface.php).
+* [`Equip\Handler\ActionHandler`](https://github.com/equip/framework/blob/master/src/Handler/ActionHandler.php) - Provides a boundary between HTTP details and your [domain logic](https://en.wikipedia.org/wiki/Business_logic). This is the entry point into the [ADR triad](http://pmjones.io/adr/) that invokes [actions](#actions) to read the request and populate the HTTP response.
 
 #### Custom Middleware
 
@@ -382,110 +365,208 @@ Equip\Application::build()
 
 *Typically you will want to place your custom middleware immediately before the `ActionHandler`.*
 
-## Domains
+## Actions
 
-[Domain](https://github.com/pmjones/adr#model-vs-domain) classes are the application entry point into your project-specific code. They implement [`DomainInterface`](https://github.com/equip/domain/blob/master/src/DomainInterface.php), which contains a single method `__invoke()` that takes in an array and returns an instance of a class implementing [`PayloadInterface`](https://github.com/equip/domain/blob/master/src/PayloadInterface.php).
+Actions provide the boundary between the HTTP request/response life cycle and your domain logic. All actions must implement [`ActionInterface`](https://github.com/equip/framework/blob/master/src/Contracts/ActionInterface.php), which contains a single  `__invoke()` method that takes a request and a response and returns a modified response.
 
-The array accepted by `__invoke()` is created internally via the Equip [`Input`](https://github.com/equip/adr/blob/master/src/Input.php) class, which aggregates data from the request in a fashion similar to how PHP itself aggregates request data into the [`$_REQUEST`](http://php.net/manual/en/reserved.variables.request.php) superglobal.
+How you choose to implement your actions is entirely up to you. The following is an example of how a user login action could be defined.
 
-Equip provides a native implementation of [`PayloadInterface`](https://github.com/equip/domain/blob/master/src/PayloadInterface.php) in the form of its [`Payload`](https://github.com/equip/framework/blob/master/src/Payload.php) class. Once the domain class has returned the payload instance, Equip then passes it off to the appropriate [responder](https://github.com/pmjones/adr#view-vs-responder) to be used in constructing the application response.
-
-Rather than having the domain class directly instantiate [`Payload`](https://github.com/equip/framework/blob/master/src/Payload.php) or another implementation of [`PayloadInterface`](https://github.com/equip/domain/blob/master/src/PayloadInterface.php), it's recommended that you make domain classes accept an initial payload instance as a constructor parameter, ideally [typehinted](http://php.net/manual/en/functions.arguments.php#functions.arguments.type-declaration) against [`PayloadInterface`](https://github.com/equip/domain/blob/master/src/PayloadInterface.php). This allows domains to be unit tested independently of any particular payload implementation.
-
-Here's an example of a domain class.
+### Action Example
 
 ```php
-namespace Acme\Domain;
+namespace Acme\Action;
 
-use Equip\Adr\DomainInterface;
-use Equip\Adr\PayloadInterface;
+use Acme\Domain\Authentication;
+use Acme\Input\LoginInput;
+use Equip\Contract\ActionInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class Foo implements DomainInterface
+class LoginAction implements ActionInterface
 {
-    protected $pdo;
-    protected $payload;
+    /**
+     * @var Authentication
+     */
+    private $auth;
+
+    /**
+     * @var LoginResponder
+     */
+    private $responder;
 
     public function __construct(
-        \PDO $pdo,
-        PayloadInterface $payload
+        Authentication $auth,
+        LoginResponder $responder
     ) {
-        $this->pdo = $pdo;
-        $this->payload = $payload;
+        $this->auth = $auth;
+        $this->responder = $responder;
     }
 
-    public function __invoke(array $input)
+    public function __invoke(RequestInterface $request, ResponseInterface $response)
     {
-        // ...
-        return $this->payload;
+        $input = $this->input($request);
+        $errors = $this->auth->validate($input);
+
+        if (!empty($errors)) {
+            return $this->responder->incomplete($response, $errors);
+        }
+
+        if (!$this->auth->canLogin($input)) {
+            return $this->responder->invalid($response, $input->toArray(true));
+        }
+
+        $token = $this->auth->token($input);
+
+        return $this->responder->success($response, $token);
+    }
+
+    private function input(ServerRequestInterface $request)
+    {
+        $body = $request->getParsedBody();
+
+        return new LoginInput($body);
     }
 }
 ```
 
-Note that the constructor of this domain class declares two parameters, a `\PDO` instance and a payload instance. If a request is made for the URI corresponding to this domain class in the [router configuration](#router), Equip will use the [Auryn configuration](#dependency-injection-container) to instantiate the domain class with the dependencies declared in its constructor. Typically, the constructor is used to store references to dependencies in instance properties so as to be able to use them later in `__invoke()`.
-
-Also note that `__invoke()` returns the payload. The core Equip implementation [`Payload`](https://github.com/equip/framework/blob/master/src/Payload.php) provides an immutable implementation of [`PayloadInterface`](https://github.com/equip/adr/blob/master/src/PayloadInterface.php), which also allows for code like this:
+This action can only be used with a server request that contains a body. It uses a domain-specific class `Authentication` that contains this application's rules for handling logins. It operates on a value object called `LoginInput` that contains this logic:
 
 ```php
-return $this->payload
-    ->withStatus(Payload::OK)
-    ->withOutput(['foo' => 'bar']);
+namespace Acme\Input;
+
+class LoginInput
+{
+    private $email;
+    private $password;
+
+    public function __construct(array $input)
+    {
+        if (!empty($input['email'])) {
+            $this->email = filter_var($input['email'], FILTER_VALIDATE_EMAIL);
+        }
+        if (!empty($input['password'])) {
+            $this->password = $input['password'];
+        }
+    }
+
+    public function email()
+    {
+        return $this->email;
+    }
+
+    public function password()
+    {
+        return $this->password;
+    }
+
+    public function toArray($public = false)
+    {
+        $values = get_object_vars($this);
+
+        if ($public) {
+            $values['password'] = '*********';
+        }
+
+        return $values;
+    }
+}
 ```
 
-## Responders
+The details of the `Authentication` class are not important here. Just know that each of its methods take `LoginInput` as their only parameter and operate on the values within it.
 
-[Responders](https://github.com/pmjones/adr#view-vs-responder) accept the payload returned by the domain and return a [PSR-7 Response object](https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php). They implement [`ResponderInterface`](https://github.com/equip/adr/blob/master/src/ResponderInterface.php), which like [`DomainInterface`](https://github.com/equip/domain/blob/master/src/DomainInterface.php) declares a single method `__invoke()`. Instead of a third callable parameter, however, it receives an instance of [`PayloadInterface`](https://github.com/equip/domain/blob/master/src/PayloadInterface.php).
+Finally, we have a custom responder that handles every possible state of the login action: incomplete, invalid, and success.
 
-Equip provides a few native responder implementations.
+```php
+namespace Acme\Action;
 
-### Chained Responder
+use Equip\Formatter\JsonFormatter;
+use Psr\Http\Message\ResponseInterface;
 
-[`ChainedResponder`](https://github.com/equip/framework/blob/master/src/Responder/ChainedResponder.php) is the default responder which allows multiple responders to be applied to the same response instance. This is intended to allow for [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) in configuring different areas of the response. The `ChainedResponder` extends [`Equip\Structure\Set`](https://github.com/equip/structure/blob/master/src/Set.php).
+class LoginResponder
+{
+    /**
+     * @var JsonFormatter
+     */
+    private $formatter;
 
-By default [`ChainedResponder`](https://github.com/equip/framework/blob/master/src/Responder/ChainedResponder.php) includes [all the default responders](https://github.com/equip/framework/blob/master/src/Responder). Responders can be added using its `withValue()` method or overwritten entirely using its `withValues()` method.
+    public function __construct(
+        JsonFormatter $formatter
+    ) {
+        $this->formatter = $formatter;
+    }
 
-### Formatted Responder
+    public function incomplete(ResponseInterface $response, array $errors)
+    {
+        return $this
+            ->write($response, $errors)
+            ->withStatus(400);
+    }
 
-[`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) uses the [Negotiation](https://github.com/willdurand/negotiation) library to support [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation). When a desirable format has been founded, it uses an appropriate implementation of [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php) to encode the payload data and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
+    public function invalid(ResponseInterface $response, array $input)
+    {
+        return $this
+            ->write($response, [
+                'error' => 'Could not validate credentials',
+                'input' => $input,
+            ])
+            ->withStatus(403);
+    }
+
+    public function success(ResponseInterface $response, $token)
+    {
+        return $this
+            ->write($response, compact('token'))
+            ->withStatus(200);
+    }
+
+    private function write(ResponseInterface $response, $output)
+    {
+        $body = $response->getBody();
+
+        $body->write($this->formatter->format($output));
+
+        return $response;
+    }
+}
+```
+
+This simple responder has separate methods for each possible state that take the exact parameters necessary to generate the response. The response content will always be in JSON format.
+
+This loose structure around actions, input, and responders allows each project to define exactly the right response for the application. There are no hard rules about how the actions are defined, so long as each takes a request and produces a response.
+
+## Formatters
+
+Equip includes formatters that can be used in responders to simplify the formatting of domain output for the response. If your actions have multiple possible content types you can use [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation) to output multiple formats based the request `Accept` header.
+
+### Content Negotiation
+
+Content negotiation is provided by the [`ContentNegotiation`](https://github.com/equip/framework/blob/master/src/ContentNegotiation.php) class. Using this object is extremely easy. Create a method in your responder that takes both the request and response and pass both, along with your content, to the `apply()` method:
+
+```php
+$response = $this->negotation->apply($request, $response, $content);
+```
+
+The `ContentNegotiation` class will read the `Accept` header from the request to determine the preferred content type. When a desirable type has been found, it uses an appropriate implementation of [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php) to format the content and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
+
+### Supported Formatters
 
 Here are the formatter implementations that are natively supported:
 
-* [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php) - Encodes the payload as [JSON](http://www.json.org/)
-* [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) - Applies the payload data to a [Plates](http://platesphp.com/) template specified in the payload and returns the result
+* [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php) - Encodes the content as [JSON](http://www.json.org/)
+* [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) - Encodes the content using a [Plates](http://platesphp.com/) template set by the responder
 
-By default [`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) includes `JsonFormatter`. Responders can be added using its `withValue()` method or overwritten entirely using its `withValues()` method.
-
-### Redirect
-
-[`RedirectResponder`](https://github.com/equip/framework/blob/master/src/Responder/RedirectResponder.php) allows a redirection to be embedded in the payload. In order to activate it requires a `redirect` message to be attached to the [`PayloadInterface`](https://github.com/equip/adr/blob/master/src/PayloadInterface.php). Optionally the `status` can be set when a [`302 Found`](https://en.wikipedia.org/wiki/HTTP_302) is not the correct response.
-
-Modifying the payload to trigger a redirect is very easy:
-
-```php
-// For a basic redirect
-return $payload->withMessages([
-    'redirect' => '/login',
-]);
-
-// For a permanent redirect, also set "status"
-return $payload->withMessages([
-    'redirect' => '/permalink',
-    'status' => 301,
-]);
-```
-
-### Default Setup
-
-Actions, responders, and formatters work together to generate a response. By default `Action` instances created by [routing](#routing) use [`ChainedResponder`](https://github.com/equip/framework/blob/master/src/Responder/ChainedResponder.php) as the responder. By using a custom action you can change the responder for that action. By default the [`ChainedResponder`](https://github.com/equip/framework/blob/master/src/Responder/ChainedResponder.php) includes the [`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php) which delegates formatting to [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php).
+By default `ContentNegotiation` includes `JsonFormatter`. Additional formatters can be added using the `withValue()` method or overwritten entirely using the `withValues()` method. All formatters must implement [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php).
 
 ### Using Plates
 
-Using [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) requires changing the formatters used by [`FormattedResponder`](https://github.com/equip/framework/blob/master/src/Responder/FormattedResponder.php). The easiest way to do this is by using the `PlatesResponderConfiguration` as in the example below:
+Using [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) requires changing the formatters used by [`ContentNegotiation`](https://github.com/equip/framework/blob/master/src/ContentNegotiation.php). The easiest way to do this is by using the `PlatesFormatterConfiguration` as in the example below:
 
 ```php
 Equip\Application::build()
 ->setConfiguration([
     // ...
-    Equip\Configuration\PlatesResponderConfiguration::class
+    Equip\Configuration\PlatesFormatterConfiguration::class
 ])
 // ...
 ```

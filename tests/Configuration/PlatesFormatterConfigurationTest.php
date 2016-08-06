@@ -3,12 +3,12 @@
 namespace EquipTests\Configuration;
 
 use Equip\Configuration\AurynConfiguration;
-use Equip\Configuration\PlatesResponderConfiguration;
+use Equip\Configuration\PlatesFormatterConfiguration;
+use Equip\ContentNegotiation;
 use Equip\Formatter\PlatesFormatter;
-use Equip\Responder\FormattedResponder;
 use League\Plates\Engine;
 
-class PlatesResponderConfigurationTest extends ConfigurationTestCase
+class PlatesFormatterConfigurationTest extends ConfigurationTestCase
 {
     protected function getConfigurations()
     {
@@ -18,15 +18,15 @@ class PlatesResponderConfigurationTest extends ConfigurationTestCase
 
         return [
             new AurynConfiguration,
-            new PlatesResponderConfiguration,
+            new PlatesFormatterConfiguration,
         ];
     }
 
     public function testApply()
     {
-        $responder = $this->injector->make(FormattedResponder::class);
+        $negotiator = $this->injector->make(ContentNegotiation::class);
 
-        $this->assertArrayHasKey(PlatesFormatter::class, $responder);
-        $this->assertSame(1.0, $responder[PlatesFormatter::class]);
+        $this->assertArrayHasKey(PlatesFormatter::class, $negotiator);
+        $this->assertSame(1.0, $negotiator[PlatesFormatter::class]);
     }
 }

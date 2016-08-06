@@ -1,20 +1,18 @@
 <?php
 
-namespace Equip\Responder;
+namespace Equip;
 
-use Equip\Adr\PayloadInterface;
-use Equip\Adr\ResponderInterface;
 use Equip\Exception\FormatterException;
 use Equip\Formatter\FormatterInterface;
 use Equip\Formatter\JsonFormatter;
 use Equip\Resolver\ResolverTrait;
 use Equip\Structure\SortedDictionary;
 use Negotiation\Negotiator;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Relay\ResolverInterface;
 
-class FormattedResponder extends SortedDictionary implements ResponderInterface
+class ContentNegotiation extends SortedDictionary
 {
     use ResolverTrait;
 
@@ -26,6 +24,7 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
     /**
      * @param Negotiator $negotiator
      * @param ResolverInterface $resolver
+     * @param array $formatters
      */
     public function __construct(
         Negotiator $negotiator,
@@ -41,30 +40,56 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
     }
 
     /**
-     * @inheritDoc
+     * Update the response by formatting raw output content.
+     *
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     * @param mixed $content
+     *
+     * @return ResponseInterface
      */
-    public function __invoke(
-        ServerRequestInterface $request,
+    public function apply(
+        RequestInterface $request,
         ResponseInterface $response,
-        PayloadInterface $payload
+        $content
     ) {
-        if ($this->hasOutput($payload)) {
-            $response = $this->format($request, $response, $payload);
-        }
+        $formatter = $this->formatter($request);
+
+        $response = $response->withHeader('Content-Type', $formatter->type());
+
+        // Overwrite the body instead of making a copy and dealing with the stream.
+        // HTTP Factories would make this much better! (PSR-17)
+        $response->getBody()->write($formatter->format($content));
 
         return $response;
     }
 
     /**
-     * Determine if the payload has usable output
+     * Retrieve the formatter to use for the current request.
      *
-     * @param PayloadInterface $payload
+     * Uses content negotiation to find the best available output format for
+     * the requested content type.
      *
-     * @return boolean
+     * @param RequestInterface $request
+     *
+     * @return FormatterInterface
      */
-    protected function hasOutput(PayloadInterface $payload)
+    protected function formatter(RequestInterface $request)
     {
-        return (bool) $payload->getOutput();
+        $accept = $request->getHeaderLine('Accept');
+        $priorities = $this->priorities();
+
+        if (!empty($accept)) {
+            $preferred = $this->negotiator->getBest($accept, array_keys($priorities));
+        }
+
+        if (!empty($preferred)) {
+            $formatter = $priorities[$preferred->getValue()];
+        } else {
+            $formatter = array_shift($priorities);
+        }
+
+        return $this->resolve($formatter);
     }
 
     /**
@@ -86,62 +111,11 @@ class FormattedResponder extends SortedDictionary implements ResponderInterface
     }
 
     /**
-     * Retrieve the formatter to use for the current request.
-     *
-     * Uses content negotiation to find the best available output format for
-     * the requested content type.
-     *
-     * @param ServerRequestInterface $request
-     *
-     * @return FormatterInterface
-     */
-    protected function formatter(ServerRequestInterface $request)
-    {
-        $accept = $request->getHeaderLine('Accept');
-        $priorities = $this->priorities();
-
-        if (!empty($accept)) {
-            $preferred = $this->negotiator->getBest($accept, array_keys($priorities));
-        }
-
-        if (!empty($preferred)) {
-            $formatter = $priorities[$preferred->getValue()];
-        } else {
-            $formatter = array_shift($priorities);
-        }
-
-        return $this->resolve($formatter);
-    }
-
-    /**
-     * Update the response by formatting the payload.
-     *
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @param PayloadInterface $payload
-     *
-     * @return ResponseInterface
-     */
-    protected function format(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        PayloadInterface $payload
-    ) {
-        $formatter = $this->formatter($request);
-
-        $response = $response->withHeader('Content-Type', $formatter->type());
-        // Overwrite the body instead of making a copy and dealing with the stream.
-        $response->getBody()->write($formatter->body($payload));
-
-        return $response;
-    }
-
-    /**
      * @inheritDoc
      *
      * @throws FormatterException
-     *  If $classes does not implement the correct interface,
-     *  or does not have a quality value.
+     *  If $classes does not implement the correct interface, or does not have
+     *  a quality value.
      */
     protected function assertValid(array $classes)
     {
