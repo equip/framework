@@ -1,6 +1,6 @@
 author_approval: ignored
 approve_by_comment: true
-reset_on_push: true
+reset_on_push: false
 approve_regex: '^:\+1:'
 reject_regex: '^:\-1:'
 reviewers:
@@ -10,6 +10,6 @@ reviewers:
         members:
             - ameech
             - dolfelt
+            - elazar
             - sctape
             - shadowhand
-            - elazar
