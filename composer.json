@@ -12,7 +12,6 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.5",
-        "equip/adr": "^2.0",
         "equip/config": "^1.0.2",
         "equip/structure": "^1.0",
         "filp/whoops": "^2.0",
