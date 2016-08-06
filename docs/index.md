@@ -480,8 +480,8 @@ Finally, we have a custom responder that handles every possible state of the log
 ```php
 namespace Acme\Action;
 
-use Psr\Http\Message\ResponseInterface;
 use Equip\Formatter\JsonFormatter;
+use Psr\Http\Message\ResponseInterface;
 
 class LoginResponder
 {
