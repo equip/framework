@@ -24,6 +24,11 @@ Subsequent examples will assume your project has a directory structure similar t
     └── index.php
 ```
 
+Instead of installing Equip via Composer, you can get going a little faster by using the [sample project](https://github.com/equip/project) that shows a good way to use this framework.
+```
+composer create-project -s dev equip/project equip-project
+```
+
 ## Dependencies
 
 The majority of the code written on top of Equip is located in [domain](https://github.com/pmjones/adr#model-vs-domain) classes and others [composed](https://en.wikipedia.org/wiki/Object_composition) by them. Additional classes can be used to customize other aspects of the application including [responders](#responders), [middleware](#middleware), and so forth. One commonality that all of these classes have is that they generally require external dependencies in order to serve their purpose.
