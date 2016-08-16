@@ -378,7 +378,6 @@ namespace Acme\Action;
 use Acme\Domain\Authentication;
 use Acme\Input\LoginInput;
 use Equip\Contract\ActionInterface;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -402,7 +401,7 @@ class LoginAction implements ActionInterface
         $this->responder = $responder;
     }
 
-    public function __invoke(RequestInterface $request, ResponseInterface $response)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response)
     {
         $input = $this->input($request);
         $errors = $this->auth->validate($input);
