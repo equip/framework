@@ -117,7 +117,6 @@ The following configurations are available but not used by default:
 * [`EnvConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/EnvConfiguration.php) - Use [Dotenv](https://github.com/josegonzalez/php-dotenv) to populate the content of [`Env`](https://github.com/equip/framework/blob/master/src/Env.php)
 * [`MonologConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/MonologConfiguration.php) - Use [Monolog](https://github.com/Seldaek/monolog/) for the framework [PSR-3](http://www.php-fig.org/psr/psr-3/) implementation
 * [`PlatesConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesConfiguration.php) - Configure the [Plates](http://platesphp.com/) template engine
-* [`PlatesFormatterConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/PlatesFormatterConfiguration.php) - Use [Plates](http://platesphp.com/) to output HTML for [content negotiation](#content-negotiation)
 * [`RedisConfiguration`](https://github.com/equip/framework/blob/master/src/Configuration/RedisConfiguration.php) - Use [Redis](http://redis.io) for in-memory store
 
 #### Setting The Env File
@@ -537,36 +536,13 @@ This loose structure around actions, input, and responders allows each project t
 
 ## Formatters
 
-Equip includes formatters that can be used in responders to simplify the formatting of domain output for the response. If your actions have multiple possible content types you can use [content negotiation](https://en.wikipedia.org/wiki/Content_negotiation) to output multiple formats based the request `Accept` header.
+Equip includes formatters that can be used in responders to simplify the formatting of domain output for the response:
+
+* [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php) - Encodes the content as [JSON](http://www.json.org/).
+* [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) - Encodes the content using a [Plates](http://platesphp.com/) template set by the responder.
+
+All formatters must implement [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php).
 
 ### Content Negotiation
 
-Content negotiation is provided by the [`ContentNegotiation`](https://github.com/equip/framework/blob/master/src/ContentNegotiation.php) class. Using this object is extremely easy. Create a method in your responder that takes both the request and response and pass both, along with your content, to the `apply()` method:
-
-```php
-$response = $this->negotation->apply($request, $response, $content);
-```
-
-The `ContentNegotiation` class will read the `Accept` header from the request to determine the preferred content type. When a desirable type has been found, it uses an appropriate implementation of [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php) to format the content and return it as a string. The `FormattedResponder` extends [`Equip\Structure\Dictionary`](https://github.com/equip/structure/blob/master/src/Dictionary.php).
-
-### Supported Formatters
-
-Here are the formatter implementations that are natively supported:
-
-* [`JsonFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/JsonFormatter.php) - Encodes the content as [JSON](http://www.json.org/)
-* [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) - Encodes the content using a [Plates](http://platesphp.com/) template set by the responder
-
-By default `ContentNegotiation` includes `JsonFormatter`. Additional formatters can be added using the `withValue()` method or overwritten entirely using the `withValues()` method. All formatters must implement [`FormatterInterface`](https://github.com/equip/framework/blob/master/src/Formatter/FormatterInterface.php).
-
-### Using Plates
-
-Using [`PlatesFormatter`](https://github.com/equip/framework/blob/master/src/Formatter/PlatesFormatter.php) requires changing the formatters used by [`ContentNegotiation`](https://github.com/equip/framework/blob/master/src/ContentNegotiation.php). The easiest way to do this is by using the `PlatesFormatterConfiguration` as in the example below:
-
-```php
-Equip\Application::build()
-->setConfiguration([
-    // ...
-    Equip\Configuration\PlatesFormatterConfiguration::class
-])
-// ...
-```
+Equip does not include any form of [content negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation). However, all formatters include a static `accepts()` method that returns a list of the content types supported by the formatter. This list can be used to help determine which formatter supports a requested content type.
