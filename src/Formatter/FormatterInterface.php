@@ -2,8 +2,6 @@
 
 namespace Equip\Formatter;
 
-use Equip\Adr\PayloadInterface;
-
 interface FormatterInterface
 {
     /**
@@ -14,18 +12,18 @@ interface FormatterInterface
     public static function accepts();
 
     /**
-     * Get the content type of the response body.
+     * Get the content type this formatter will generate.
      *
      * @return string
      */
     public function type();
 
     /**
-     * Get the response body from the payload.
+     * Get the formatted version of provided content.
      *
-     * @param PayloadInterface $payload
+     * @param mixed $content
      *
      * @return string
      */
-    public function body(PayloadInterface $payload);
+    public function format($content);
 }

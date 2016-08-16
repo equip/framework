@@ -1,7 +1,7 @@
 <?php
 namespace EquipTests\Handler;
 
-use Equip\Action;
+use Equip\Contract\ActionInterface;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Handler\ActionHandler;
 use EquipTests\Configuration\ConfigurationTestCase;
@@ -24,19 +24,18 @@ class ActionHandlerTest extends ConfigurationTestCase
         $response = $this->injector->make(Response::class);
         $handler = $this->injector->make(ActionHandler::class);
 
-        $action = new Action(FakeDomain::class);
+        $action = $this->createMock(ActionInterface::class);
+
+        $action
+            ->expects($this->once())
+            ->method('__invoke')
+            ->willReturn($response);
 
         $request = $request->withAttribute(ActionHandler::ACTION_ATTRIBUTE, $action);
-        $request = $request->withAttribute('test', true);
 
         $response = $handler($request, $response, function ($request, $response) {
             $this->assertInstanceOf(Response::class, $response);
             return $response;
         });
-
-        $body = json_decode($response->getBody(), true);
-
-        $this->assertTrue($body['success']);
-        $this->assertTrue($body['input']['test']);
     }
 }

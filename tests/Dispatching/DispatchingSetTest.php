@@ -3,7 +3,7 @@
 namespace EquipTests\Dispatching;
 
 use Auryn\Injector;
-use Equip\Adr\DomainInterface;
+use Equip\Contract\ActionInterface;
 use Equip\Directory;
 use Equip\Exception\DispatchingException;
 use Equip\Dispatching\DispatchingSet;
@@ -35,7 +35,7 @@ class DispatchingSetTest extends TestCase
     {
         $dispatchers = [
             function (Directory $directory) {
-                return $directory->get('/', DomainInterface::class);
+                return $directory->get('/', $this->createMock(ActionInterface::class));
             }
         ];
 

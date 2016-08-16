@@ -2,7 +2,7 @@
 
 namespace EquipTests\Handler;
 
-use EquipTests\DirectoryTestCase;
+use Equip\Contract\ActionInterface;
 use Equip\Directory;
 use Equip\Exception\HttpException;
 use Equip\Handler\ActionHandler;
@@ -10,8 +10,9 @@ use Equip\Handler\DispatchHandler;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class DispatchHandlerTest extends DirectoryTestCase
+class DispatchHandlerTest extends TestCase
 {
     /**
      * @var Directory
@@ -25,7 +26,7 @@ class DispatchHandlerTest extends DirectoryTestCase
 
     public function testHandle()
     {
-        $action = $this->getMockAction();
+        $action = $this->createMock(ActionInterface::class);
         $directory = $this->directory->get('/[{name}]', $action);
         $request = $this->getRequest('GET', '/tester');
         $response = new Response;
@@ -41,7 +42,7 @@ class DispatchHandlerTest extends DirectoryTestCase
 
     public function testPrefixed()
     {
-        $action = $this->getMockAction();
+        $action = $this->createMock(ActionInterface::class);
         $directory = $this->directory->withPrefix('prefix');
         $directory = $directory->get('/[{name}]', $action);
         $request = $this->getRequest('GET', '/prefix/tester');
@@ -84,11 +85,12 @@ class DispatchHandlerTest extends DirectoryTestCase
             '/cannot access resource .* using method/i'
         );
 
+        $action = $this->createMock(ActionInterface::class);
         $handler = new DispatchHandler($this->directory);
         $request = $this->getRequest('POST');
         $response = new Response;
 
-        $directory = $this->directory->get('/', $this->getMockAction());
+        $directory = $this->directory->get('/', $action);
 
         return $this->dispatch(
             $directory,

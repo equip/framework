@@ -2,7 +2,7 @@
 
 namespace Equip;
 
-use Equip\Action;
+use Equip\Contract\ActionInterface;
 use Equip\Exception\DirectoryException;
 use Equip\Structure\Dictionary;
 
@@ -64,107 +64,101 @@ class Directory extends Dictionary
 
     /**
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function any($path, $domainOrAction)
+    public function any($path, $action)
     {
-        return $this->action(self::ANY, $path, $domainOrAction);
+        return $this->action(self::ANY, $path, $action);
     }
 
     /**
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function get($path, $domainOrAction)
+    public function get($path, $action)
     {
-        return $this->action(self::GET, $path, $domainOrAction);
+        return $this->action(self::GET, $path, $action);
     }
 
     /**
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function post($path, $domainOrAction)
+    public function post($path, $action)
     {
-        return $this->action(self::POST, $path, $domainOrAction);
+        return $this->action(self::POST, $path, $action);
     }
 
     /**
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function put($path, $domainOrAction)
+    public function put($path, $action)
     {
-        return $this->action(self::PUT, $path, $domainOrAction);
+        return $this->action(self::PUT, $path, $action);
     }
 
     /**
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function patch($path, $domainOrAction)
+    public function patch($path, $action)
     {
-        return $this->action(self::PATCH, $path, $domainOrAction);
+        return $this->action(self::PATCH, $path, $action);
     }
 
     /**
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function head($path, $domainOrAction)
+    public function head($path, $action)
     {
-        return $this->action(self::HEAD, $path, $domainOrAction);
+        return $this->action(self::HEAD, $path, $action);
     }
 
     /**
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function delete($path, $domainOrAction)
+    public function delete($path, $action)
     {
-        return $this->action(self::DELETE, $path, $domainOrAction);
+        return $this->action(self::DELETE, $path, $action);
     }
 
     /**
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function options($path, $domainOrAction)
+    public function options($path, $action)
     {
-        return $this->action(self::OPTIONS, $path, $domainOrAction);
+        return $this->action(self::OPTIONS, $path, $action);
     }
 
     /**
      * @param string $method
      * @param string $path
-     * @param string|Action $domainOrAction
+     * @param string $action
      *
      * @return static
      */
-    public function action($method, $path, $domainOrAction)
+    public function action($method, $path, $action)
     {
-        if ($domainOrAction instanceof Action) {
-            $action = $domainOrAction;
-        } else {
-            $action = new Action($domainOrAction);
-        }
-
         return $this->withValue(sprintf('%s %s', $method, $path), $action);
     }
 
@@ -178,7 +172,7 @@ class Directory extends Dictionary
         parent::assertValid($data);
 
         foreach ($data as $value) {
-            if (!is_object($value) || !$value instanceof Action) {
+            if (!is_subclass_of($value, ActionInterface::class)) {
                 throw DirectoryException::invalidEntry($value);
             }
         }
