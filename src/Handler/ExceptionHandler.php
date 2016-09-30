@@ -104,6 +104,8 @@ class ExceptionHandler
             $handler = $this->handler($type);
             $this->whoops->pushHandler($handler);
 
+            $this->whoops->writeToOutput(false);
+            $this->whoops->allowQuit(false);
             $body = $this->whoops->handleException($e);
             $response->getBody()->write($body);
 
