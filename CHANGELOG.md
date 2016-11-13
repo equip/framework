@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 _..._
 
-## 2.1.0 - ?
+## 2.1.0 - 2016-11-13
 
 - Replace generic exceptions with specific exceptions in handlers
 - Add URI prefix support for routing with `Directory` class
