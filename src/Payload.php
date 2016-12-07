@@ -137,8 +137,6 @@ class Payload implements PayloadInterface
         if (isset($this->settings[$name])) {
             return $this->settings[$name];
         }
-
-        return null;
     }
 
     /**
