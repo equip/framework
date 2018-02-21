@@ -9,6 +9,8 @@ use Whoops\Run as Whoops;
 
 class WhoopsConfiguration implements ConfigurationInterface
 {
+    use EnvTrait;
+
     /**
      * @inheritDoc
      */
@@ -26,7 +28,9 @@ class WhoopsConfiguration implements ConfigurationInterface
      */
     public function prepareWhoops(Whoops $whoops)
     {
-        set_error_handler([$whoops, Whoops::ERROR_HANDLER]);
+        if($this->env->getValue('DEBUG_STACKTRACE', false) == true) {
+            set_error_handler([$whoops, Whoops::ERROR_HANDLER]);
+        }
 
         $whoops->writeToOutput(false);
         $whoops->allowQuit(false);
