@@ -101,13 +101,16 @@ class ExceptionHandler
                 $response = $e->withResponse($response);
             }
 
-            $handler = $this->handler($type);
-            $this->whoops->pushHandler($handler);
+            if ($this->preferences->displayDebug()) {
 
-            $body = $this->whoops->handleException($e);
-            $response->getBody()->write($body);
+                $handler = $this->handler($type);
+                $this->whoops->pushHandler($handler);
 
-            $this->whoops->popHandler();
+                $body = $this->whoops->handleException($e);
+                $response->getBody()->write($body);
+
+                $this->whoops->popHandler();
+            }
 
             return $response;
         }
