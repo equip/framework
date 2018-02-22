@@ -101,7 +101,7 @@ class ExceptionHandler
                 $response = $e->withResponse($response);
             }
 
-            if ($this->preferences->displayDebug( )) {
+            if ($this->preferences->displayDebug()) {
 
                 $handler = $this->handler($type);
                 $this->whoops->pushHandler($handler);
