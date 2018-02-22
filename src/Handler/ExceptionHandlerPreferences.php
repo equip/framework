@@ -2,6 +2,7 @@
 
 namespace Equip\Handler;
 
+use Equip\Env;
 use Equip\Structure\Dictionary;
 use Whoops\Handler\JsonResponseHandler;
 use Whoops\Handler\PlainTextHandler;
@@ -10,10 +11,16 @@ use Whoops\Handler\XmlResponseHandler;
 
 class ExceptionHandlerPreferences extends Dictionary
 {
+
+    /**
+     * @var UserRepository
+     */
+    private $debug;
+
     /**
      * @inheritDoc
      */
-    public function __construct(array $data = [])
+    public function __construct(array $data = [], Env $env)
     {
         $data += [
             'text/html' => PrettyPageHandler::class,
@@ -28,6 +35,12 @@ class ExceptionHandlerPreferences extends Dictionary
             'text/plain' => PlainTextHandler::class,
         ]; // @codeCoverageIgnore
 
+        $this->debug = (bool) $env->getValue('DEBUG_STACKTRACE', false);
         parent::__construct($data);
+    }
+
+    public function displayDebug( )
+    {
+        return $this->debug;
     }
 }

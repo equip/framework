@@ -3,12 +3,13 @@
 namespace EquipTests\Handler;
 
 use Auryn\Injector;
-use EquipTests\Configuration\ConfigurationTestCase;
 use Equip\Configuration\AurynConfiguration;
 use Equip\Configuration\ConfigurationInterface;
 use Equip\Configuration\WhoopsConfiguration;
+use Equip\Env;
 use Equip\Exception\HttpException;
 use Equip\Handler\ExceptionHandler;
+use EquipTests\Configuration\ConfigurationTestCase;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\LoggerInterface;
 use Zend\Diactoros\Response;
@@ -18,10 +19,16 @@ class ExceptionHandlerTest extends ConfigurationTestCase
 {
     protected function getConfigurations()
     {
+        $env = $this->getMock(Env::class);
+        $env->expects($this->atLeastOnce())
+            ->method('getValue')
+            ->with('DEBUG_STACKTRACE', false)
+            ->willReturn('1');
+
         return [
             new AurynConfiguration,
             new MockMonologConfiguration,
-            new WhoopsConfiguration,
+            new WhoopsConfiguration($env),
         ];
     }
 

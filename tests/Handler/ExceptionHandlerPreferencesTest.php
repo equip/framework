@@ -2,6 +2,7 @@
 
 namespace EquipTests\Handler;
 
+use Equip\Env;
 use Equip\Handler\ExceptionHandlerPreferences;
 use PHPUnit_Framework_TestCase as TestCase;
 use Whoops\Handler\JsonResponseHandler;
@@ -14,7 +15,13 @@ class ExceptionHandlerPreferencesTest extends TestCase
 {
     public function testConstruct()
     {
-        $prefs = new ExceptionHandlerPreferences;
+        $env = $this->getMock(Env::class);
+        $env->expects($this->atLeastOnce())
+            ->method('getValue')
+            ->with('DEBUG_STACKTRACE', false)
+            ->willReturn('1');
+
+        $prefs = new ExceptionHandlerPreferences([], $env);
 
         $this->assertNotContains(SoapHandler::class, $prefs);
 
