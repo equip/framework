@@ -76,9 +76,11 @@ class ExceptionHandler
             return $next($request, $response);
         } catch (Exception $e) {
             if ($this->logger) {
-                $this->logger->error($e->getMessage(), [
-                    'exception' => $e
-                ]);
+                if ($e instanceof HttpException) {
+                    $this->logger->debug($e->getMessage(), ['exception' => $e]);
+                } else {
+                    $this->logger->error($e->getMessage(), ['exception' => $e]);
+                }
             }
 
             $type = $this->type($request);
