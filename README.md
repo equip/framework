@@ -1,5 +1,7 @@
 ## Equip Framework
 
+[![Join the chat at https://gitter.im/equip/framework](https://badges.gitter.im/equip/framework.svg)](https://gitter.im/equip/framework?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/equip/framework.svg)](https://packagist.org/packages/equip/framework)
 [![License](https://img.shields.io/packagist/l/equip/framework.svg)](https://github.com/equip/framework/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/equip/framework.svg)](https://travis-ci.org/equip/framework)
